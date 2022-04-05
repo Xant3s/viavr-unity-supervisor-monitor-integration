@@ -198,6 +198,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "de.jmu.ge.viavr.unitybridge": {
+      "version": "0.1.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.informatik.uni-wuerzburg.de"
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,

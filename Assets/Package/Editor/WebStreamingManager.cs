@@ -1,18 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using de.jmu.ge.viavr.UnityBridge.Core;
+using de.jmu.ge.viavr.UnityBridge.Utils;
+using UnityEditor;
 using UnityEngine;
+using WebStreaming;
 
-public class WebStreamingManager : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+public class WebStreamingManager : PackageConfigurator {
+    private static readonly JsonLoader<WebStreamingSettings> StreamingSettings = new("Assets/Settings/RenderStreaming.json");
+    private GameObject webStreamer;
+    
+    public void OnConfigureScene() {
+        CreateStreamerFromJson();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void CreateStreamerFromJson() {
+        WebStreamingSettings settings = StreamingSettings.GetConfiguration();
+        if(settings.active)
+            webStreamer = CreateStreamerInScene();
+    }
+
+    private GameObject CreateStreamerInScene() {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.locomotion/Runtime/XrRig.prefab");
+        if(prefab == null) 
+            prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/de.jmu.ge.viavr.locomotion/Runtime/XrRig.prefab");
+            
+        return Object.Instantiate(prefab);
     }
 }
