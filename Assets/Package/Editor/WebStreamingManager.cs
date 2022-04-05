@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using de.jmu.ge.viavr.UnityBridge.Core;
 using de.jmu.ge.viavr.UnityBridge.Utils;
 using UnityEditor;
