@@ -1,18 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 
-public class WebStreamingSettings : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+namespace WebStreaming {
+    [Serializable]
+    public class WebStreamingSettings {
+        public bool active;
     }
 }
