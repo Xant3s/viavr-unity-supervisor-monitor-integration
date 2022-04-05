@@ -10,7 +10,7 @@ public class WebStreamingManager : PackageConfigurator {
     private static readonly JsonLoader<WebStreamingSettings> StreamingSettings = new("Assets/Settings/RenderStreaming.json");
     private GameObject webStreamer;
     
-    public void OnConfigureScene() {
+    public override void OnConfigureScene() {
         CreateStreamerFromJson();
     }
 
@@ -23,7 +23,7 @@ public class WebStreamingManager : PackageConfigurator {
     private GameObject CreateStreamerInScene() {
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.locomotion/Runtime/XrRig.prefab");
         if(prefab == null) 
-            prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/de.jmu.ge.viavr.locomotion/Runtime/XrRig.prefab");
+            prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Package/Runtime/Stream Manager.prefab");
             
         return Object.Instantiate(prefab);
     }
