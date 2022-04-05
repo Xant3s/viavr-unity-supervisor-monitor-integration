@@ -19,7 +19,7 @@ public class WebStreamingManager : PackageConfigurator {
     }
 
     private GameObject CreateStreamerInScene() {
-        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.locomotion/Runtime/XrRig.prefab");
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.webstreaming/Runtime/XrRig.prefab");
         if(prefab == null) 
             prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Package/Runtime/Stream Manager.prefab");
             
