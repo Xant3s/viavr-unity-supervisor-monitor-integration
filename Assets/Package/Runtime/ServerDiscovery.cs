@@ -1,14 +1,15 @@
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Unity.RenderStreaming;
 using Unity.RenderStreaming.Signaling;
 using UnityEngine;
 
 public class ServerDiscovery : MonoBehaviour {
     private volatile string serverAddress;
+    private volatile string receivedMessage;
     private volatile bool serverDiscovered;
     private bool serverSetup;
     
@@ -21,18 +22,24 @@ public class ServerDiscovery : MonoBehaviour {
 
     private void Update() {
         if(!serverSetup && serverDiscovered) {
+            string sanitizedWsAddress = receivedMessage.Split(' ').ToList().Last();
             string sanitizedAddress = serverAddress.Split(':')[0];
-            ISignaling signaling = new WebSocketSignaling($"http://{sanitizedAddress}:80", 5.0f, SynchronizationContext.Current);
+            ISignaling signaling = new WebSocketSignaling($"ws://{sanitizedWsAddress}", 5.0f, SynchronizationContext.Current);
             SignalingHandlerBase handlerBase = GetComponent<Broadcast>();
             GetComponent<RenderStreaming>().Run(true, signaling, new []{handlerBase});
+            serverSetup = true;
         }
     }
 
-    private async Task AsyncSearchForServer() {
+    private void OnDestroy() {
+        GetComponent<RenderStreaming>().Stop();
+    }
+
+    /*private async Task AsyncSearchForServer() {
         Thread portMessage = new Thread(ScanPortInSystem);
         portMessage.Start();
         portMessage.Join();
-    }
+    }*/
 
     private void ScanPortInSystem() {
         Socket sock = new Socket(AddressFamily.InterNetwork,
@@ -47,6 +54,7 @@ public class ServerDiscovery : MonoBehaviour {
         Debug.Log($"received: {stringData} from: {ep}");
         sock.Close();
         serverAddress = ep.ToString();
+        receivedMessage = stringData;
         serverDiscovered = true;
     }
 }
