@@ -14,15 +14,26 @@ public class WebStreamingManager : PackageConfigurator {
 
     private void CreateStreamerFromJson() {
         WebStreamingSettings settings = StreamingSettings.GetConfiguration();
-        if(settings.active)
+        if (settings.active)
+        {
             webStreamer = CreateStreamerInScene();
+            var streamCamera = webStreamer.transform.Find("Render Streaming Camera");
+            
+            if (Camera.main != null)
+            {
+                var cameraTransform = Camera.main.transform;
+                var copyTransform = streamCamera.GetComponent<CopyTransform>();
+                if (copyTransform != null)
+                    copyTransform.origin = cameraTransform;
+            }
+        }
     }
 
     private GameObject CreateStreamerInScene() {
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.webstreaming/Runtime/XrRig.prefab");
         if(prefab == null) 
-            prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Package/Runtime/Stream Manager.prefab");
-            
+            prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Package/Runtime/CustomVideoStreamer.prefab");
+
         return Object.Instantiate(prefab);
     }
 }
