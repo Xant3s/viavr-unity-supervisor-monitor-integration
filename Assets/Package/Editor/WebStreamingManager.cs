@@ -24,13 +24,13 @@ public class WebStreamingManager : PackageConfigurator {
                 var cameraTransform = Camera.main.transform;
                 var copyTransform = streamCamera.GetComponent<CopyTransform>();
                 if (copyTransform != null)
-                    copyTransform.origin = cameraTransform;
+                    copyTransform.Origin = cameraTransform;
             }
         }
     }
 
     private GameObject CreateStreamerInScene() {
-        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.webstreaming/Runtime/XrRig.prefab");
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.webstreaming/Runtime/CustomVideoStreamer.prefab");
         if(prefab == null) 
             prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Package/Runtime/CustomVideoStreamer.prefab");
 
