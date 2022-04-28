@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8285848753539665857}
   - component: {fileID: 8285848753539665870}
   - component: {fileID: 8285848753539665856}
-  - component: {fileID: 1128221923464560835}
+  - component: {fileID: 5533985466890596030}
   m_Layer: 0
   m_Name: RenderStreaming
   m_TagString: Untagged
@@ -73,7 +73,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   streams:
   - {fileID: 8285848754770016165}
---- !u!114 &1128221923464560835
+--- !u!114 &5533985466890596030
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -82,10 +82,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8285848753539665859}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dabd9aa9b88e3304f9beca84c54d2cda, type: 3}
+  m_Script: {fileID: 11500000, guid: 15d147cf06cfe674cb951adb4062ff12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderStreaming: {fileID: 8285848753539665870}
 --- !u!1 &8285848753668104594
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,7 +262,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8285848754770016187}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042622dd8b5b34449b0d20275a1bf1cc, type: 3}
+  m_Script: {fileID: 11500000, guid: b205814fc5591a8438e1e97d255da0ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  origin: {fileID: 0}
+  <Origin>k__BackingField: {fileID: 0}
