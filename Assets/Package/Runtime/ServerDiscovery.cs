@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -11,32 +12,39 @@ public class ServerDiscovery : MonoBehaviour {
     private volatile string serverAddress;
     private volatile string receivedMessage;
     private volatile bool serverDiscovered;
+    private volatile string sanitizedServerAddress;
     private bool serverSetup;
+    private volatile bool connectionAlive;
+    private volatile Socket connectionSocket;
+    private Thread serverNotifier;
+
+    public void BreakConnection() {
+        serverNotifier.Abort();
+        connectionSocket.Close();
+    }
 
     private void Start() {
-        StartFunctionAsDaemon(ScanPortInSystem);
+        var daemonThread = new Thread(ScanPortInSystem) {
+            IsBackground = true
+        };
+        daemonThread.Start();
     }
 
     private void Update() {
         if(serverSetup || !serverDiscovered) return;
         var sanitizedWsAddress = receivedMessage.Split(' ').ToList().Last();
-        var sanitizedAddress = serverAddress.Split(':')[0];
+        sanitizedServerAddress = serverAddress.Split(':')[0];
         ISignaling signaling = new WebSocketSignaling($"ws://{sanitizedWsAddress}", 5.0f, SynchronizationContext.Current);
         SignalingHandlerBase handlerBase = GetComponent<Broadcast>();
         GetComponent<RenderStreaming>().Run(true, signaling, new []{handlerBase});
         serverSetup = true;
-        StartFunctionAsDaemon(SendKeepAliveSignal);
+        serverNotifier = new Thread(SendKeepAliveSignal);
+        serverNotifier.Start();
     }
 
     private void OnDestroy() {
+        BreakConnection();
         GetComponent<RenderStreaming>().Stop();
-    }
-
-    private static void StartFunctionAsDaemon(ThreadStart daemonFunction) {
-        var daemonThread = new Thread(daemonFunction) {
-            IsBackground = true
-        };
-        daemonThread.Start();
     }
 
     private void ScanPortInSystem() {
@@ -57,6 +65,15 @@ public class ServerDiscovery : MonoBehaviour {
     }
 
     private void SendKeepAliveSignal() {
-        
+        connectionSocket = new Socket(AddressFamily.InterNetwork,
+            SocketType.Dgram, ProtocolType.Udp);
+        IPEndPoint iep = new IPEndPoint(IPAddress.Parse(sanitizedServerAddress), 51234);
+        connectionSocket.Bind(iep);
+        while(true) {
+            Debug.Log($"Sending keep alive message to {IPAddress.Parse(sanitizedServerAddress)}");
+            byte[] sendBuffer = Encoding.ASCII.GetBytes("Still sharing");
+            connectionSocket.SendTo(sendBuffer, iep);
+            Thread.Sleep(5000);
+        }
     }
 }
