@@ -1,0 +1,26 @@
+{
+	"extendedWalking": {
+		"active": true,
+		"gravityBased": false,
+		"movementExtension": 3.0
+	},
+	"teleport": {
+		"active": false,
+		"customActions": false,
+		"teleportVariant": "Discrete",
+		"portableDestinations": [
+			"testCube",
+			"testEmpty"
+		],
+		"floorNames": [
+			"testArea1",
+			"testArea2"
+		]
+	},
+	"thumbStick": {
+		"active": false,
+		"customActions": false,
+		"walkingSpeed": 1
+	},
+	"leftHanded": false
+}
