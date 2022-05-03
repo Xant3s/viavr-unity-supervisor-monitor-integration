@@ -12,34 +12,32 @@ public class ServerDiscovery : MonoBehaviour {
     private volatile string receivedMessage;
     private volatile bool serverDiscovered;
     private bool serverSetup;
-    
-    void Start() {
-        var portMessage = new Thread(ScanPortInSystem) {
-            IsBackground = true
-        };
-        portMessage.Start();
+
+    private void Start() {
+        StartFunctionAsDaemon(ScanPortInSystem);
     }
 
     private void Update() {
-        if(!serverSetup && serverDiscovered) {
-            string sanitizedWsAddress = receivedMessage.Split(' ').ToList().Last();
-            string sanitizedAddress = serverAddress.Split(':')[0];
-            ISignaling signaling = new WebSocketSignaling($"ws://{sanitizedWsAddress}", 5.0f, SynchronizationContext.Current);
-            SignalingHandlerBase handlerBase = GetComponent<Broadcast>();
-            GetComponent<RenderStreaming>().Run(true, signaling, new []{handlerBase});
-            serverSetup = true;
-        }
+        if(serverSetup || !serverDiscovered) return;
+        var sanitizedWsAddress = receivedMessage.Split(' ').ToList().Last();
+        var sanitizedAddress = serverAddress.Split(':')[0];
+        ISignaling signaling = new WebSocketSignaling($"ws://{sanitizedWsAddress}", 5.0f, SynchronizationContext.Current);
+        SignalingHandlerBase handlerBase = GetComponent<Broadcast>();
+        GetComponent<RenderStreaming>().Run(true, signaling, new []{handlerBase});
+        serverSetup = true;
+        StartFunctionAsDaemon(SendKeepAliveSignal);
     }
 
     private void OnDestroy() {
         GetComponent<RenderStreaming>().Stop();
     }
 
-    /*private async Task AsyncSearchForServer() {
-        Thread portMessage = new Thread(ScanPortInSystem);
-        portMessage.Start();
-        portMessage.Join();
-    }*/
+    private static void StartFunctionAsDaemon(ThreadStart daemonFunction) {
+        var daemonThread = new Thread(daemonFunction) {
+            IsBackground = true
+        };
+        daemonThread.Start();
+    }
 
     private void ScanPortInSystem() {
         Socket sock = new Socket(AddressFamily.InterNetwork,
@@ -56,5 +54,9 @@ public class ServerDiscovery : MonoBehaviour {
         serverAddress = ep.ToString();
         receivedMessage = stringData;
         serverDiscovered = true;
+    }
+
+    private void SendKeepAliveSignal() {
+        
     }
 }
