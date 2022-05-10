@@ -12,6 +12,7 @@ public class ServerDiscovery : MonoBehaviour {
     private volatile string serverAddress;
     private volatile string receivedMessage;
     private volatile bool serverDiscovered;
+    private volatile string sanitizedWsAddress;
     private volatile string sanitizedServerAddress;
     private bool serverSetup;
     private volatile bool connectionAlive;
@@ -32,7 +33,7 @@ public class ServerDiscovery : MonoBehaviour {
 
     private void Update() {
         if(serverSetup || !serverDiscovered) return;
-        var sanitizedWsAddress = receivedMessage.Split(' ').ToList().Last();
+        sanitizedWsAddress = receivedMessage.Split(' ').ToList().Last();
         sanitizedServerAddress = serverAddress.Split(':')[0];
         ISignaling signaling = new WebSocketSignaling($"ws://{sanitizedWsAddress}", 5.0f, SynchronizationContext.Current);
         SignalingHandlerBase handlerBase = GetComponent<Broadcast>();
@@ -65,17 +66,13 @@ public class ServerDiscovery : MonoBehaviour {
     }
 
     private void SendKeepAliveSignal() {
-        /*connectionSocket = new Socket(AddressFamily.InterNetwork,
-            SocketType.Dgram, ProtocolType.Udp);
-        connectionSocket.Bind(iep);*/
-        IPEndPoint iep = new IPEndPoint(IPAddress.Parse("0.0.0.0"), 31234);
+        IPEndPoint iep = new IPEndPoint(IPAddress.Parse(sanitizedWsAddress), 31234);
         var udpClient = new UdpClient();
-        while(true){
+        while(true) {
+            Debug.Log($"Sending keep alive message to {IPAddress.Parse(sanitizedWsAddress)}");
             byte[] sendBuffer = Encoding.ASCII.GetBytes("Still sharing");
             udpClient.Send(sendBuffer, sendBuffer.Length, iep);
-            /*Debug.Log($"Sending keep alive message to {iep.Address} on Port: {iep.Port}");
-            connectionSocket.SendTo(sendBuffer, iep);
-            Thread.Sleep(5000);*/
+            Thread.Sleep(5000);
         }
     }
 }
