@@ -10,6 +10,7 @@ using UnityEngine;
 public class ServerDiscovery : MonoBehaviour {
     
     private volatile FormattedIpAddress supervisorAddress;
+    private volatile EndPoint ep;
     private volatile string receivedMessage;
     private volatile bool serverDiscovered;
     private volatile string sanitizedWsAddress;
@@ -18,6 +19,7 @@ public class ServerDiscovery : MonoBehaviour {
     private volatile bool connectionAlive;
     private volatile Socket supervisorSocket;
     private Thread serverNotifier;
+    private Thread serverAwaiter;
 
     private class FormattedIpAddress {
         public readonly IPAddress ipAddress;
@@ -62,7 +64,9 @@ public class ServerDiscovery : MonoBehaviour {
         GetComponent<RenderStreaming>().Run(true, signaling, new []{handlerBase});
         serverSetup = true;
         serverNotifier = new Thread(SendKeepAliveSignal);
+        serverAwaiter = new Thread(AwaitSupervisorAliveSignal);
         serverNotifier.Start();
+        serverAwaiter.Start();
     }
 
     private void OnDestroy() {
@@ -75,7 +79,7 @@ public class ServerDiscovery : MonoBehaviour {
             SocketType.Dgram, ProtocolType.Udp);
         IPEndPoint iep = new IPEndPoint(IPAddress.Any, 41234);
         supervisorSocket.Bind(iep);
-        EndPoint ep = iep;
+        ep = iep;
         Debug.Log("Waiting for streaming server");
         byte[] data = new byte[1024];
         int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
@@ -98,21 +102,18 @@ public class ServerDiscovery : MonoBehaviour {
     }
     
     private void AwaitSupervisorAliveSignal() {
-        IPEndPoint iep = new IPEndPoint(supervisorAddress.ipAddress, supervisorAddress.port);
-        var udpClient = new UdpClient();
-        while(true) {
-            Debug.Log($"Sending keep alive message to {supervisorAddress}");
-            byte[] sendBuffer = Encoding.ASCII.GetBytes("Still sharing");
-            udpClient.Send(sendBuffer, sendBuffer.Length, iep);
-            Thread.Sleep(5000);
-        }
+        Debug.Log("Waiting for streaming server");
+        byte[] data = new byte[1024];
+        int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
+        string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
+        Debug.Log($"received: {stringData} from: {ep}");
     }
 
     private void TimeOutTracker() {
         Thread.Sleep(15000);
         serverNotifier.Abort();
-        StartPortScanningThread();
         serverSetup = false;
         serverDiscovered = false;
+        StartPortScanningThread();
     }
 }
