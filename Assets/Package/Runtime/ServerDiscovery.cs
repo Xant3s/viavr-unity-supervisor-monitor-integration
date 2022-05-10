@@ -65,15 +65,17 @@ public class ServerDiscovery : MonoBehaviour {
     }
 
     private void SendKeepAliveSignal() {
-        connectionSocket = new Socket(AddressFamily.InterNetwork,
+        /*connectionSocket = new Socket(AddressFamily.InterNetwork,
             SocketType.Dgram, ProtocolType.Udp);
-        IPEndPoint iep = new IPEndPoint(IPAddress.Parse(sanitizedServerAddress), 51234);
-        connectionSocket.Bind(iep);
-        while(true) {
-            Debug.Log($"Sending keep alive message to {IPAddress.Parse(sanitizedServerAddress)}");
+        connectionSocket.Bind(iep);*/
+        IPEndPoint iep = new IPEndPoint(IPAddress.Parse("0.0.0.0"), 31234);
+        var udpClient = new UdpClient();
+        while(true){
             byte[] sendBuffer = Encoding.ASCII.GetBytes("Still sharing");
+            udpClient.Send(sendBuffer, sendBuffer.Length, iep);
+            /*Debug.Log($"Sending keep alive message to {iep.Address} on Port: {iep.Port}");
             connectionSocket.SendTo(sendBuffer, iep);
-            Thread.Sleep(5000);
+            Thread.Sleep(5000);*/
         }
     }
 }
