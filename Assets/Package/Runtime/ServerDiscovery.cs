@@ -108,10 +108,14 @@ public class ServerDiscovery : MonoBehaviour {
             byte[] data = new byte[1024];
             Thread timeoutThread = new Thread(TimeOutTracker);
             timeoutThread.Start();
-            int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
+            bool correctMessage = false;
+            while(!correctMessage) {
+                int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
+                string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
+                if(stringData.Equals("Supervisor Monitor alive")) correctMessage = true;
+            }
             timeoutThread.Abort();
-            string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
-            Debug.Log($"received: {stringData} from: {ep}");
+            Debug.Log($"Received keep alive signal from: {ep}");
         }
     }
 
