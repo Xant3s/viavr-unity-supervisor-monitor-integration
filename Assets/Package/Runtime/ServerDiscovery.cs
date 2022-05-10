@@ -42,6 +42,7 @@ public class ServerDiscovery : MonoBehaviour {
 
     public void BreakConnection() {
         serverNotifier.Abort();
+        serverAwaiter.Abort();
         supervisorSocket.Close();
     }
 
@@ -102,18 +103,26 @@ public class ServerDiscovery : MonoBehaviour {
     }
     
     private void AwaitSupervisorAliveSignal() {
-        Debug.Log("Waiting for streaming server");
-        byte[] data = new byte[1024];
-        int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
-        string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
-        Debug.Log($"received: {stringData} from: {ep}");
+        while(true) {
+            Debug.Log("Waiting for streaming server");
+            byte[] data = new byte[1024];
+            Thread timeoutThread = new Thread(TimeOutTracker);
+            timeoutThread.Start();
+            int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
+            timeoutThread.Abort();
+            string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
+            Debug.Log($"received: {stringData} from: {ep}");
+        }
     }
 
     private void TimeOutTracker() {
         Thread.Sleep(15000);
+        Debug.Log("Closing connection");
+        serverAwaiter.Abort();
         serverNotifier.Abort();
         serverSetup = false;
         serverDiscovered = false;
+        supervisorSocket.Close();
         StartPortScanningThread();
     }
 }
