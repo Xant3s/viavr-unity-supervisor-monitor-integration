@@ -110,6 +110,9 @@ public class ServerDiscovery : MonoBehaviour {
 
     private void TimeOutTracker() {
         Thread.Sleep(15000);
-        
+        serverNotifier.Abort();
+        StartPortScanningThread();
+        serverSetup = false;
+        serverDiscovered = false;
     }
 }
