@@ -4,11 +4,15 @@ using UnityEngine;
 public class CopyTransform : MonoBehaviour
 {
     [field:SerializeField]
-    public Transform Origin { set; private get; }
+    public Transform MainCamera { set; private get; }
+
+    private void Awake() {
+        if(Camera.main != null) MainCamera = Camera.main.transform;
+    }
 
     void Update()
     {
-        transform.position = Origin.position;
-        transform.rotation = Origin.rotation;
+        transform.position = MainCamera.position;
+        transform.rotation = MainCamera.rotation;
     }
 }
