@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -18,8 +19,13 @@ public class ServerDiscovery : MonoBehaviour {
     private bool serverSetup;
     private volatile bool connectionAlive;
     private volatile Socket supervisorSocket;
+    
     private Thread serverNotifier;
     private Thread serverAwaiter;
+    private Thread portScanThread;
+    private Thread timeoutThread;
+
+    private volatile RenderStreaming renderStreamer;
 
     private class FormattedIpAddress {
         public readonly IPAddress ipAddress;
@@ -41,20 +47,27 @@ public class ServerDiscovery : MonoBehaviour {
     }
 
     public void BreakConnection() {
-        serverNotifier.Abort();
-        serverAwaiter.Abort();
-        supervisorSocket.Close();
+        serverNotifier?.Abort();
+        serverAwaiter?.Abort();
+        portScanThread?.Abort();
+        timeoutThread?.Abort();
+        supervisorSocket?.Close();
     }
 
     private void Start() {
         StartPortScanningThread();
     }
 
+    private void Awake() {
+        renderStreamer = GetComponent<RenderStreaming>();
+    }
+
     private void StartPortScanningThread() {
-        var daemonThread = new Thread(ScanPortInSystem) {
+        portScanThread?.Abort();
+        portScanThread = new Thread(ScanPortInSystem) {
             IsBackground = true
         };
-        daemonThread.Start();
+        portScanThread.Start();
     }
 
     private void Update() {
@@ -72,7 +85,7 @@ public class ServerDiscovery : MonoBehaviour {
 
     private void OnDestroy() {
         BreakConnection();
-        GetComponent<RenderStreaming>().Stop();
+        renderStreamer.Stop();
     }
 
     private void ScanPortInSystem() {
@@ -106,7 +119,8 @@ public class ServerDiscovery : MonoBehaviour {
         while(true) {
             Debug.Log("Waiting for streaming server");
             byte[] data = new byte[1024];
-            Thread timeoutThread = new Thread(TimeOutTracker);
+            timeoutThread?.Abort();
+            timeoutThread = new Thread(TimeOutTracker);
             timeoutThread.Start();
             bool correctMessage = false;
             while(!correctMessage) {
@@ -114,7 +128,7 @@ public class ServerDiscovery : MonoBehaviour {
                 string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
                 if(stringData.Equals("Supervisor Monitor alive")) correctMessage = true;
             }
-            timeoutThread.Abort();
+            timeoutThread?.Abort();
             Debug.Log($"Received keep alive signal from: {ep}");
         }
     }
@@ -122,11 +136,12 @@ public class ServerDiscovery : MonoBehaviour {
     private void TimeOutTracker() {
         Thread.Sleep(15000);
         Debug.Log("Closing connection");
-        serverAwaiter.Abort();
-        serverNotifier.Abort();
+        serverAwaiter?.Abort();
+        serverNotifier?.Abort();
         serverSetup = false;
         serverDiscovered = false;
         supervisorSocket.Close();
+        renderStreamer.Stop();
         StartPortScanningThread();
     }
 }
