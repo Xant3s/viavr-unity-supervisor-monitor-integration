@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -8,53 +9,139 @@ using Unity.RenderStreaming.Signaling;
 using UnityEngine;
 
 public class ServerDiscovery : MonoBehaviour {
-    private volatile string serverAddress;
+    
+    private volatile FormattedIpAddress supervisorAddress;
+    private volatile EndPoint ep;
     private volatile string receivedMessage;
     private volatile bool serverDiscovered;
+    private volatile string sanitizedWsAddress;
+    private volatile string sanitizedServerAddress;
     private bool serverSetup;
+    private volatile bool connectionAlive;
+    private volatile Socket supervisorSocket;
     
-    void Start() {
-        var portMessage = new Thread(ScanPortInSystem) {
+    private Thread serverNotifier;
+    private Thread serverAwaiter;
+    private Thread portScanThread;
+    private Thread timeoutThread;
+
+    private volatile RenderStreaming renderStreamer;
+
+    private class FormattedIpAddress {
+        public readonly IPAddress ipAddress;
+        public readonly int port;
+
+        public FormattedIpAddress(string address, int port) {
+            ipAddress = IPAddress.Parse(address);
+            this.port = port;
+        }
+
+        public static FormattedIpAddress ParseToAddress(string totalAddress) {
+            string[] addressParts = totalAddress.Split(':');
+            return new FormattedIpAddress(addressParts[0], int.Parse(addressParts[1]));
+        }
+
+        public override string ToString() {
+            return $"{ipAddress}:{port}";
+        } 
+    }
+
+    public void BreakConnection() {
+        serverNotifier?.Abort();
+        serverAwaiter?.Abort();
+        portScanThread?.Abort();
+        timeoutThread?.Abort();
+        supervisorSocket?.Close();
+    }
+
+    private void Start() {
+        StartPortScanningThread();
+    }
+
+    private void Awake() {
+        renderStreamer = GetComponent<RenderStreaming>();
+    }
+
+    private void StartPortScanningThread() {
+        portScanThread?.Abort();
+        portScanThread = new Thread(ScanPortInSystem) {
             IsBackground = true
         };
-        portMessage.Start();
+        portScanThread.Start();
     }
 
     private void Update() {
-        if(!serverSetup && serverDiscovered) {
-            string sanitizedWsAddress = receivedMessage.Split(' ').ToList().Last();
-            string sanitizedAddress = serverAddress.Split(':')[0];
-            ISignaling signaling = new WebSocketSignaling($"ws://{sanitizedWsAddress}", 5.0f, SynchronizationContext.Current);
-            SignalingHandlerBase handlerBase = GetComponent<Broadcast>();
-            GetComponent<RenderStreaming>().Run(true, signaling, new []{handlerBase});
-            serverSetup = true;
-        }
+        if(serverSetup || !serverDiscovered) return;
+        sanitizedWsAddress = receivedMessage.Split(' ').ToList().Last();
+        ISignaling signaling = new WebSocketSignaling($"ws://{sanitizedWsAddress}", 5.0f, SynchronizationContext.Current);
+        SignalingHandlerBase handlerBase = GetComponent<Broadcast>();
+        GetComponent<RenderStreaming>().Run(true, signaling, new []{handlerBase});
+        serverSetup = true;
+        serverNotifier = new Thread(SendKeepAliveSignal);
+        serverAwaiter = new Thread(AwaitSupervisorAliveSignal);
+        serverNotifier.Start();
+        serverAwaiter.Start();
     }
 
     private void OnDestroy() {
-        GetComponent<RenderStreaming>().Stop();
+        BreakConnection();
+        renderStreamer.Stop();
     }
 
-    /*private async Task AsyncSearchForServer() {
-        Thread portMessage = new Thread(ScanPortInSystem);
-        portMessage.Start();
-        portMessage.Join();
-    }*/
-
     private void ScanPortInSystem() {
-        Socket sock = new Socket(AddressFamily.InterNetwork,
+        supervisorSocket = new Socket(AddressFamily.InterNetwork,
             SocketType.Dgram, ProtocolType.Udp);
         IPEndPoint iep = new IPEndPoint(IPAddress.Any, 41234);
-        sock.Bind(iep);
-        EndPoint ep = iep;
+        supervisorSocket.Bind(iep);
+        ep = iep;
         Debug.Log("Waiting for streaming server");
         byte[] data = new byte[1024];
-        int receivedDate = sock.ReceiveFrom(data, ref ep);
+        int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
         string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
         Debug.Log($"received: {stringData} from: {ep}");
-        sock.Close();
-        serverAddress = ep.ToString();
+        supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
         receivedMessage = stringData;
         serverDiscovered = true;
+    }
+
+    private void SendKeepAliveSignal() {
+        IPEndPoint iep = new IPEndPoint(supervisorAddress.ipAddress, supervisorAddress.port);
+        var udpClient = new UdpClient();
+        while(true) {
+            Debug.Log($"Sending keep alive message to {supervisorAddress}");
+            byte[] sendBuffer = Encoding.ASCII.GetBytes("Still sharing");
+            udpClient.Send(sendBuffer, sendBuffer.Length, iep);
+            Thread.Sleep(5000);
+        }
+    }
+    
+    private void AwaitSupervisorAliveSignal() {
+        while(true) {
+            Debug.Log("Waiting for streaming server");
+            byte[] data = new byte[1024];
+            timeoutThread?.Abort();
+            timeoutThread = new Thread(TimeOutTracker);
+            timeoutThread.Start();
+            bool correctMessage = false;
+            while(!correctMessage) {
+                int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
+                string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
+                if(stringData.Equals("Supervisor Monitor alive")) correctMessage = true;
+            }
+            timeoutThread?.Abort();
+            Debug.Log($"Received keep alive signal from: {ep}");
+        }
+    }
+
+    private void TimeOutTracker() {
+        Thread.Sleep(15000);
+        Debug.Log("Closing connection");
+        serverAwaiter?.Abort();
+        serverNotifier?.Abort();
+        serverSetup = false;
+        serverDiscovered = false;
+        supervisorSocket.Close();
+        renderStreamer.Stop();
+        StartPortScanningThread();
     }
 }
