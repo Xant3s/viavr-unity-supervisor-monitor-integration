@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class CopyTransform : MonoBehaviour
+public class MainCameraFollower : MonoBehaviour
 {
     [field:SerializeField]
     public Transform MainCamera { set; private get; }
