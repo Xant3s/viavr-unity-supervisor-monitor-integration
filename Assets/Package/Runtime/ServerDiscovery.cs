@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -10,10 +11,7 @@ public class ServerDiscovery : MonoBehaviour {
     private volatile FormattedIpAddress supervisorAddress;
     private volatile EndPoint ep;
     private volatile string receivedMessage;
-    private volatile bool serverDiscovered;
-    private volatile string sanitizedServerAddress;
-    private bool serverSetup;
-    private volatile bool connectionAlive;
+    private bool connectToServer;
     private volatile Socket supervisorSocket;
     
     private Thread serverNotifier;
@@ -22,6 +20,7 @@ public class ServerDiscovery : MonoBehaviour {
     private Thread timeoutThread;
 
     private readonly List<ServerTransmission> transmissions = new();
+    private List<(Transmission, FormattedIpAddress)> requestedTransmissions = new();
 
     private class FormattedIpAddress {
         public readonly IPAddress ipAddress;
@@ -42,6 +41,10 @@ public class ServerDiscovery : MonoBehaviour {
         } 
     }
 
+    private enum Transmission {
+        WebStreaming
+    }
+
     private void BreakConnection() {
         serverNotifier?.Abort();
         serverAwaiter?.Abort();
@@ -50,7 +53,6 @@ public class ServerDiscovery : MonoBehaviour {
         supervisorSocket?.Close();
     }
     private void StopTransmission() {
-        BreakConnection();
         foreach(var dataTransmission in transmissions) {
             dataTransmission.StopTransmission();
         }
@@ -69,12 +71,12 @@ public class ServerDiscovery : MonoBehaviour {
     }
 
     private void Update() {
-        if(serverSetup || !serverDiscovered) return;
+        if(!connectToServer) return;
         transmissions.Add(new WebStreamingTransmission());
         foreach(var serverTransmission in transmissions) {
             serverTransmission.StartTransmission(receivedMessage,transform);
         }
-        serverSetup = true;
+        connectToServer = false;
         serverNotifier = new Thread(SendKeepAliveSignal);
         serverAwaiter = new Thread(AwaitSupervisorAliveSignal);
         serverNotifier.Start();
@@ -83,6 +85,7 @@ public class ServerDiscovery : MonoBehaviour {
 
     private void OnDestroy() {
         BreakConnection();
+        StopTransmission();
     }
 
     private void ScanPortInSystem() {
@@ -98,7 +101,7 @@ public class ServerDiscovery : MonoBehaviour {
         Debug.Log($"received: {stringData} from: {ep}");
         supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
         receivedMessage = stringData;
-        serverDiscovered = true;
+        connectToServer = true;
     }
 
     private void SendKeepAliveSignal() {
@@ -135,8 +138,7 @@ public class ServerDiscovery : MonoBehaviour {
         Debug.Log("Closing connection");
         serverAwaiter?.Abort();
         serverNotifier?.Abort();
-        serverSetup = false;
-        serverDiscovered = false;
+        StopTransmission();
         supervisorSocket.Close();
         StartPortScanningThread();
     }
