@@ -14,11 +14,13 @@ public class ServerDiscovery : MonoBehaviour {
     
     private Thread serverNotifier;
     private Thread serverAwaiter;
+    private volatile bool timedOut;
     private Thread portScanThread;
+    private volatile bool interruptedTimeOut;
     private Thread timeoutThread;
 
     private readonly List<ServerTransmission> transmissions = new();
-    private List<(Transmission, FormattedIpAddress)> requestedTransmissions = new();
+    private readonly List<(Transmission, FormattedIpAddress)> requestedTransmissions = new();
 
     private enum Transmission {
         WebStreaming
@@ -40,6 +42,7 @@ public class ServerDiscovery : MonoBehaviour {
             }
         }
         connectToServer = false;
+        timedOut = false;
         serverNotifier = new Thread(SendKeepAliveSignal);
         serverAwaiter = new Thread(AwaitSupervisorAliveSignal);
         serverNotifier.Start();
@@ -78,7 +81,7 @@ public class ServerDiscovery : MonoBehaviour {
     private void SendKeepAliveSignal() {
         IPEndPoint iep = new IPEndPoint(supervisorAddress.ipAddress, supervisorAddress.port);
         var udpClient = new UdpClient();
-        while(true) {
+        while(!timedOut) {
             Debug.Log($"Sending keep alive message to {supervisorAddress}");
             byte[] sendBuffer = Encoding.ASCII.GetBytes("Still sharing");
             udpClient.Send(sendBuffer, sendBuffer.Length, iep);
@@ -87,11 +90,13 @@ public class ServerDiscovery : MonoBehaviour {
     }
     
     private void AwaitSupervisorAliveSignal() {
-        while(true) {
+        while(!timedOut) {
             Debug.Log("Waiting for streaming server");
             byte[] data = new byte[1024];
-            timeoutThread?.Abort();
+            interruptedTimeOut = true;
+            timeoutThread?.Interrupt();
             timeoutThread = new Thread(TimeOutTracker);
+            interruptedTimeOut = false;
             timeoutThread.Start();
             bool correctMessage = false;
             while(!correctMessage) {
@@ -99,16 +104,22 @@ public class ServerDiscovery : MonoBehaviour {
                 string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
                 if(stringData.Equals("Supervisor Monitor alive")) correctMessage = true;
             }
-            timeoutThread?.Abort();
+            interruptedTimeOut = true;
+            timeoutThread?.Interrupt();
+            interruptedTimeOut = false;
             Debug.Log($"Received keep alive signal from: {ep}");
         }
     }
 
     private void TimeOutTracker() {
         Thread.Sleep(15000);
+        
+        if(interruptedTimeOut) return;
+        
         Debug.Log("Closing connection");
-        serverAwaiter?.Abort();
-        serverNotifier?.Abort();
+        timedOut = true;
+        serverAwaiter?.Interrupt();
+        serverNotifier?.Interrupt();
         StopTransmission();
         supervisorSocket.Close();
         StartPortScanningThread();
@@ -118,7 +129,6 @@ public class ServerDiscovery : MonoBehaviour {
         string[] formattedMessages = receivedMessage.Split(',');
         foreach(var message in formattedMessages) {
             string[] formattedMessage = message.Split(':');
-            Transmission type;
             switch(formattedMessage[0]) {
                 case "WebStreaming":
                     requestedTransmissions.Add((Transmission.WebStreaming, FormattedIpAddress.ParseToAddress(formattedMessage[1])));
