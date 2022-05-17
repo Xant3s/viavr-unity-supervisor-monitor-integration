@@ -1,0 +1,19 @@
+{
+    "name": "WebStreamingEditor",
+    "rootNamespace": "",
+    "references": [
+        "de.jmu.ge.viavr.unitybridge",
+        "WebStreamingRuntime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
