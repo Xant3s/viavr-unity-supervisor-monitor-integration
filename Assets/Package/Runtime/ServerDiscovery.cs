@@ -1,20 +1,16 @@
-using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using Unity.RenderStreaming;
-using Unity.RenderStreaming.Signaling;
+using Package.Runtime;
 using UnityEngine;
 
 public class ServerDiscovery : MonoBehaviour {
-    
     private volatile FormattedIpAddress supervisorAddress;
     private volatile EndPoint ep;
     private volatile string receivedMessage;
     private volatile bool serverDiscovered;
-    private volatile string sanitizedWsAddress;
     private volatile string sanitizedServerAddress;
     private bool serverSetup;
     private volatile bool connectionAlive;
@@ -25,7 +21,7 @@ public class ServerDiscovery : MonoBehaviour {
     private Thread portScanThread;
     private Thread timeoutThread;
 
-    private volatile RenderStreaming renderStreamer;
+    private List<ServerTransmission> transmissions;
 
     private class FormattedIpAddress {
         public readonly IPAddress ipAddress;
@@ -46,20 +42,22 @@ public class ServerDiscovery : MonoBehaviour {
         } 
     }
 
-    public void BreakConnection() {
+    private void BreakConnection() {
         serverNotifier?.Abort();
         serverAwaiter?.Abort();
         portScanThread?.Abort();
         timeoutThread?.Abort();
         supervisorSocket?.Close();
     }
+    private void StopTransmission() {
+        BreakConnection();
+        foreach(var dataTransmission in transmissions) {
+            dataTransmission.StopTransmission();
+        }
+    }
 
     private void Start() {
         StartPortScanningThread();
-    }
-
-    private void Awake() {
-        renderStreamer = GetComponent<RenderStreaming>();
     }
 
     private void StartPortScanningThread() {
@@ -72,10 +70,10 @@ public class ServerDiscovery : MonoBehaviour {
 
     private void Update() {
         if(serverSetup || !serverDiscovered) return;
-        sanitizedWsAddress = receivedMessage.Split(' ').ToList().Last();
-        ISignaling signaling = new WebSocketSignaling($"ws://{sanitizedWsAddress}", 5.0f, SynchronizationContext.Current);
-        SignalingHandlerBase handlerBase = GetComponent<Broadcast>();
-        GetComponent<RenderStreaming>().Run(true, signaling, new []{handlerBase});
+        transmissions.Add(new WebStreamingTransmission());
+        foreach(var serverTransmission in transmissions) {
+            serverTransmission.StartTransmission(receivedMessage,transform);
+        }
         serverSetup = true;
         serverNotifier = new Thread(SendKeepAliveSignal);
         serverAwaiter = new Thread(AwaitSupervisorAliveSignal);
@@ -85,7 +83,6 @@ public class ServerDiscovery : MonoBehaviour {
 
     private void OnDestroy() {
         BreakConnection();
-        renderStreamer.Stop();
     }
 
     private void ScanPortInSystem() {
@@ -141,7 +138,6 @@ public class ServerDiscovery : MonoBehaviour {
         serverSetup = false;
         serverDiscovered = false;
         supervisorSocket.Close();
-        renderStreamer.Stop();
         StartPortScanningThread();
     }
 }
