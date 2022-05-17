@@ -51,6 +51,7 @@ public class ServerDiscovery : MonoBehaviour {
     }
 
     private void OnDestroy() {
+        SendDisconnectMessage();
         BreakConnection();
         StopTransmission();
     }
@@ -148,6 +149,14 @@ public class ServerDiscovery : MonoBehaviour {
                     break;
             }
         }
+    }
+
+    private void SendDisconnectMessage() {
+        IPEndPoint iep = new IPEndPoint(supervisorAddress.ipAddress, supervisorAddress.port);
+        var udpClient = new UdpClient();
+        Debug.Log($"Sending disconnect message to {supervisorAddress}");
+        byte[] sendBuffer = Encoding.ASCII.GetBytes("Disconnecting");
+        udpClient.Send(sendBuffer, sendBuffer.Length, iep);
     }
 
     private void BreakConnection() {
