@@ -12,7 +12,8 @@ namespace Package.Runtime {
 
         public static FormattedIpAddress ParseToAddress(string totalAddress) {
             string[] addressParts = totalAddress.Split(':');
-            return new FormattedIpAddress(addressParts[0], int.Parse(addressParts[1]));
+            if(addressParts.Length >= 2) return new FormattedIpAddress(addressParts[0], int.Parse(addressParts[1]));
+            return new FormattedIpAddress(addressParts[0], 0);
         }
 
         public override string ToString() {

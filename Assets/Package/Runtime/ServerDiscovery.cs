@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -74,7 +75,9 @@ public class ServerDiscovery : MonoBehaviour {
         string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
         Debug.Log($"received: {stringData} from: {ep}");
         supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
-        IdentifyRequestedTransmissions(stringData);
+        string[] sanitizedString = stringData.Split(';');
+        Debug.Log(sanitizedString.Last());
+        IdentifyRequestedTransmissions(sanitizedString.Last());
         connectToServer = true;
     }
 
