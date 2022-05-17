@@ -21,7 +21,7 @@ public class ServerDiscovery : MonoBehaviour {
     private Thread portScanThread;
     private Thread timeoutThread;
 
-    private List<ServerTransmission> transmissions;
+    private readonly List<ServerTransmission> transmissions = new();
 
     private class FormattedIpAddress {
         public readonly IPAddress ipAddress;
