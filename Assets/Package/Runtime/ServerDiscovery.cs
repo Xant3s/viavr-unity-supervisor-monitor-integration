@@ -74,12 +74,12 @@ public class ServerDiscovery : MonoBehaviour {
         int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
         string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
         Debug.Log($"received: {stringData} from: {ep}");
-        supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
         string[] sanitizedString = stringData.Split(';');
         if(sanitizedString.First().Equals("Looking for Client")) {
             IdentifyRequestedTransmissions(sanitizedString.Last());
+            supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
+            connectToServer = true;
         }
-        connectToServer = true;
     }
 
     private void SendKeepAliveSignal() {
