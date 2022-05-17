@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -10,7 +9,6 @@ using UnityEngine;
 public class ServerDiscovery : MonoBehaviour {
     private volatile FormattedIpAddress supervisorAddress;
     private volatile EndPoint ep;
-    private volatile string receivedMessage;
     private bool connectToServer;
     private volatile Socket supervisorSocket;
     
@@ -22,7 +20,7 @@ public class ServerDiscovery : MonoBehaviour {
     private readonly List<ServerTransmission> transmissions = new();
     private List<(Transmission, FormattedIpAddress)> requestedTransmissions = new();
 
-    private class FormattedIpAddress {
+    public class FormattedIpAddress {
         public readonly IPAddress ipAddress;
         public readonly int port;
 
@@ -38,7 +36,11 @@ public class ServerDiscovery : MonoBehaviour {
 
         public override string ToString() {
             return $"{ipAddress}:{port}";
-        } 
+        }
+
+        public string IpAddressToString() {
+            return ipAddress.ToString();
+        }
     }
 
     private enum Transmission {
@@ -56,6 +58,7 @@ public class ServerDiscovery : MonoBehaviour {
         foreach(var dataTransmission in transmissions) {
             dataTransmission.StopTransmission();
         }
+        transmissions.Clear();
     }
 
     private void Start() {
@@ -72,9 +75,14 @@ public class ServerDiscovery : MonoBehaviour {
 
     private void Update() {
         if(!connectToServer) return;
-        transmissions.Add(new WebStreamingTransmission());
-        foreach(var serverTransmission in transmissions) {
-            serverTransmission.StartTransmission(receivedMessage,transform);
+        foreach(var serverTransmission in requestedTransmissions) {
+            switch(serverTransmission.Item1) {
+                case Transmission.WebStreaming:
+                    var webStreamer = new WebStreamingTransmission();
+                    transmissions.Add(webStreamer);
+                    webStreamer.StartTransmission(serverTransmission.Item2, transform);
+                    break;
+            }
         }
         connectToServer = false;
         serverNotifier = new Thread(SendKeepAliveSignal);
@@ -100,7 +108,7 @@ public class ServerDiscovery : MonoBehaviour {
         string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
         Debug.Log($"received: {stringData} from: {ep}");
         supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
-        receivedMessage = stringData;
+        IdentifyRequestedTransmissions(stringData);
         connectToServer = true;
     }
 
@@ -141,5 +149,18 @@ public class ServerDiscovery : MonoBehaviour {
         StopTransmission();
         supervisorSocket.Close();
         StartPortScanningThread();
+    }
+
+    private void IdentifyRequestedTransmissions(string receivedMessage) {
+        string[] formattedMessages = receivedMessage.Split(',');
+        foreach(var message in formattedMessages) {
+            string[] formattedMessage = message.Split(':');
+            Transmission type;
+            switch(formattedMessage[0]) {
+                case "WebStreaming":
+                    requestedTransmissions.Add((Transmission.WebStreaming, FormattedIpAddress.ParseToAddress(formattedMessage[1])));
+                    break;
+            }
+        }
     }
 }

@@ -3,7 +3,7 @@
 namespace Package.Runtime {
     public interface ServerTransmission {
 
-        void StartTransmission(string receivedMessage, Transform gameObjectTransform);
+        void StartTransmission(ServerDiscovery.FormattedIpAddress ipAddress, Transform gameObjectTransform);
 
         void StopTransmission();
     }
