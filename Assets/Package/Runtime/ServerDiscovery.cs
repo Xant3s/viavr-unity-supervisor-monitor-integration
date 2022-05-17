@@ -76,8 +76,9 @@ public class ServerDiscovery : MonoBehaviour {
         Debug.Log($"received: {stringData} from: {ep}");
         supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
         string[] sanitizedString = stringData.Split(';');
-        Debug.Log(sanitizedString.Last());
-        IdentifyRequestedTransmissions(sanitizedString.Last());
+        if(sanitizedString.First().Equals("Looking for Client")) {
+            IdentifyRequestedTransmissions(sanitizedString.Last());
+        }
         connectToServer = true;
     }
 
@@ -106,6 +107,15 @@ public class ServerDiscovery : MonoBehaviour {
                 int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
                 string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
                 if(stringData.Equals("Supervisor Monitor alive")) correctMessage = true;
+                else if(stringData.Equals("Disconnecting")) {
+                    serverNotifier?.Abort();
+                    portScanThread?.Abort();
+                    timeoutThread?.Abort();
+                    StopTransmission();
+                    supervisorSocket?.Close();
+                    StartPortScanningThread();
+                    return;
+                }
             }
             interruptedTimeOut = true;
             timeoutThread?.Interrupt();
