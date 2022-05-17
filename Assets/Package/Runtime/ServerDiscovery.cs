@@ -109,6 +109,7 @@ public class ServerDiscovery : MonoBehaviour {
                 string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
                 if(stringData.Equals("Supervisor Monitor alive")) correctMessage = true;
                 else if(stringData.Equals("Disconnecting")) {
+                    Debug.Log("Closing connection");
                     serverNotifier?.Abort();
                     portScanThread?.Abort();
                     timeoutThread?.Abort();
