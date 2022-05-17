@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class ServerDiscovery : MonoBehaviour {
     private volatile FormattedIpAddress supervisorAddress;
-    private volatile EndPoint ep;
+    private EndPoint ep;
     private bool connectToServer;
     private volatile Socket supervisorSocket;
     
@@ -24,30 +24,8 @@ public class ServerDiscovery : MonoBehaviour {
         WebStreaming
     }
 
-    private void BreakConnection() {
-        serverNotifier?.Abort();
-        serverAwaiter?.Abort();
-        portScanThread?.Abort();
-        timeoutThread?.Abort();
-        supervisorSocket?.Close();
-    }
-    private void StopTransmission() {
-        foreach(var dataTransmission in transmissions) {
-            dataTransmission.StopTransmission();
-        }
-        transmissions.Clear();
-    }
-
     private void Start() {
         StartPortScanningThread();
-    }
-
-    private void StartPortScanningThread() {
-        portScanThread?.Abort();
-        portScanThread = new Thread(ScanPortInSystem) {
-            IsBackground = true
-        };
-        portScanThread.Start();
     }
 
     private void Update() {
@@ -71,6 +49,14 @@ public class ServerDiscovery : MonoBehaviour {
     private void OnDestroy() {
         BreakConnection();
         StopTransmission();
+    }
+
+    private void StartPortScanningThread() {
+        portScanThread?.Abort();
+        portScanThread = new Thread(ScanPortInSystem) {
+            IsBackground = true
+        };
+        portScanThread.Start();
     }
 
     private void ScanPortInSystem() {
@@ -139,5 +125,20 @@ public class ServerDiscovery : MonoBehaviour {
                     break;
             }
         }
+    }
+
+    private void BreakConnection() {
+        serverNotifier?.Abort();
+        serverAwaiter?.Abort();
+        portScanThread?.Abort();
+        timeoutThread?.Abort();
+        supervisorSocket?.Close();
+    }
+    
+    private void StopTransmission() {
+        foreach(var dataTransmission in transmissions) {
+            dataTransmission.StopTransmission();
+        }
+        transmissions.Clear();
     }
 }
