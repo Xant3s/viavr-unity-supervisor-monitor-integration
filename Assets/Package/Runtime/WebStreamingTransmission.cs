@@ -7,7 +7,7 @@ namespace Package.Runtime {
     public class WebStreamingTransmission : ServerTransmission {
         private RenderStreaming renderStreamer;
 
-        public void StartTransmission(ServerDiscovery.FormattedIpAddress ipAddress, Transform gameObjectTransform) {
+        public void StartTransmission(FormattedIpAddress ipAddress, Transform gameObjectTransform) {
             ISignaling signaling = new WebSocketSignaling($"ws://{ipAddress.IpAddressToString()}", 5.0f, SynchronizationContext.Current);
             SignalingHandlerBase handlerBase = gameObjectTransform.GetComponent<Broadcast>();
             renderStreamer = gameObjectTransform.GetComponent<RenderStreaming>();
