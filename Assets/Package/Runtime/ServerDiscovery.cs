@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -152,7 +151,7 @@ public class ServerDiscovery : MonoBehaviour
         string[] formattedMessages = receivedMessage.Split(TransmissionRequestSeparator);
         foreach(var message in formattedMessages) {
             string[] formattedMessage = message.Split(TransmissionTypeAndIpSeparator);
-            if (!Enum.TryParse(formattedMessage[0], out Transmission transmissionType)) return;
+            if (!Enum.TryParse(formattedMessage[0], out Transmission transmissionType)) continue;
             requestedTransmissions.Add((transmissionType, FormattedIpAddress.ParseToAddress(formattedMessage[1])));
         }
     }
