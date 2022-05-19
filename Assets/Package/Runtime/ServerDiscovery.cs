@@ -13,6 +13,7 @@ public class ServerDiscovery : MonoBehaviour
     private const string ConnectionMessage = "Looking for Client;";
     private const char TransmissionRequestSeparator = ';';
     private const char TransmissionTypeAndIpSeparator = ',';
+    private const string KeepAliveMessage = "Still sharing";
     
     private volatile FormattedIpAddress supervisorAddress;
     private EndPoint ep;
@@ -94,7 +95,7 @@ public class ServerDiscovery : MonoBehaviour
         var udpClient = new UdpClient();
         while(!timedOut) {
             Debug.Log($"Sending keep alive message to {supervisorAddress}");
-            byte[] sendBuffer = Encoding.ASCII.GetBytes("Still sharing");
+            byte[] sendBuffer = Encoding.ASCII.GetBytes(KeepAliveMessage);
             udpClient.Send(sendBuffer, sendBuffer.Length, iep);
             Thread.Sleep(5000);
         }
@@ -113,7 +114,7 @@ public class ServerDiscovery : MonoBehaviour
             while(!correctMessage) {
                 int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
                 string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
-                if(stringData.Equals("Supervisor Monitor alive")) correctMessage = true;
+                if(stringData.Equals("Still sharing")) correctMessage = true;
                 else if(stringData.Equals("Disconnecting")) {
                     Debug.Log("Closing connection");
                     serverNotifier?.Abort();
