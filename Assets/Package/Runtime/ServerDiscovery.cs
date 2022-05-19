@@ -115,8 +115,8 @@ public class ServerDiscovery : MonoBehaviour
             while(!correctMessage) {
                 int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
                 string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
-                if(stringData.Equals("Still sharing")) correctMessage = true;
-                else if(stringData.Equals("Disconnecting")) {
+                if(stringData.Equals(KeepAliveMessage)) correctMessage = true;
+                else if(stringData.Equals(DisconnectMessage)) {
                     Debug.Log("Closing connection");
                     serverNotifier?.Abort();
                     portScanThread?.Abort();
