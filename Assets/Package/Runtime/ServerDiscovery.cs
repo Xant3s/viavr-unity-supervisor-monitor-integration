@@ -14,6 +14,7 @@ public class ServerDiscovery : MonoBehaviour
     private const char TransmissionRequestSeparator = ';';
     private const char TransmissionTypeAndIpSeparator = ',';
     private const string KeepAliveMessage = "Still sharing";
+    private const string DisconnectMessage = "Disconnecting";
     
     private volatile FormattedIpAddress supervisorAddress;
     private EndPoint ep;
@@ -160,7 +161,7 @@ public class ServerDiscovery : MonoBehaviour
         IPEndPoint iep = new IPEndPoint(supervisorAddress.ipAddress, supervisorAddress.port);
         var udpClient = new UdpClient();
         Debug.Log($"Sending disconnect message to {supervisorAddress}");
-        byte[] sendBuffer = Encoding.ASCII.GetBytes("Disconnecting");
+        byte[] sendBuffer = Encoding.ASCII.GetBytes(DisconnectMessage);
         udpClient.Send(sendBuffer, sendBuffer.Length, iep);
     }
 
