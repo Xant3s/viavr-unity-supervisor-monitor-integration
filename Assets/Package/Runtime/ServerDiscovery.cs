@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,7 +8,10 @@ using System.Threading;
 using Package.Runtime;
 using UnityEngine;
 
-public class ServerDiscovery : MonoBehaviour {
+public class ServerDiscovery : MonoBehaviour
+{
+    private const string ConnectionMessage = "Looking for Client;";
+    
     private volatile FormattedIpAddress supervisorAddress;
     private EndPoint ep;
     private bool connectToServer;
@@ -75,12 +79,12 @@ public class ServerDiscovery : MonoBehaviour {
         int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
         string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
         Debug.Log($"received: {stringData} from: {ep}");
-        string[] sanitizedString = stringData.Split(';');
-        if(sanitizedString.First().Equals("Looking for Client")) {
-            IdentifyRequestedTransmissions(sanitizedString.Last());
-            supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
-            connectToServer = true;
-        }
+        
+        if (!stringData.Contains(ConnectionMessage)) return;
+        var requestedServices = stringData.Replace(ConnectionMessage, "");
+        IdentifyRequestedTransmissions(requestedServices);
+        supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
+        connectToServer = true;
     }
 
     private void SendKeepAliveSignal() {
@@ -144,11 +148,8 @@ public class ServerDiscovery : MonoBehaviour {
         string[] formattedMessages = receivedMessage.Split(',');
         foreach(var message in formattedMessages) {
             string[] formattedMessage = message.Split(':');
-            switch(formattedMessage[0]) {
-                case "WebStreaming":
-                    requestedTransmissions.Add((Transmission.WebStreaming, FormattedIpAddress.ParseToAddress(formattedMessage[1])));
-                    break;
-            }
+            if (!Enum.TryParse(formattedMessage[0], out Transmission transmissionType)) return;
+            requestedTransmissions.Add((transmissionType, FormattedIpAddress.ParseToAddress(formattedMessage[1])));
         }
     }
 
