@@ -11,6 +11,8 @@ using UnityEngine;
 public class ServerDiscovery : MonoBehaviour
 {
     private const string ConnectionMessage = "Looking for Client;";
+    private const char transmissionRequestSeparator = ';';
+    private const char transmissionTypeAndIpSeparator = ',';
     
     private volatile FormattedIpAddress supervisorAddress;
     private EndPoint ep;
@@ -145,9 +147,9 @@ public class ServerDiscovery : MonoBehaviour
     }
 
     private void IdentifyRequestedTransmissions(string receivedMessage) {
-        string[] formattedMessages = receivedMessage.Split(',');
+        string[] formattedMessages = receivedMessage.Split(transmissionRequestSeparator);
         foreach(var message in formattedMessages) {
-            string[] formattedMessage = message.Split(':');
+            string[] formattedMessage = message.Split(transmissionTypeAndIpSeparator);
             if (!Enum.TryParse(formattedMessage[0], out Transmission transmissionType)) return;
             requestedTransmissions.Add((transmissionType, FormattedIpAddress.ParseToAddress(formattedMessage[1])));
         }
