@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -7,7 +7,14 @@ using System.Threading;
 using Package.Runtime;
 using UnityEngine;
 
-public class ServerDiscovery : MonoBehaviour {
+public class ServerDiscovery : MonoBehaviour
+{
+    private const string ConnectionMessage = "Looking for Client;";
+    private const char TransmissionRequestSeparator = ';';
+    private const char TransmissionTypeAndIpSeparator = ',';
+    private const string KeepAliveMessage = "Still sharing";
+    private const string DisconnectMessage = "Disconnecting";
+    
     private volatile FormattedIpAddress supervisorAddress;
     private EndPoint ep;
     private bool connectToServer;
@@ -75,12 +82,12 @@ public class ServerDiscovery : MonoBehaviour {
         int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
         string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
         Debug.Log($"received: {stringData} from: {ep}");
-        string[] sanitizedString = stringData.Split(';');
-        if(sanitizedString.First().Equals("Looking for Client")) {
-            IdentifyRequestedTransmissions(sanitizedString.Last());
-            supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
-            connectToServer = true;
-        }
+        
+        if (!stringData.Contains(ConnectionMessage)) return;
+        var requestedServices = stringData.Replace(ConnectionMessage, "");
+        IdentifyRequestedTransmissions(requestedServices);
+        supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
+        connectToServer = true;
     }
 
     private void SendKeepAliveSignal() {
@@ -88,7 +95,7 @@ public class ServerDiscovery : MonoBehaviour {
         var udpClient = new UdpClient();
         while(!timedOut) {
             Debug.Log($"Sending keep alive message to {supervisorAddress}");
-            byte[] sendBuffer = Encoding.ASCII.GetBytes("Still sharing");
+            byte[] sendBuffer = Encoding.ASCII.GetBytes(KeepAliveMessage);
             udpClient.Send(sendBuffer, sendBuffer.Length, iep);
             Thread.Sleep(5000);
         }
@@ -107,8 +114,8 @@ public class ServerDiscovery : MonoBehaviour {
             while(!correctMessage) {
                 int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
                 string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
-                if(stringData.Equals("Supervisor Monitor alive")) correctMessage = true;
-                else if(stringData.Equals("Disconnecting")) {
+                if(stringData.Equals(KeepAliveMessage)) correctMessage = true;
+                else if(stringData.Equals(DisconnectMessage)) {
                     Debug.Log("Closing connection");
                     serverNotifier?.Abort();
                     portScanThread?.Abort();
@@ -141,14 +148,11 @@ public class ServerDiscovery : MonoBehaviour {
     }
 
     private void IdentifyRequestedTransmissions(string receivedMessage) {
-        string[] formattedMessages = receivedMessage.Split(',');
+        string[] formattedMessages = receivedMessage.Split(TransmissionRequestSeparator);
         foreach(var message in formattedMessages) {
-            string[] formattedMessage = message.Split(':');
-            switch(formattedMessage[0]) {
-                case "WebStreaming":
-                    requestedTransmissions.Add((Transmission.WebStreaming, FormattedIpAddress.ParseToAddress(formattedMessage[1])));
-                    break;
-            }
+            string[] formattedMessage = message.Split(TransmissionTypeAndIpSeparator);
+            if (!Enum.TryParse(formattedMessage[0], out Transmission transmissionType)) continue;
+            requestedTransmissions.Add((transmissionType, FormattedIpAddress.ParseToAddress(formattedMessage[1])));
         }
     }
 
@@ -156,7 +160,7 @@ public class ServerDiscovery : MonoBehaviour {
         IPEndPoint iep = new IPEndPoint(supervisorAddress.ipAddress, supervisorAddress.port);
         var udpClient = new UdpClient();
         Debug.Log($"Sending disconnect message to {supervisorAddress}");
-        byte[] sendBuffer = Encoding.ASCII.GetBytes("Disconnecting");
+        byte[] sendBuffer = Encoding.ASCII.GetBytes(DisconnectMessage);
         udpClient.Send(sendBuffer, sendBuffer.Length, iep);
     }
 
