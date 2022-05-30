@@ -10,10 +10,6 @@ using UnityEngine;
 public class ServerDiscovery : MonoBehaviour
 {
     private const string ConnectionMessage = "Looking for Client";
-    private const string IdentificationPrefix = "ID:";
-    private const char SectionSeparator = '|';
-    private const char TransmissionRequestSeparator = ';';
-    private const char TransmissionTypeAndIpSeparator = ',';
     private const string KeepAliveMessage = "Still sharing";
     private const string DisconnectMessage = "Disconnecting";
     
@@ -30,9 +26,7 @@ public class ServerDiscovery : MonoBehaviour
     private Thread timeoutThread;
 
     private ConnectionInfo currentConnectionInfo;
-
     private readonly List<ServerTransmission> transmissions = new();
-    private readonly List<(Transmission, FormattedIpAddress)> requestedTransmissions = new();
 
     public enum Transmission {
         WebStreaming
@@ -164,16 +158,6 @@ public class ServerDiscovery : MonoBehaviour
         StartPortScanningThread();
     }
 
-    private void IdentifyRequestedTransmissions(string receivedMessage)
-    {
-        string[] formattedMessages = receivedMessage.Split(TransmissionRequestSeparator);
-        foreach(var message in formattedMessages) {
-            string[] formattedMessage = message.Split(TransmissionTypeAndIpSeparator);
-            if (!Enum.TryParse(formattedMessage[0], out Transmission transmissionType)) continue;
-            requestedTransmissions.Add((transmissionType, FormattedIpAddress.ParseToAddress(formattedMessage[1])));
-        }
-    }
-
     private bool AcknowledgeConnectionWithId(string receivedMessage)
     {
         var requestedServices = receivedMessage.Replace(ConnectionMessage, "");
@@ -194,6 +178,7 @@ public class ServerDiscovery : MonoBehaviour
     }
 
     private void BreakConnection() {
+        
         serverNotifier?.Abort();
         serverAwaiter?.Abort();
         portScanThread?.Abort();
