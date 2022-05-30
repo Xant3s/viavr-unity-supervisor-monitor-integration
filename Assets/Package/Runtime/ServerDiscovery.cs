@@ -83,11 +83,14 @@ public class ServerDiscovery : MonoBehaviour
     }
 
     private void ScanPortInSystem() {
-        supervisorSocket = new Socket(AddressFamily.InterNetwork,
-            SocketType.Dgram, ProtocolType.Udp);
-        IPEndPoint iep = new IPEndPoint(IPAddress.Any, 41234);
-        supervisorSocket.Bind(iep);
-        ep = iep;
+        if (supervisorSocket == null)
+        {
+            supervisorSocket = new Socket(AddressFamily.InterNetwork,
+                SocketType.Dgram, ProtocolType.Udp);
+            IPEndPoint iep = new IPEndPoint(IPAddress.Any, 41234);
+            supervisorSocket.Bind(iep);
+            ep = iep;
+        }
         Debug.Log("Waiting for streaming server");
         string messageData;
         do
