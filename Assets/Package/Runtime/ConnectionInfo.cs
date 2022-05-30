@@ -7,16 +7,23 @@ namespace Package.Runtime
     [Serializable]
     public class TransmissionInfo
     {
-        public string Typ;
-
+        public ServerDiscovery.Transmission Typ;
         public string Ip;
+        public FormattedIpAddress FormattedIp;
     }
     
     [Serializable]
     public class ConnectionInfo
     {
         public string ID;
-
         public List<TransmissionInfo> RequestedTransmissions = new();
+        
+        public void OnAfterDeserialize()
+        {
+            foreach (var transmissionInfo in RequestedTransmissions)
+            {
+                transmissionInfo.FormattedIp = FormattedIpAddress.ParseToAddress(transmissionInfo.Ip);
+            }
+        }
     }
 }

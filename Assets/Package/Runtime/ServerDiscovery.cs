@@ -29,10 +29,12 @@ public class ServerDiscovery : MonoBehaviour
     private volatile bool interruptedTimeOut;
     private Thread timeoutThread;
 
+    private ConnectionInfo currentConnectionInfo;
+
     private readonly List<ServerTransmission> transmissions = new();
     private readonly List<(Transmission, FormattedIpAddress)> requestedTransmissions = new();
 
-    private enum Transmission {
+    public enum Transmission {
         WebStreaming
     }
 
@@ -175,11 +177,10 @@ public class ServerDiscovery : MonoBehaviour
     private bool AcknowledgeConnectionWithId(string receivedMessage)
     {
         var requestedServices = receivedMessage.Replace(ConnectionMessage, "");
-        JsonUtility.FromJson<ConnectionInfo>(requestedServices);
-        if (!receivedMessage.Contains(IdentificationPrefix)) return false;
-        string id = receivedMessage.Split(SectionSeparator)[1];
-        id = id.Replace(IdentificationPrefix, "");
-        Debug.Log($"Server Id is: {id}");
+        currentConnectionInfo = JsonUtility.FromJson<ConnectionInfo>(requestedServices);
+        currentConnectionInfo.OnAfterDeserialize();
+        if (currentConnectionInfo.ID == null) return false;
+        Debug.Log($"Server Id is: {currentConnectionInfo.ID}");
         return true;
     }
 
