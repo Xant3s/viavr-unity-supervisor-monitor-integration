@@ -178,12 +178,12 @@ public class ServerDiscovery : MonoBehaviour
     }
 
     private void BreakConnection() {
-        
         serverNotifier?.Abort();
         serverAwaiter?.Abort();
         portScanThread?.Abort();
         timeoutThread?.Abort();
         supervisorSocket?.Close();
+        transmissions.Clear();
     }
     
     private void StopTransmission() {
