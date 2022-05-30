@@ -9,7 +9,9 @@ using UnityEngine;
 
 public class ServerDiscovery : MonoBehaviour
 {
-    private const string ConnectionMessage = "Looking for Client;";
+    private const string ConnectionMessage = "Looking for Client";
+    private const string IdentificationPrefix = "ID:";
+    private const char SectionSeparator = '|';
     private const char TransmissionRequestSeparator = ';';
     private const char TransmissionTypeAndIpSeparator = ',';
     private const string KeepAliveMessage = "Still sharing";
@@ -40,21 +42,30 @@ public class ServerDiscovery : MonoBehaviour
 
     private void Update() {
         if(!connectToServer) return;
-        foreach(var serverTransmission in requestedTransmissions) {
-            switch(serverTransmission.Item1) {
-                case Transmission.WebStreaming:
-                    var webStreamer = new WebStreamingTransmission();
-                    transmissions.Add(webStreamer);
-                    webStreamer.StartTransmission(serverTransmission.Item2, transform);
-                    break;
+        if (Input.GetKeyDown("y"))
+        {
+            foreach(var serverTransmission in requestedTransmissions) {
+                switch(serverTransmission.Item1) {
+                    case Transmission.WebStreaming:
+                        var webStreamer = new WebStreamingTransmission();
+                        transmissions.Add(webStreamer);
+                        webStreamer.StartTransmission(serverTransmission.Item2, transform);
+                        break;
+                }
             }
+            connectToServer = false;
+            timedOut = false;
+            serverNotifier = new Thread(SendKeepAliveSignal);
+            serverAwaiter = new Thread(AwaitSupervisorAliveSignal);
+            serverNotifier.Start();
+            serverAwaiter.Start();
         }
-        connectToServer = false;
-        timedOut = false;
-        serverNotifier = new Thread(SendKeepAliveSignal);
-        serverAwaiter = new Thread(AwaitSupervisorAliveSignal);
-        serverNotifier.Start();
-        serverAwaiter.Start();
+        else if(Input.GetKeyDown("n"))
+        {
+            connectToServer = false;
+            StartPortScanningThread();
+        }
+        
     }
 
     private void OnDestroy() {
@@ -72,19 +83,27 @@ public class ServerDiscovery : MonoBehaviour
     }
 
     private void ScanPortInSystem() {
-        supervisorSocket = new Socket(AddressFamily.InterNetwork,
-            SocketType.Dgram, ProtocolType.Udp);
-        IPEndPoint iep = new IPEndPoint(IPAddress.Any, 41234);
-        supervisorSocket.Bind(iep);
-        ep = iep;
+        if (supervisorSocket == null)
+        {
+            supervisorSocket = new Socket(AddressFamily.InterNetwork,
+                SocketType.Dgram, ProtocolType.Udp);
+            IPEndPoint iep = new IPEndPoint(IPAddress.Any, 41234);
+            supervisorSocket.Bind(iep);
+            ep = iep;
+        }
         Debug.Log("Waiting for streaming server");
-        byte[] data = new byte[1024];
-        int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
-        string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
-        Debug.Log($"received: {stringData} from: {ep}");
-        
-        if (!stringData.Contains(ConnectionMessage)) return;
-        var requestedServices = stringData.Replace(ConnectionMessage, "");
+        string messageData;
+        do
+        {
+            byte[] data = new byte[1024];
+            int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
+            messageData = Encoding.ASCII.GetString(data, 0, receivedDate);
+            Debug.Log($"received: {messageData} from: {ep}");
+
+            if (!messageData.Contains(ConnectionMessage)) return;
+        } while (!AcknowledgeConnectionWithId(messageData));
+        ;
+        var requestedServices = messageData.Replace(ConnectionMessage, "");
         IdentifyRequestedTransmissions(requestedServices);
         supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
         connectToServer = true;
@@ -154,6 +173,15 @@ public class ServerDiscovery : MonoBehaviour
             if (!Enum.TryParse(formattedMessage[0], out Transmission transmissionType)) continue;
             requestedTransmissions.Add((transmissionType, FormattedIpAddress.ParseToAddress(formattedMessage[1])));
         }
+    }
+
+    private bool AcknowledgeConnectionWithId(string receivedMessage)
+    {
+        if (!receivedMessage.Contains(IdentificationPrefix)) return false;
+        string id = receivedMessage.Split(SectionSeparator)[1];
+        id = id.Replace(IdentificationPrefix, "");
+        Debug.Log($"Server Id is: {id}");
+        return true;
     }
 
     private void SendDisconnectMessage() {
