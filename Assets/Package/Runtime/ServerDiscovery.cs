@@ -46,12 +46,12 @@ public class ServerDiscovery : MonoBehaviour
         if(!connectToServer) return;
         if (Input.GetKeyDown("y"))
         {
-            foreach(var serverTransmission in requestedTransmissions) {
-                switch(serverTransmission.Item1) {
+            foreach(var serverTransmission in currentConnectionInfo.RequestedTransmissions) {
+                switch(serverTransmission.Typ) {
                     case Transmission.WebStreaming:
                         var webStreamer = new WebStreamingTransmission();
                         transmissions.Add(webStreamer);
-                        webStreamer.StartTransmission(serverTransmission.Item2, transform);
+                        webStreamer.StartTransmission(serverTransmission.FormattedIp, transform);
                         break;
                 }
             }
