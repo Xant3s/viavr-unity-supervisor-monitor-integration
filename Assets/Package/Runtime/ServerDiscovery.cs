@@ -184,6 +184,7 @@ public class ServerDiscovery : MonoBehaviour
     }
 
     private void SendDisconnectMessage() {
+        if (supervisorAddress == null) return;
         IPEndPoint iep = new IPEndPoint(supervisorAddress.ipAddress, supervisorAddress.port);
         var udpClient = new UdpClient();
         Debug.Log($"Sending disconnect message to {supervisorAddress}");
