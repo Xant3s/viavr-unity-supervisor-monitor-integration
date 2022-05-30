@@ -99,12 +99,8 @@ public class ServerDiscovery : MonoBehaviour
             int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
             messageData = Encoding.ASCII.GetString(data, 0, receivedDate);
             Debug.Log($"received: {messageData} from: {ep}");
-
             if (!messageData.Contains(ConnectionMessage)) return;
         } while (!AcknowledgeConnectionWithId(messageData));
-        ;
-        var requestedServices = messageData.Replace(ConnectionMessage, "");
-        IdentifyRequestedTransmissions(requestedServices);
         supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
         connectToServer = true;
     }
@@ -166,7 +162,8 @@ public class ServerDiscovery : MonoBehaviour
         StartPortScanningThread();
     }
 
-    private void IdentifyRequestedTransmissions(string receivedMessage) {
+    private void IdentifyRequestedTransmissions(string receivedMessage)
+    {
         string[] formattedMessages = receivedMessage.Split(TransmissionRequestSeparator);
         foreach(var message in formattedMessages) {
             string[] formattedMessage = message.Split(TransmissionTypeAndIpSeparator);
@@ -177,6 +174,8 @@ public class ServerDiscovery : MonoBehaviour
 
     private bool AcknowledgeConnectionWithId(string receivedMessage)
     {
+        var requestedServices = receivedMessage.Replace(ConnectionMessage, "");
+        JsonUtility.FromJson<ConnectionInfo>(requestedServices);
         if (!receivedMessage.Contains(IdentificationPrefix)) return false;
         string id = receivedMessage.Split(SectionSeparator)[1];
         id = id.Replace(IdentificationPrefix, "");
