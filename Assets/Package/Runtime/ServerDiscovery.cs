@@ -10,10 +10,6 @@ using UnityEngine;
 public class ServerDiscovery : MonoBehaviour
 {
     private const string ConnectionMessage = "Looking for Client";
-    private const string IdentificationPrefix = "ID:";
-    private const char SectionSeparator = '|';
-    private const char TransmissionRequestSeparator = ';';
-    private const char TransmissionTypeAndIpSeparator = ',';
     private const string KeepAliveMessage = "Still sharing";
     private const string DisconnectMessage = "Disconnecting";
     
@@ -29,10 +25,10 @@ public class ServerDiscovery : MonoBehaviour
     private volatile bool interruptedTimeOut;
     private Thread timeoutThread;
 
+    private ConnectionInfo currentConnectionInfo;
     private readonly List<ServerTransmission> transmissions = new();
-    private readonly List<(Transmission, FormattedIpAddress)> requestedTransmissions = new();
 
-    private enum Transmission {
+    public enum Transmission {
         WebStreaming
     }
 
@@ -44,12 +40,12 @@ public class ServerDiscovery : MonoBehaviour
         if(!connectToServer) return;
         if (Input.GetKeyDown("y"))
         {
-            foreach(var serverTransmission in requestedTransmissions) {
-                switch(serverTransmission.Item1) {
+            foreach(var serverTransmission in currentConnectionInfo.RequestedTransmissions) {
+                switch(serverTransmission.Typ) {
                     case Transmission.WebStreaming:
                         var webStreamer = new WebStreamingTransmission();
                         transmissions.Add(webStreamer);
-                        webStreamer.StartTransmission(serverTransmission.Item2, transform);
+                        webStreamer.StartTransmission(serverTransmission.FormattedIp, transform);
                         break;
                 }
             }
@@ -99,12 +95,8 @@ public class ServerDiscovery : MonoBehaviour
             int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
             messageData = Encoding.ASCII.GetString(data, 0, receivedDate);
             Debug.Log($"received: {messageData} from: {ep}");
-
             if (!messageData.Contains(ConnectionMessage)) return;
         } while (!AcknowledgeConnectionWithId(messageData));
-        ;
-        var requestedServices = messageData.Replace(ConnectionMessage, "");
-        IdentifyRequestedTransmissions(requestedServices);
         supervisorAddress = FormattedIpAddress.ParseToAddress(ep.ToString());
         connectToServer = true;
     }
@@ -166,25 +158,18 @@ public class ServerDiscovery : MonoBehaviour
         StartPortScanningThread();
     }
 
-    private void IdentifyRequestedTransmissions(string receivedMessage) {
-        string[] formattedMessages = receivedMessage.Split(TransmissionRequestSeparator);
-        foreach(var message in formattedMessages) {
-            string[] formattedMessage = message.Split(TransmissionTypeAndIpSeparator);
-            if (!Enum.TryParse(formattedMessage[0], out Transmission transmissionType)) continue;
-            requestedTransmissions.Add((transmissionType, FormattedIpAddress.ParseToAddress(formattedMessage[1])));
-        }
-    }
-
     private bool AcknowledgeConnectionWithId(string receivedMessage)
     {
-        if (!receivedMessage.Contains(IdentificationPrefix)) return false;
-        string id = receivedMessage.Split(SectionSeparator)[1];
-        id = id.Replace(IdentificationPrefix, "");
-        Debug.Log($"Server Id is: {id}");
+        var requestedServices = receivedMessage.Replace(ConnectionMessage, "");
+        currentConnectionInfo = JsonUtility.FromJson<ConnectionInfo>(requestedServices);
+        currentConnectionInfo.OnAfterDeserialize();
+        if (currentConnectionInfo.ID == null) return false;
+        Debug.Log($"Server Id is: {currentConnectionInfo.ID}");
         return true;
     }
 
     private void SendDisconnectMessage() {
+        if (supervisorAddress == null) return;
         IPEndPoint iep = new IPEndPoint(supervisorAddress.ipAddress, supervisorAddress.port);
         var udpClient = new UdpClient();
         Debug.Log($"Sending disconnect message to {supervisorAddress}");
@@ -198,6 +183,7 @@ public class ServerDiscovery : MonoBehaviour
         portScanThread?.Abort();
         timeoutThread?.Abort();
         supervisorSocket?.Close();
+        transmissions.Clear();
     }
     
     private void StopTransmission() {
