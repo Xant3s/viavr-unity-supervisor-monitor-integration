@@ -17,15 +17,6 @@ public class WebStreamingManager : PackageConfigurator {
         if (settings.active)
         {
             webStreamer = CreateStreamerInScene();
-            var streamCamera = webStreamer.transform.Find("Render Streaming Camera");
-            
-            if (Camera.main != null)
-            {
-                var cameraTransform = Camera.main.transform;
-                var copyTransform = streamCamera.GetComponent<CopyTransform>();
-                if (copyTransform != null)
-                    copyTransform.Origin = cameraTransform;
-            }
         }
     }
 
