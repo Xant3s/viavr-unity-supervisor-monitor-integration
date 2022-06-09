@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
-namespace Package.Runtime {
+namespace Package.Runtime.Communication {
     public class KeepAliveMessage {
         private Thread serverNotifier;
         private Thread serverAwaiter;

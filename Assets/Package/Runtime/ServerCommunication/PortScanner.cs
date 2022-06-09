@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
-namespace Package.Runtime {
+namespace Package.Runtime.Communication {
     public class PortScanner {
         private Thread portScanThread;
         private bool connectToServer;

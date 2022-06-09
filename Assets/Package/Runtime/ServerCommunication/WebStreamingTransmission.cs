@@ -3,7 +3,7 @@ using Unity.RenderStreaming;
 using Unity.RenderStreaming.Signaling;
 using UnityEngine;
 
-namespace Package.Runtime {
+namespace Package.Runtime.Communication {
     public class WebStreamingTransmission : ServerTransmission {
         private RenderStreaming renderStreamer;
 
