@@ -14,18 +14,24 @@ namespace Package.Runtime.ServerCommunication.ConnectionDialogue {
 
         public void Show(string id, string details) {
             header.text = $"Server ID: {id}";
-            body.text = $"Server requires:";
+            body.text = $"Server requires:{details}";
             gameObject.SetActive(true);
         }
 
-        public void AddOnConnectionDeclined() {
-            gameObject.SetActive(false);
-            acceptButton.onClick.AddListener(() => onAccept?.Invoke());
+        public void SetOnConnectionDeclined(UnityAction onDeclined) {
+            declineButton.onClick.RemoveAllListeners();
+            declineButton.onClick.AddListener(() => {
+                gameObject.SetActive(false);
+                onDeclined.Invoke();
+            });
         }
 
-        public void AddOnConnectionAccepted() {
-            gameObject.SetActive(false);
-            declineButton.onClick.AddListener(() => onDecline?.Invoke());
+        public void SetOnConnectionAccepted(UnityAction onAccepted) {
+            acceptButton.onClick.RemoveAllListeners();
+            acceptButton.onClick.AddListener(() => {
+                gameObject.SetActive(false);
+                onAccepted.Invoke();
+            });
         }
     }
 }
