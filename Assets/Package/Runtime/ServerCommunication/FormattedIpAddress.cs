@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Package.Runtime {
+namespace Package.Runtime.Communication {
     public class FormattedIpAddress {
         public readonly IPAddress ipAddress;
         public readonly int port;

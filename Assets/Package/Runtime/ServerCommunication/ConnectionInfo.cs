@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace Package.Runtime
+namespace Package.Runtime.Communication
 {
     [Serializable]
     public class TransmissionInfo
