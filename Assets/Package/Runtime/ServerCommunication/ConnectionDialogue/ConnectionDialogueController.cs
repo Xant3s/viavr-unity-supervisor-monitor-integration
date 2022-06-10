@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Button = UnityEngine.UIElements.Button;
 
 namespace Package.Runtime.ServerCommunication.ConnectionDialogue {
     public class ConnectionDialogueController : MonoBehaviour {
@@ -21,12 +20,12 @@ namespace Package.Runtime.ServerCommunication.ConnectionDialogue {
 
         public void AddOnConnectionDeclined() {
             gameObject.SetActive(false);
-            acceptButton.clicked += () => onAccept?.Invoke();
+            acceptButton.onClick.AddListener(() => onAccept?.Invoke());
         }
 
         public void AddOnConnectionAccepted() {
             gameObject.SetActive(false);
-            declineButton.clicked += () => onDecline?.Invoke();
+            declineButton.onClick.AddListener(() => onDecline?.Invoke());
         }
     }
 }
