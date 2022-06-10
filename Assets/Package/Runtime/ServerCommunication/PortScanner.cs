@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace Package.Runtime.Communication {
     public class PortScanner {
+        private const string ConnectionMessage = "Looking for Client";
+        
+        private ConnectionInfo currentConnectionInfo;
         private Thread portScanThread;
         private bool connectToServer;
         private volatile FormattedIpAddress supervisorAddress;
@@ -25,37 +28,36 @@ namespace Package.Runtime.Communication {
 
         public void SetConnected() => connectToServer = false;
 
-        public bool FoundServer(out FormattedIpAddress ipAddress, out List<(ServerDiscovery.Transmission, FormattedIpAddress)> requestedTransmissions) {
+        public bool FoundServer(out FormattedIpAddress ipAddress, out ConnectionInfo newConnectionInfo) {
             ipAddress = supervisorAddress;
-            requestedTransmissions = this.requestedTransmissions;
+            newConnectionInfo = currentConnectionInfo;
             return connectToServer;
         }
         
         private void ScanPortInSystem(Socket scannedPort, EndPoint endPoint) {
             Debug.Log("Waiting for streaming server");
-            byte[] data = new byte[1024];
-            int receivedDate = scannedPort.ReceiveFrom(data, ref endPoint);
-            string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
-            Debug.Log($"received: {stringData} from: {endPoint}");
-            string[] sanitizedString = stringData.Split(';');
-            if(sanitizedString.First().Equals("Looking for Client")) {
-                IdentifyRequestedTransmissions(sanitizedString.Last());
-                supervisorAddress = FormattedIpAddress.ParseToAddress(endPoint.ToString());
-                connectToServer = true;
-            }
+            string messageData;
+            do
+            {
+                byte[] data = new byte[1024];
+                int receivedDate = scannedPort.ReceiveFrom(data, ref endPoint);
+                messageData = Encoding.ASCII.GetString(data, 0, receivedDate);
+                Debug.Log($"received: {messageData} from: {endPoint}");
+                if (!messageData.Contains(ConnectionMessage)) return;
+            } while (!AcknowledgeConnectionWithId(messageData));
+            supervisorAddress = FormattedIpAddress.ParseToAddress(endPoint.ToString());
+            connectToServer = true;
+        }
+        
+        private bool AcknowledgeConnectionWithId(string receivedMessage)
+        {
+            var requestedServices = receivedMessage.Replace(ConnectionMessage, "");
+            currentConnectionInfo = JsonUtility.FromJson<ConnectionInfo>(requestedServices);
+            currentConnectionInfo.OnAfterDeserialize();
+            if (currentConnectionInfo.ID == null) return false;
+            Debug.Log($"Server Id is: {currentConnectionInfo.ID}");
+            return true;
         }
 
-        private void IdentifyRequestedTransmissions(string receivedMessage) {
-            string[] formattedMessages = receivedMessage.Split(',');
-            foreach(var message in formattedMessages) {
-                string[] formattedMessage = message.Split(':');
-                switch(formattedMessage[0]) {
-                    case "WebStreaming":
-                        requestedTransmissions.Add((ServerDiscovery.Transmission.WebStreaming,
-                            FormattedIpAddress.ParseToAddress(formattedMessage[1])));
-                        break;
-                }
-            }
-        }
     }
 }

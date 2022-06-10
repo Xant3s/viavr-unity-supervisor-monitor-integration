@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace Package.Runtime.Communication {
     public class ServerDiscovery : MonoBehaviour {
+        public const string DisconnectMessage = "Disconnecting";
+
         private volatile FormattedIpAddress supervisorAddress;
         private EndPoint ep;
         private volatile Socket supervisorSocket;
@@ -14,7 +16,7 @@ namespace Package.Runtime.Communication {
         private readonly List<ServerTransmission> transmissions = new();
 
         private PortScanner portScanner;
-        private KeepAliveMessage keepAliveMessage;
+        private KeepAliveMessenger keepAliveMessenger;
 
         public enum Transmission {
             WebStreaming
@@ -28,29 +30,39 @@ namespace Package.Runtime.Communication {
             IPEndPoint iep = new IPEndPoint(IPAddress.Any, 41234);
             supervisorSocket.Bind(iep);
             ep = iep;
-            keepAliveMessage = new KeepAliveMessage();
+            keepAliveMessenger = new KeepAliveMessenger();
             // Set up everything for the keep alive messenger
-            keepAliveMessage.AddOnDisconnect(OnLostConnection);
-            keepAliveMessage.AddOnTimeOut(OnLostConnection);
+            keepAliveMessenger.AddOnDisconnect(OnLostConnection);
+            keepAliveMessenger.AddOnTimeOut(OnLostConnection);
 
             portScanner.StartScanner(supervisorSocket, ep);
         }
 
         private void Update() {
-            if(!portScanner.FoundServer(out FormattedIpAddress ipAddress, out List<(Transmission, FormattedIpAddress)> requestedTransmissions)) return;
-            supervisorAddress = ipAddress;
-            foreach(var serverTransmission in requestedTransmissions) {
-                switch(serverTransmission.Item1) {
-                    case Transmission.WebStreaming:
-                        var webStreamer = new WebStreamingTransmission();
-                        transmissions.Add(webStreamer);
-                        webStreamer.StartTransmission(serverTransmission.Item2, transform);
-                        break;
+            if(!portScanner.FoundServer(out FormattedIpAddress ipAddress, out ConnectionInfo newConnectionInfo)) return;
+            if(Input.GetKeyDown("y")) {
+
+                supervisorAddress = ipAddress;
+                foreach(var serverTransmission in newConnectionInfo.RequestedTransmissions) {
+                    switch(serverTransmission.Typ) {
+                        case Transmission.WebStreaming:
+                            var webStreamer = new WebStreamingTransmission();
+                            transmissions.Add(webStreamer);
+                            webStreamer.StartTransmission(serverTransmission.FormattedIp, transform);
+                            break;
+                    }
                 }
+
+                portScanner.SetConnected();
+                connected = true;
+                keepAliveMessenger.StartMessaging(supervisorAddress, supervisorSocket, ep);
             }
-            portScanner.SetConnected();
-            connected = true;
-            keepAliveMessage.StartMessaging(supervisorAddress, supervisorSocket, ep);
+            else if(Input.GetKeyDown("n"))
+            {
+                portScanner.SetConnected();
+                portScanner.StartScanner(supervisorSocket, ep);
+            }
+
         }
 
         private void OnDestroy() {
@@ -68,15 +80,16 @@ namespace Package.Runtime.Communication {
         }
 
         private void SendDisconnectMessage() {
+            if (supervisorAddress == null) return;
             IPEndPoint iep = new IPEndPoint(supervisorAddress.ipAddress, supervisorAddress.port);
             var udpClient = new UdpClient();
             Debug.Log($"Sending disconnect message to {supervisorAddress}");
-            byte[] sendBuffer = Encoding.ASCII.GetBytes("Disconnecting");
+            byte[] sendBuffer = Encoding.ASCII.GetBytes(DisconnectMessage);
             udpClient.Send(sendBuffer, sendBuffer.Length, iep);
         }
 
         private void BreakConnection() {
-            keepAliveMessage.StopMessaging();
+            keepAliveMessenger.StopMessaging();
             portScanner.StopScanner();
             supervisorSocket?.Close();
         }

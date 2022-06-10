@@ -6,7 +6,9 @@ using System.Threading;
 using UnityEngine;
 
 namespace Package.Runtime.Communication {
-    public class KeepAliveMessage {
+    public class KeepAliveMessenger {
+        private const string KeepAliveMessage = "Still sharing";
+        
         private Thread serverNotifier;
         private Thread serverAwaiter;
         private volatile bool timedOut;
@@ -73,8 +75,8 @@ namespace Package.Runtime.Communication {
                 while(!correctMessage) {
                     int receivedDate = supervisorSocket.ReceiveFrom(data, ref ep);
                     string stringData = Encoding.ASCII.GetString(data, 0, receivedDate);
-                    if(stringData.Equals("Supervisor Monitor alive")) correctMessage = true;
-                    else if(stringData.Equals("Disconnecting")) {
+                    if(stringData.Equals(KeepAliveMessage)) correctMessage = true;
+                    else if(stringData.Equals(ServerDiscovery.DisconnectMessage)) {
                         Debug.Log("Closing connection");
                         timeoutThread?.Abort();
                         serverNotifier?.Abort();
