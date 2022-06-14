@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Package.Runtime.ServerCommunication.ConnectionDialogue;
 using UnityEngine;
 
 namespace Package.Runtime.Communication {
@@ -17,6 +19,8 @@ namespace Package.Runtime.Communication {
 
         private PortScanner portScanner;
         private KeepAliveMessenger keepAliveMessenger;
+
+        private ConnectionDialogueController prompt;
 
         public enum Transmission {
             WebStreaming
@@ -35,13 +39,16 @@ namespace Package.Runtime.Communication {
             keepAliveMessenger.AddOnDisconnect(OnLostConnection);
             keepAliveMessenger.AddOnTimeOut(OnLostConnection);
 
+            prompt = GameObject.Find("ConnectionPrompt").GetComponent<ConnectionDialogueController>();
+
             portScanner.StartScanner(supervisorSocket, ep);
         }
 
         private void Update() {
             if(!portScanner.FoundServer(out FormattedIpAddress ipAddress, out ConnectionInfo newConnectionInfo)) return;
-            if(Input.GetKeyDown("y")) {
-
+            
+            prompt.SetOnConnectionAccepted(() =>
+            {
                 supervisorAddress = ipAddress;
                 foreach(var serverTransmission in newConnectionInfo.RequestedTransmissions) {
                     switch(serverTransmission.Typ) {
@@ -52,17 +59,14 @@ namespace Package.Runtime.Communication {
                             break;
                     }
                 }
-
-                portScanner.SetConnected();
                 connected = true;
                 keepAliveMessenger.StartMessaging(supervisorAddress, supervisorSocket, ep);
-            }
-            else if(Input.GetKeyDown("n"))
-            {
-                portScanner.SetConnected();
-                portScanner.StartScanner(supervisorSocket, ep);
-            }
-
+            });
+            prompt.SetOnConnectionDeclined(() => portScanner.StartScanner(supervisorSocket, ep));
+            
+            portScanner.SetConnected();
+            
+            prompt.Show(newConnectionInfo.ID, String.Empty);
         }
 
         private void OnDestroy() {
