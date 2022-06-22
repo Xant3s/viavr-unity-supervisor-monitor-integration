@@ -40,6 +40,7 @@ namespace Package.Runtime.Communication {
             keepAliveMessenger.AddOnTimeOut(OnLostConnection);
 
             prompt = GameObject.Find("ConnectionPrompt").GetComponent<ConnectionDialogueController>();
+            prompt.gameObject.SetActive(false);
 
             portScanner.StartScanner(supervisorSocket, ep);
         }
