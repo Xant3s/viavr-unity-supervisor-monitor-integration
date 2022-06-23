@@ -3,16 +3,15 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Package.Runtime.Communication {
-    public class RestRequester : MonoBehaviour{
+    public class RestRequester{
+        private readonly FormattedIpAddress ipAddress;
 
-        private void Start() {
-            MakeGetRequest("", text => Debug.Log("nReceived: " + text));
+        public RestRequester(FormattedIpAddress restIpAddress) {
+            ipAddress = restIpAddress;
         }
 
-        private const string IPAddress = "localhost:3000/";
-
-        public static void MakeGetRequest(string identifier, Action<string> onReception) {
-            UnityWebRequest webRequest = UnityWebRequest.Get(IPAddress + identifier);
+        public void MakeGetRequest(string identifier, Action<string> onReception) {
+            UnityWebRequest webRequest = UnityWebRequest.Get("http://" + ipAddress + "/" + identifier);
 
             // Request and wait for the desired page.
             UnityWebRequestAsyncOperation requestAsyncOperation = webRequest.SendWebRequest();
@@ -34,9 +33,9 @@ namespace Package.Runtime.Communication {
             };
         }
         
-        public static void MakePostRequest(string identifier, Action<string> onReception) {
+        public void MakePostRequest(string identifier, Action<string> onReception) {
             WWWForm form = new WWWForm();
-            UnityWebRequest webRequest = UnityWebRequest.Post(IPAddress + identifier, form);
+            UnityWebRequest webRequest = UnityWebRequest.Post("http://" + ipAddress + "/" + identifier, form);
 
             // Request and wait for the desired page.
             UnityWebRequestAsyncOperation requestAsyncOperation = webRequest.SendWebRequest();
@@ -58,9 +57,9 @@ namespace Package.Runtime.Communication {
             };
         }
         
-        public static void MakePutRequest(string identifier, Action<string> onReception) {
+        public void MakePutRequest(string identifier, Action<string> onReception) {
             byte[] sampleData = System.Text.Encoding.UTF8.GetBytes("Test Bytes");
-            UnityWebRequest webRequest = UnityWebRequest.Put(IPAddress + identifier, sampleData);
+            UnityWebRequest webRequest = UnityWebRequest.Put("http://" + ipAddress + "/" + identifier, sampleData);
 
             // Request and wait for the desired page.
             UnityWebRequestAsyncOperation requestAsyncOperation = webRequest.SendWebRequest();

@@ -10,6 +10,8 @@ namespace Package.Runtime.Communication {
     public class ServerDiscovery : MonoBehaviour {
         public const string DisconnectMessage = "Disconnecting";
 
+        public RestRequester restRequester;
+
         private volatile FormattedIpAddress supervisorAddress;
         private EndPoint ep;
         private volatile Socket supervisorSocket;
@@ -61,6 +63,8 @@ namespace Package.Runtime.Communication {
                     }
                 }
                 connected = true;
+                FormattedIpAddress restAddress = new FormattedIpAddress(supervisorAddress.IpAddressToString(), 3000);
+                restRequester = new RestRequester(restAddress);
                 keepAliveMessenger.StartMessaging(supervisorAddress, supervisorSocket, ep);
             });
             prompt.SetOnConnectionDeclined(() => portScanner.StartScanner(supervisorSocket, ep));
