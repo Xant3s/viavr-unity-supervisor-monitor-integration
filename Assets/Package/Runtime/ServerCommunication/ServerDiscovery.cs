@@ -11,6 +11,7 @@ namespace Package.Runtime.Communication {
         public const string DisconnectMessage = "Disconnecting";
 
         public RestRequester restRequester;
+        public EventPoller eventPoller;
 
         private volatile FormattedIpAddress supervisorAddress;
         private EndPoint ep;
@@ -53,6 +54,12 @@ namespace Package.Runtime.Communication {
             prompt.SetOnConnectionAccepted(() =>
             {
                 supervisorAddress = ipAddress;
+                FormattedIpAddress restAddress = new FormattedIpAddress(supervisorAddress.IpAddressToString(), 3000);
+                restRequester = new RestRequester(restAddress);
+                eventPoller = transform.gameObject.AddComponent<EventPoller>();
+                eventPoller.Setup(restRequester);
+                eventPoller.AddListener(Debug.Log);
+                eventPoller.StartPolling();
                 foreach(var serverTransmission in newConnectionInfo.RequestedTransmissions) {
                     switch(serverTransmission.Typ) {
                         case Transmission.WebStreaming:
@@ -63,8 +70,6 @@ namespace Package.Runtime.Communication {
                     }
                 }
                 connected = true;
-                FormattedIpAddress restAddress = new FormattedIpAddress(supervisorAddress.IpAddressToString(), 3000);
-                restRequester = new RestRequester(restAddress);
                 keepAliveMessenger.StartMessaging(supervisorAddress, supervisorSocket, ep);
             });
             prompt.SetOnConnectionDeclined(() => portScanner.StartScanner(supervisorSocket, ep));
