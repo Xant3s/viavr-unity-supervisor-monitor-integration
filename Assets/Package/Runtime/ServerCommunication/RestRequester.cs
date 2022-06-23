@@ -33,9 +33,8 @@ namespace Package.Runtime.Communication {
             };
         }
         
-        public void MakePostRequest(string identifier, Action<string> onReception) {
-            WWWForm form = new WWWForm();
-            UnityWebRequest webRequest = UnityWebRequest.Post("http://" + ipAddress + "/" + identifier, form);
+        public void MakePostRequest(string identifier, Action<string> onReception, WWWForm postForm) {
+            UnityWebRequest webRequest = UnityWebRequest.Post("http://" + ipAddress + "/" + identifier, postForm);
 
             // Request and wait for the desired page.
             UnityWebRequestAsyncOperation requestAsyncOperation = webRequest.SendWebRequest();
@@ -57,9 +56,9 @@ namespace Package.Runtime.Communication {
             };
         }
         
-        public void MakePutRequest(string identifier, Action<string> onReception) {
-            byte[] sampleData = System.Text.Encoding.UTF8.GetBytes("Test Bytes");
-            UnityWebRequest webRequest = UnityWebRequest.Put("http://" + ipAddress + "/" + identifier, sampleData);
+        public void MakePutRequest(string identifier, Action<string> onReception, string putMessage) {
+            byte[] dataMessage = System.Text.Encoding.UTF8.GetBytes(putMessage);
+            UnityWebRequest webRequest = UnityWebRequest.Put("http://" + ipAddress + "/" + identifier, dataMessage);
 
             // Request and wait for the desired page.
             UnityWebRequestAsyncOperation requestAsyncOperation = webRequest.SendWebRequest();
