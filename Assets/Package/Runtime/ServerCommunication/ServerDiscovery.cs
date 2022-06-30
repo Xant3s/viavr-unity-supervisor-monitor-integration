@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -60,7 +59,7 @@ namespace Package.Runtime.Communication {
                 eventPoller.Setup(restRequester);
                 eventPoller.AddListener(Debug.Log);
                 eventPoller.StartPolling();
-                ConnectionInfo requestedTransmissions = portScanner.JsonifyConnectionInfo(requestedTransmissionInfo);
+                ConnectionInfo requestedTransmissions = ConnectionInfo.JsonifyConnectionInfo(requestedTransmissionInfo);
                 foreach(var serverTransmission in requestedTransmissions.RequestedTransmissions) {
                     switch(serverTransmission.Typ) {
                         case Transmission.WebStreaming:

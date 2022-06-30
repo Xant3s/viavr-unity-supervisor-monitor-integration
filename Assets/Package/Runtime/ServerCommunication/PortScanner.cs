@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using Package.Runtime.ServerCommunication.ConnectionDialogue;
 using UnityEngine;
 
 namespace Package.Runtime.Communication {
@@ -14,7 +11,6 @@ namespace Package.Runtime.Communication {
         private Thread portScanThread;
         private bool connectToServer;
         private volatile FormattedIpAddress supervisorAddress;
-        private readonly List<(ServerDiscovery.Transmission, FormattedIpAddress)> requestedTransmissions = new();
         
         public void StartScanner(Socket scannedPort, EndPoint endPoint) {
             portScanThread?.Abort();
@@ -31,13 +27,6 @@ namespace Package.Runtime.Communication {
         public bool FoundServer(out FormattedIpAddress ipAddress) {
             ipAddress = supervisorAddress;
             return connectToServer;
-        }
-        
-        public ConnectionInfo JsonifyConnectionInfo(string receivedMessage)
-        {
-            var currentConnectionInfo = JsonUtility.FromJson<ConnectionInfo>(receivedMessage);
-            currentConnectionInfo.OnAfterDeserialize();
-            return currentConnectionInfo;
         }
         
         private void ScanPortInSystem(Socket scannedPort, EndPoint endPoint) {

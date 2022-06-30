@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 // ReSharper disable ClassNeverInstantiated.Global
 
 namespace Package.Runtime.Communication
@@ -23,6 +24,13 @@ namespace Package.Runtime.Communication
             {
                 transmissionInfo.FormattedIp = FormattedIpAddress.ParseToAddress(transmissionInfo.Ip);
             }
+        }
+        
+        public static ConnectionInfo JsonifyConnectionInfo(string receivedMessage)
+        {
+            var currentConnectionInfo = JsonUtility.FromJson<ConnectionInfo>(receivedMessage);
+            currentConnectionInfo?.OnAfterDeserialize();
+            return currentConnectionInfo;
         }
     }
 }

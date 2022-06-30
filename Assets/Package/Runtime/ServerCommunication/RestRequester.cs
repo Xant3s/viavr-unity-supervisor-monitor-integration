@@ -39,7 +39,9 @@ namespace Package.Runtime.Communication {
         }
 
         public static void IdentifySupervisor(FormattedIpAddress oneTimeIp, ConnectionDialogueController identificationHandler) {
-            UnityWebRequest webRequest = UnityWebRequest.Get("https://" + oneTimeIp + "/Settings");
+            var tempRestIp =  new FormattedIpAddress(oneTimeIp.IpAddressToString(), 3000);
+            Debug.Log("https://" + tempRestIp + "/Settings");
+            UnityWebRequest webRequest = UnityWebRequest.Get("https://" + tempRestIp + "/Settings");
             webRequest.certificateHandler = new AcceptAllCertificatesToIdentifyThumbprint();
 
             // Request and wait for the desired page.
