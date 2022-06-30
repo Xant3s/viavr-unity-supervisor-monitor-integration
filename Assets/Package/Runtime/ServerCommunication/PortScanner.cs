@@ -28,9 +28,8 @@ namespace Package.Runtime.Communication {
 
         public void SetConnected() => connectToServer = false;
 
-        public bool FoundServer(out FormattedIpAddress ipAddress, out ConnectionInfo newConnectionInfo) {
+        public bool FoundServer(out FormattedIpAddress ipAddress) {
             ipAddress = supervisorAddress;
-            newConnectionInfo = currentConnectionInfo;
             return connectToServer;
         }
         
