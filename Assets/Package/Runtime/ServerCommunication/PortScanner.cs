@@ -4,13 +4,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using Package.Runtime.ServerCommunication.ConnectionDialogue;
 using UnityEngine;
 
 namespace Package.Runtime.Communication {
     public class PortScanner {
         private const string ConnectionMessage = "Looking for Client";
         
-        private ConnectionInfo currentConnectionInfo;
         private Thread portScanThread;
         private bool connectToServer;
         private volatile FormattedIpAddress supervisorAddress;
@@ -33,6 +33,13 @@ namespace Package.Runtime.Communication {
             return connectToServer;
         }
         
+        public ConnectionInfo JsonifyConnectionInfo(string receivedMessage)
+        {
+            var currentConnectionInfo = JsonUtility.FromJson<ConnectionInfo>(receivedMessage);
+            currentConnectionInfo.OnAfterDeserialize();
+            return currentConnectionInfo;
+        }
+        
         private void ScanPortInSystem(Socket scannedPort, EndPoint endPoint) {
             Debug.Log("Waiting for streaming server");
             string messageData;
@@ -42,21 +49,9 @@ namespace Package.Runtime.Communication {
                 int receivedDate = scannedPort.ReceiveFrom(data, ref endPoint);
                 messageData = Encoding.ASCII.GetString(data, 0, receivedDate);
                 Debug.Log($"received: {messageData} from: {endPoint}");
-                if (!messageData.Contains(ConnectionMessage)) return;
-            } while (!AcknowledgeConnectionWithId(messageData));
+            } while (!messageData.Contains(ConnectionMessage));
             supervisorAddress = FormattedIpAddress.ParseToAddress(endPoint.ToString());
             connectToServer = true;
         }
-        
-        private bool AcknowledgeConnectionWithId(string receivedMessage)
-        {
-            var requestedServices = receivedMessage.Replace(ConnectionMessage, "");
-            currentConnectionInfo = JsonUtility.FromJson<ConnectionInfo>(requestedServices);
-            currentConnectionInfo.OnAfterDeserialize();
-            if (currentConnectionInfo.ID == null) return false;
-            Debug.Log($"Server Id is: {currentConnectionInfo.ID}");
-            return true;
-        }
-
     }
 }

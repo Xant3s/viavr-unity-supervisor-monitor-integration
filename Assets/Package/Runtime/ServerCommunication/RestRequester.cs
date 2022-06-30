@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Security.Cryptography.X509Certificates;
+using Package.Runtime.ServerCommunication.ConnectionDialogue;
 
 namespace Package.Runtime.Communication {
     
@@ -37,8 +38,8 @@ namespace Package.Runtime.Communication {
             ipAddress = restIpAddress;
         }
 
-        public void IdentifySupervisor(Func<string, string, bool> onIdentification) {
-            UnityWebRequest webRequest = UnityWebRequest.Get("https://" + ipAddress + "/Settings");
+        public static void IdentifySupervisor(FormattedIpAddress oneTimeIp, ConnectionDialogueController identificationHandler) {
+            UnityWebRequest webRequest = UnityWebRequest.Get("https://" + oneTimeIp + "/Settings");
             webRequest.certificateHandler = new AcceptAllCertificatesToIdentifyThumbprint();
 
             // Request and wait for the desired page.
@@ -54,13 +55,9 @@ namespace Package.Runtime.Communication {
                         Debug.LogError("HTTP Error: " + webRequest.error);
                         break;
                     case UnityWebRequest.Result.Success:
-                        if(onIdentification(
-                               ((AcceptAllCertificatesToIdentifyThumbprint)webRequest.certificateHandler).identifiedThumbprint,
-                               webRequest.downloadHandler.text)
-                           )
-                            AcceptCertificateWithCertainThumbprint.SetCurrentThumbprint(
-                                ((AcceptAllCertificatesToIdentifyThumbprint)webRequest.certificateHandler).identifiedThumbprint
-                                );
+                        string newThumbprint = ((AcceptAllCertificatesToIdentifyThumbprint)webRequest.certificateHandler).identifiedThumbprint;
+                        identificationHandler.Show(newThumbprint, webRequest.downloadHandler.text);
+                        identificationHandler.SaveThumbprint(() => AcceptCertificateWithCertainThumbprint.SetCurrentThumbprint(newThumbprint));
                         break;
                 }
                 webRequest.Dispose();

@@ -36,5 +36,12 @@ namespace Package.Runtime.ServerCommunication.ConnectionDialogue {
                 onAccepted.Invoke(requestedTransmissionInfo);
             });
         }
+        public void SaveThumbprint(UnityAction onAccepted) {
+            acceptButton.onClick.RemoveAllListeners();
+            acceptButton.onClick.AddListener(() => {
+                gameObject.SetActive(false);
+                onAccepted.Invoke();
+            });
+        }
     }
 }
