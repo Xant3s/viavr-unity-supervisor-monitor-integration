@@ -14,8 +14,9 @@ namespace Package.Runtime.Communication
     }
     
     [Serializable]
-    public class ConnectionInfo
-    {
+    public class ConnectionInfo {
+        public string Id;
+        
         public List<TransmissionInfo> RequestedTransmissions = new();
         
         public void OnAfterDeserialize()

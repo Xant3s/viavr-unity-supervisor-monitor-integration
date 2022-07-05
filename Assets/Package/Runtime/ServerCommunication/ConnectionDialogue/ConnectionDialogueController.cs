@@ -18,10 +18,10 @@ namespace Package.Runtime.ServerCommunication.ConnectionDialogue {
         private string requestedTransmissionInfo;
 
         public void Show(string id, string details) {
-            header.text = $"Server ID: {id}";
             // ReSharper disable once IdentifierTypo
             var jsonfiedDetails = ConnectionInfo.JsonifyConnectionInfo(details);
             body.text = $"Server requires:\n{string.Join(", ", jsonfiedDetails.RequestedTransmissions.Select(transmission => transmission.Typ))}";
+            header.text = $"Server ID: {jsonfiedDetails.Id}";
             requestedTransmissionInfo = details;
             gameObject.SetActive(true);
             acceptButton.onClick.AddListener(() => {

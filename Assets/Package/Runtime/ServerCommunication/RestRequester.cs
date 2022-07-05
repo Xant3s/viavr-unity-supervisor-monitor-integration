@@ -2,7 +2,9 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Package.Runtime.ServerCommunication.ConnectionDialogue;
+using Random = UnityEngine.Random;
 
 namespace Package.Runtime.Communication {
     
@@ -40,8 +42,7 @@ namespace Package.Runtime.Communication {
 
         public static void IdentifySupervisor(FormattedIpAddress oneTimeIp, ConnectionDialogueController identificationHandler) {
             var tempRestIp =  new FormattedIpAddress(oneTimeIp.IpAddressToString(), 3000);
-            Debug.Log("https://" + tempRestIp + "/Settings");
-            UnityWebRequest webRequest = UnityWebRequest.Get("https://" + tempRestIp + "/Settings");
+            UnityWebRequest webRequest = UnityWebRequest.Get("https://" + tempRestIp + "/Settings/" + GenerateId());
             webRequest.certificateHandler = new AcceptAllCertificatesToIdentifyThumbprint();
 
             // Request and wait for the desired page.
@@ -137,6 +138,20 @@ namespace Package.Runtime.Communication {
                 }
                 webRequest.Dispose();
             };
+        }
+
+        private static string GenerateId() {
+            StringBuilder idBuilder = new ();
+            
+            for(int index = 0; index < 6; index++) {
+                int randomNumber = Random.Range(0, 25);
+                if(randomNumber >= 10) {
+                    idBuilder.Append(Convert.ToChar(65 + (randomNumber - 10)));
+                }else{
+                    idBuilder.Append(randomNumber);
+                }
+            }
+            return idBuilder.ToString();
         }
     }
 }
