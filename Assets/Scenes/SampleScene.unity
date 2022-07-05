@@ -740,6 +740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15d147cf06cfe674cb951adb4062ff12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eventPoller: {fileID: 0}
 --- !u!114 &1016403952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2560,6 +2561,14 @@ PrefabInstance:
     - target: {fileID: 368926448874853666, guid: 8266fe8eaae7e714db6c5c11902849ee, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3703767573716022074, guid: 8266fe8eaae7e714db6c5c11902849ee, type: 3}
+      propertyPath: m_FontData.m_MinSize
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3703767573716022074, guid: 8266fe8eaae7e714db6c5c11902849ee, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 3845582119730534169, guid: 8266fe8eaae7e714db6c5c11902849ee, type: 3}
       propertyPath: m_RootOrder

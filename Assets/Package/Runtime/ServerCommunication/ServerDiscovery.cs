@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -49,9 +48,9 @@ namespace Package.Runtime.Communication {
         }
 
         private void Update() {
-            if(!portScanner.FoundServer(out FormattedIpAddress ipAddress, out ConnectionInfo newConnectionInfo)) return;
+            if(!portScanner.FoundServer(out FormattedIpAddress ipAddress)) return;
             
-            prompt.SetOnConnectionAccepted(() =>
+            prompt.SetOnConnectionAccepted(requestedTransmissionInfo =>
             {
                 supervisorAddress = ipAddress;
                 FormattedIpAddress restAddress = new FormattedIpAddress(supervisorAddress.IpAddressToString(), 3000);
@@ -60,7 +59,8 @@ namespace Package.Runtime.Communication {
                 eventPoller.Setup(restRequester);
                 eventPoller.AddListener(Debug.Log);
                 eventPoller.StartPolling();
-                foreach(var serverTransmission in newConnectionInfo.RequestedTransmissions) {
+                ConnectionInfo requestedTransmissions = ConnectionInfo.JsonifyConnectionInfo(requestedTransmissionInfo);
+                foreach(var serverTransmission in requestedTransmissions.RequestedTransmissions) {
                     switch(serverTransmission.Typ) {
                         case Transmission.WebStreaming:
                             var webStreamer = new WebStreamingTransmission();
@@ -76,7 +76,8 @@ namespace Package.Runtime.Communication {
             
             portScanner.SetConnected();
             
-            prompt.Show(newConnectionInfo.ID, String.Empty);
+            RestRequester.IdentifySupervisor(ipAddress, prompt);
+            
         }
 
         private void OnDestroy() {
