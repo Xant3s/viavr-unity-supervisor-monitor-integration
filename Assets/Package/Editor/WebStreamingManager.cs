@@ -5,8 +5,9 @@ using UnityEngine;
 using WebStreaming;
 
 public class WebStreamingManager : PackageConfigurator {
-    private static readonly JsonLoader<WebStreamingSettings> StreamingSettings = new("Assets/Settings/RenderStreaming.json");
+    private static readonly JsonLoader<WebStreamingSettings> StreamingSettings = new("Assets/Settings/de.jmu.ge.viavr.webstreaming/Configuration.json");
     private GameObject webStreamer;
+    private GameObject connectionPrompt;
     
     public override void OnConfigureScene() {
         CreateStreamerFromJson();
@@ -17,13 +18,22 @@ public class WebStreamingManager : PackageConfigurator {
         if (settings.active)
         {
             webStreamer = CreateStreamerInScene();
+            connectionPrompt = CreateConnectionPromptInScene();
         }
     }
 
-    private GameObject CreateStreamerInScene() {
+    private static GameObject CreateStreamerInScene() {
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.webstreaming/Runtime/CustomVideoStreamer.prefab");
         if(prefab == null) 
             prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Package/Runtime/CustomVideoStreamer.prefab");
+
+        return Object.Instantiate(prefab);
+    }
+    
+    private static GameObject CreateConnectionPromptInScene() {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.webstreaming/Runtime/ServerCommunication/ConnectionDialogue/ConnectionPrompt.prefab");
+        if(prefab == null) 
+            prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Package/Runtime/ServerCommunication/ConnectionDialogue/ConnectionPrompt.prefab");
 
         return Object.Instantiate(prefab);
     }
