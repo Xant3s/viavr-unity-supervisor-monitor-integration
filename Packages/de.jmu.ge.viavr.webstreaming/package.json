@@ -19,5 +19,13 @@
   },
   "publishConfig": {
     "registry": "https://packages.informatik.uni-wuerzburg.de/"
+  },
+  "configDescription": {
+    "active": {
+      "value": "true",
+      "uuid": "bdbe7c6b-2e5f-4381-a8dd-e1abe4b785bb",
+      "kind": "boolean",
+      "label": "Active"
+    }
   }
 }

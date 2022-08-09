@@ -14,7 +14,7 @@ public class WebStreamingManager : PackageConfigurator {
 
     private void CreateStreamerFromJson() {
         WebStreamingSettings settings = StreamingSettings.GetConfiguration();
-        if (settings.active)
+        if (settings.active.Equals("true"))
         {
             webStreamer = CreateStreamerInScene();
         }
