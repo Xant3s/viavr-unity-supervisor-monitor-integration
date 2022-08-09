@@ -291,6 +291,15 @@
       "dependencies": {},
       "url": "https://packages.informatik.uni-wuerzburg.de"
     },
+    "de.jmu.ge.viavr.webstreaming": {
+      "version": "file:de.jmu.ge.viavr.webstreaming",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "de.jmu.ge.viavr.unitybridge": "0.1.0",
+        "com.unity.renderstreaming": "3.1.0-exp.3"
+      }
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,

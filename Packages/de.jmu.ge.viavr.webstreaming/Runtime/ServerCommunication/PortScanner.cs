@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -10,11 +8,9 @@ namespace Package.Runtime.Communication {
     public class PortScanner {
         private const string ConnectionMessage = "Looking for Client";
         
-        private ConnectionInfo currentConnectionInfo;
         private Thread portScanThread;
         private bool connectToServer;
         private volatile FormattedIpAddress supervisorAddress;
-        private readonly List<(ServerDiscovery.Transmission, FormattedIpAddress)> requestedTransmissions = new();
         
         public void StartScanner(Socket scannedPort, EndPoint endPoint) {
             portScanThread?.Abort();
@@ -28,9 +24,8 @@ namespace Package.Runtime.Communication {
 
         public void SetConnected() => connectToServer = false;
 
-        public bool FoundServer(out FormattedIpAddress ipAddress, out ConnectionInfo newConnectionInfo) {
+        public bool FoundServer(out FormattedIpAddress ipAddress) {
             ipAddress = supervisorAddress;
-            newConnectionInfo = currentConnectionInfo;
             return connectToServer;
         }
         
@@ -43,21 +38,9 @@ namespace Package.Runtime.Communication {
                 int receivedDate = scannedPort.ReceiveFrom(data, ref endPoint);
                 messageData = Encoding.ASCII.GetString(data, 0, receivedDate);
                 Debug.Log($"received: {messageData} from: {endPoint}");
-                if (!messageData.Contains(ConnectionMessage)) return;
-            } while (!AcknowledgeConnectionWithId(messageData));
+            } while (!messageData.Contains(ConnectionMessage));
             supervisorAddress = FormattedIpAddress.ParseToAddress(endPoint.ToString());
             connectToServer = true;
         }
-        
-        private bool AcknowledgeConnectionWithId(string receivedMessage)
-        {
-            var requestedServices = receivedMessage.Replace(ConnectionMessage, "");
-            currentConnectionInfo = JsonUtility.FromJson<ConnectionInfo>(requestedServices);
-            currentConnectionInfo.OnAfterDeserialize();
-            if (currentConnectionInfo.ID == null) return false;
-            Debug.Log($"Server Id is: {currentConnectionInfo.ID}");
-            return true;
-        }
-
     }
 }
