@@ -3,7 +3,7 @@
     "name": "Games Engineering Wuerzburg"
   },
   "description": "This package provides an automatic Web Streamer importer, that can switch the streamer on and off",
-  "displayName": "Locomotion",
+  "displayName": "UnityWebStream",
   "name": "de.jmu.ge.viavr.webstreaming",
   "unity": "2021.2",
   "unityRelease": "0f1",
