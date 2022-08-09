@@ -5,7 +5,7 @@ using UnityEngine;
 using WebStreaming;
 
 public class WebStreamingManager : PackageConfigurator {
-    private static readonly JsonLoader<WebStreamingSettings> StreamingSettings = new("Assets/Settings/RenderStreaming.json");
+    private static readonly JsonLoader<WebStreamingSettings> StreamingSettings = new("Assets/Settings/de.jmu.ge.viavr.webstreaming/Configuration.json");
     private GameObject webStreamer;
     
     public override void OnConfigureScene() {
