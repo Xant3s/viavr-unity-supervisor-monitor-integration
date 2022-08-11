@@ -10,6 +10,7 @@ namespace Package.Runtime.Communication {
     
     public class RestRequester{
         private readonly FormattedIpAddress ipAddress;
+        public static RestRequester requester;
 
         private class AcceptAllCertificatesToIdentifyThumbprint : CertificateHandler  {
             public string identifiedThumbprint;
@@ -38,6 +39,7 @@ namespace Package.Runtime.Communication {
 
         public RestRequester(FormattedIpAddress restIpAddress) {
             ipAddress = restIpAddress;
+            requester = this;
         }
 
         public static void IdentifySupervisor(FormattedIpAddress oneTimeIp, ConnectionDialogueController identificationHandler) {
@@ -116,7 +118,7 @@ namespace Package.Runtime.Communication {
         }
         
         public void MakePutRequest(string identifier, Action<string> onReception, string putMessage) {
-            byte[] dataMessage = System.Text.Encoding.UTF8.GetBytes(putMessage);
+            byte[] dataMessage = Encoding.UTF8.GetBytes(putMessage);
             UnityWebRequest webRequest = UnityWebRequest.Put("https://" + ipAddress + "/" + identifier, dataMessage);
             webRequest.certificateHandler = new AcceptCertificateWithCertainThumbprint();
 
