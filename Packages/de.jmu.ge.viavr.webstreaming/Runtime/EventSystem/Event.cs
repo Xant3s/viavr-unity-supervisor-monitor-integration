@@ -2,16 +2,16 @@
 using Package.Runtime.Communication;
 
 namespace EventSystem {
-    public abstract class Event {
+    public class Event {
         private readonly string identifier;
+        private readonly GameState trackedState;
         
-        protected Event(string identifier) {
+        public Event(string identifier, GameState trackedState) {
             this.identifier = identifier;
+            this.trackedState = trackedState;
         }
 
-        public void Invoke() => SendToSupervisor(ReceiveEventInfo());
-        
-        protected abstract string ReceiveEventInfo();
+        public void Invoke() => SendToSupervisor(trackedState.FormatGameStateInfo());
 
         private void SendToSupervisor(string eventMessage) => 
             RestRequester.requester.MakePutRequest(
