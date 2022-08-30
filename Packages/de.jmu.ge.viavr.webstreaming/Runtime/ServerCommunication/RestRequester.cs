@@ -43,7 +43,7 @@ namespace Package.Runtime.Communication {
         }
 
         public static void IdentifySupervisor(FormattedIpAddress oneTimeIp, ConnectionDialogueController identificationHandler) {
-            var tempRestIp =  new FormattedIpAddress(oneTimeIp.IpAddressToString(), 3000);
+            var tempRestIp =  new FormattedIpAddress(oneTimeIp.IpAddressToString(), 3001);
             UnityWebRequest webRequest = UnityWebRequest.Get("https://" + tempRestIp + "/Settings/" + GenerateId());
             webRequest.certificateHandler = new AcceptAllCertificatesToIdentifyThumbprint();
 

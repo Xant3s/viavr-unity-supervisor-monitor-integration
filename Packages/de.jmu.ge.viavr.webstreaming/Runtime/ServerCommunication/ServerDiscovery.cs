@@ -53,7 +53,7 @@ namespace Package.Runtime.Communication {
             prompt.SetOnConnectionAccepted(requestedTransmissionInfo =>
             {
                 supervisorAddress = ipAddress;
-                FormattedIpAddress restAddress = new FormattedIpAddress(supervisorAddress.IpAddressToString(), 3000);
+                FormattedIpAddress restAddress = new FormattedIpAddress(supervisorAddress.IpAddressToString(), 3001);
                 restRequester = new RestRequester(restAddress);
                 eventPoller = transform.gameObject.AddComponent<EventPoller>();
                 eventPoller.Setup(restRequester);
