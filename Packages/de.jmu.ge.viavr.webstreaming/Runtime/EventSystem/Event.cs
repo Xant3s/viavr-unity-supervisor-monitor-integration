@@ -14,7 +14,7 @@ namespace EventSystem {
         public void Invoke() => SendToSupervisor(trackedState.FormatGameStateInfo());
 
         private void SendToSupervisor(string eventMessage) => 
-            RestRequester.requester.MakePutRequest(
+            RestRequester.GetInstance().MakePutRequest(
                 identifier,
                 _ => {},
                 string.Join(" ", DateTime.Now.ToShortTimeString(), eventMessage));
