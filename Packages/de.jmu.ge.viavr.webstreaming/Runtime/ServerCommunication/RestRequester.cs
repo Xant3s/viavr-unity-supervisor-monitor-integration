@@ -106,15 +106,15 @@ namespace Package.Runtime.Communication {
             StringBuilder idBuilder = new();
 
             for(int index = 0; index < 6; index++) {
-                int randomNumber = Random.Range(0, 36);
-                if(randomNumber >= 10) {
-                    idBuilder.Append(Convert.ToChar(65 + (randomNumber - 10)));
-                }
-                else {
-                    idBuilder.Append(randomNumber);
-                }
+                idBuilder.Append(RandomNumberOrLetter());
             }
             return idBuilder.ToString();
+        }
+
+        private static char RandomNumberOrLetter() {
+            int randomNumber = Random.Range(0, 36);
+            return randomNumber >= 10 
+                ? Convert.ToChar(65 + (randomNumber - 10)) : char.Parse(randomNumber.ToString());
         }
 
         private static void HandleWebRequest(UnityWebRequest webRequest, Action<string> onReception) {
