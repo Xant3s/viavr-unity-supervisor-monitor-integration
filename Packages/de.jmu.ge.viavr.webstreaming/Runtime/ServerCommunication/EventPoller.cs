@@ -4,15 +4,8 @@ using UnityEngine;
 
 namespace Package.Runtime.Communication {
     public class EventPoller : MonoBehaviour {
-        private RestRequester restRequester;
-
         private Coroutine pollCoroutine;
-        private Action<string> onEvent; 
-
-        // ReSharper disable once ParameterHidesMember
-        public void Setup(RestRequester restRequester) {
-            this.restRequester = restRequester;
-        }
+        private Action<string> onEvent;
 
         public void StartPolling() {
             pollCoroutine = StartCoroutine(PollCoroutine());
@@ -32,7 +25,7 @@ namespace Package.Runtime.Communication {
 
         private IEnumerator PollCoroutine() {
             while(true) {
-                restRequester.MakeGetRequest("Events", getMessage => {
+                RestRequester.GetInstance().MakeGetRequest("Events", getMessage => {
                     if(getMessage.Equals("[]")) 
                         return;
                     onEvent?.Invoke(getMessage);

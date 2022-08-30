@@ -49,14 +49,13 @@ namespace Package.Runtime.Communication {
 
         private void Update() {
             if(!portScanner.FoundServer(out FormattedIpAddress ipAddress)) return;
+            FormattedIpAddress restAddress = new FormattedIpAddress(ipAddress.IpAddressToString(), 3001);
             
             prompt.SetOnConnectionAccepted(requestedTransmissionInfo =>
             {
                 supervisorAddress = ipAddress;
-                FormattedIpAddress restAddress = new FormattedIpAddress(supervisorAddress.IpAddressToString(), 3001);
-                restRequester = new RestRequester(restAddress);
+                RestRequester.GetInstance().SetUpConnectionInfo(restAddress);
                 eventPoller = transform.gameObject.AddComponent<EventPoller>();
-                eventPoller.Setup(restRequester);
                 eventPoller.AddListener(Debug.Log);
                 eventPoller.StartPolling();
                 ConnectionInfo requestedTransmissions = ConnectionInfo.JsonifyConnectionInfo(requestedTransmissionInfo);
@@ -76,7 +75,7 @@ namespace Package.Runtime.Communication {
             
             portScanner.SetConnected();
             
-            RestRequester.IdentifySupervisor(ipAddress, prompt);
+            RestRequester.IdentifySupervisor(restAddress, prompt);
             
         }
 
