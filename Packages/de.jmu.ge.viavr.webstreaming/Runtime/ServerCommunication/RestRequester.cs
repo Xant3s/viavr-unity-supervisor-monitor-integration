@@ -106,7 +106,7 @@ namespace Package.Runtime.Communication {
             StringBuilder idBuilder = new();
 
             for(int index = 0; index < 6; index++) {
-                int randomNumber = Random.Range(0, 25);
+                int randomNumber = Random.Range(0, 36);
                 if(randomNumber >= 10) {
                     idBuilder.Append(Convert.ToChar(65 + (randomNumber - 10)));
                 }
