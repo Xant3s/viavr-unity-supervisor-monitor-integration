@@ -61,6 +61,10 @@ namespace Package.Runtime.Communication {
             });
         }
 
+        /// <summary>
+        /// Should be called before any message are send. Else they will be put in the backlog and send on setup.
+        /// </summary>
+        /// <param name="restIpAddress">The Ip address of the supervisor monitor or any other target connection</param>
         public void SetUpConnectionInfo(FormattedIpAddress restIpAddress) {
             ipAddress = restIpAddress;
             foreach(var getRequest in getMessageBacklog) 
