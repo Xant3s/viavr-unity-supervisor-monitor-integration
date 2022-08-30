@@ -50,7 +50,7 @@ namespace Package.Runtime.Communication {
 
         private void Update() {
             if(!portScanner.FoundServer(out FormattedIpAddress ipAddress)) return;
-            FormattedIpAddress restAddress = new FormattedIpAddress(supervisorAddress.IpAddressToString(), 3001);
+            FormattedIpAddress restAddress = new FormattedIpAddress(ipAddress.IpAddressToString(), 3001);
             
             prompt.SetOnConnectionAccepted(requestedTransmissionInfo =>
             {
@@ -76,7 +76,7 @@ namespace Package.Runtime.Communication {
             
             portScanner.SetConnected();
             
-            RestRequester.IdentifySupervisor(ipAddress, prompt);
+            RestRequester.IdentifySupervisor(restAddress, prompt);
             
         }
 
