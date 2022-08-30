@@ -11,10 +11,13 @@ namespace Package.Runtime.Communication {
 
     public class RestRequester {
         private FormattedIpAddress ipAddress;
-        private bool setUp;
         private static RestRequester requester;
 
-        private readonly List<(UnityWebRequest request, Action<string> onReception)> backlog = new();
+        private readonly List<(string identifier, Action<string> onReception)> getMessageBacklog = new();
+        private readonly List<(string identifier, Action<string> onReception, WWWForm postForm)> postMessageBacklog = new();
+        private readonly List<(string identifier, Action<string> onReception, string putMessage)> putMessageBacklog = new();
+
+        private bool IsNotSetUp => ipAddress == null;
 
         private class AcceptAllCertificatesToIdentifyThumbprint : CertificateHandler {
             public string identifiedThumbprint;
@@ -39,7 +42,9 @@ namespace Package.Runtime.Communication {
             }
         }
 
-        private RestRequester() {}
+        private RestRequester() {
+            // Empty
+        }
 
         public static RestRequester GetInstance() {
             return requester ??= new RestRequester();
@@ -53,54 +58,48 @@ namespace Package.Runtime.Communication {
                 string newThumbprint = ((AcceptAllCertificatesToIdentifyThumbprint)webRequest.certificateHandler).identifiedThumbprint;
                 identificationHandler.Show(newThumbprint, webRequest.downloadHandler.text);
                 identificationHandler.SaveThumbprint(() => AcceptCertificateWithCertainThumbprint.SetCurrentThumbprint(newThumbprint));
-
             });
-
         }
 
         public void SetUpConnectionInfo(FormattedIpAddress restIpAddress) {
             ipAddress = restIpAddress;
-            setUp = true;
-            foreach(var currentItem in backlog) {
-                HandleWebRequest(currentItem.request, currentItem.onReception);
-            }
+            foreach(var getRequest in getMessageBacklog) 
+                MakeGetRequest(getRequest.identifier, getRequest.onReception);
+            foreach(var postRequest in postMessageBacklog) 
+                MakePostRequest(postRequest.identifier, postRequest.onReception, postRequest.postForm);
+            foreach(var putRequest in putMessageBacklog) 
+                MakePutRequest(putRequest.identifier, putRequest.onReception, putRequest.putMessage);
         }
 
         public void MakeGetRequest(string identifier, Action<string> onReception) {
+            if(IsNotSetUp) {
+                getMessageBacklog.Add((identifier,onReception));
+                return;
+            }
             UnityWebRequest webRequest = UnityWebRequest.Get("https://" + ipAddress + "/" + identifier);
             webRequest.certificateHandler = new AcceptCertificateWithCertainThumbprint();
-
-            if(setUp) {
-                HandleWebRequest(webRequest, onReception);
-            }
-            else {
-                backlog.Add((webRequest, onReception));
-            }
+            HandleWebRequest(webRequest, onReception);
         }
 
         public void MakePostRequest(string identifier, Action<string> onReception, WWWForm postForm) {
+            if(IsNotSetUp) {
+                postMessageBacklog.Add((identifier,onReception,postForm));
+                return;
+            }
             UnityWebRequest webRequest = UnityWebRequest.Post("https://" + ipAddress + "/" + identifier, postForm);
             webRequest.certificateHandler = new AcceptCertificateWithCertainThumbprint();
-
-            if(setUp) {
-                HandleWebRequest(webRequest, onReception);
-            }
-            else {
-                backlog.Add((webRequest, onReception));
-            }
+            HandleWebRequest(webRequest, onReception);
         }
 
         public void MakePutRequest(string identifier, Action<string> onReception, string putMessage) {
+            if(IsNotSetUp) {
+                putMessageBacklog.Add((identifier,onReception,putMessage));
+                return;
+            }
             byte[] dataMessage = Encoding.UTF8.GetBytes(putMessage);
             UnityWebRequest webRequest = UnityWebRequest.Put("https://" + ipAddress + "/" + identifier, dataMessage);
             webRequest.certificateHandler = new AcceptCertificateWithCertainThumbprint();
-
-            if(setUp) {
-                HandleWebRequest(webRequest, onReception);
-            }
-            else {
-                backlog.Add((webRequest, onReception));
-            }
+            HandleWebRequest(webRequest, onReception);
         }
 
         private static string GenerateId() {
