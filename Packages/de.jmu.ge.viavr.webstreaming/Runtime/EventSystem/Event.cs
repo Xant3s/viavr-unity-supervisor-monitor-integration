@@ -4,6 +4,7 @@ using System.Text;
 using de.jmu.ge.Gamification.General;
 using Package.Runtime.Communication;
 using GamesEngineering.QuestSystem;
+using UnityEngine.Events;
 
 namespace EventSystem {
     public class GameStateRelation {
@@ -25,15 +26,15 @@ namespace EventSystem {
         private const string Identifier = "LogEvent";
         
         private readonly List<(string name, Relation relation, int targetValue)> gameStateInfo;
-        private readonly Func<string> onActivateMessage;
+        private readonly string onActivateMessage;
         private readonly bool repeated;
 
         private Dictionary<string, GameState> mappedGameStates;
         private Task currentTask;
 
-        public Event(List<(string name, Relation relation, int targetValue)> gameStateInfo, string onActionMessage, bool repeated) {
+        public Event(List<(string name, Relation relation, int targetValue)> gameStateInfo, string onActivateMessage, bool repeated) {
             this.gameStateInfo = gameStateInfo;
-            onActivateMessage += () => InferMessage(onActionMessage);
+            this.onActivateMessage = onActivateMessage; 
             this.repeated = repeated;
         }
 
@@ -59,13 +60,15 @@ namespace EventSystem {
             RestRequester.GetInstance().MakePutRequest(
                 Identifier,
                 _ => {},
-                string.Join(" ", "[" + DateTime.Now.ToShortTimeString() + "]", onActivateMessage()));
+                string.Join(" ", "[" + DateTime.Now.ToShortTimeString() + "]", InferMessage(onActivateMessage)));
 
+        // This works because C# always has one string before the split char and one afterwards.
+        // But not really foolproof => Doesn't check for closing brackets... 
         private string InferMessage(string messageBlueprint) {
             var messageParts = messageBlueprint.Split('{','}');
             StringBuilder newMessage = new ();
             for(int partIndex = 0; partIndex < messageParts.Length; partIndex++) {
-                if((partIndex + 1) % 2 == 0) {
+                if(partIndex % 2 == 0) {
                     newMessage.Append(mappedGameStates[messageParts[partIndex]]);
                 }
                 else {
