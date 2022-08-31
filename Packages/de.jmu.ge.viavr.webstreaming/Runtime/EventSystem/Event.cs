@@ -43,8 +43,7 @@ namespace EventSystem {
             
             foreach(var info in gameStateInfo) {
                 var currentCondition = new Condition();
-                GameState.onValueChange += () => 
-                    currentCondition.IsTrue = int.Parse(mappedGameStates[info.name].Value) >= info.targetValue;
+                GameState.onValueChange += CreateValueAssertion(info, currentCondition);
                 currentTask.Conditions.Add(currentCondition);
             }
             
@@ -75,5 +74,13 @@ namespace EventSystem {
             }
             return newMessage.ToString();
         }
+
+        private UnityAction CreateValueAssertion((string name, Relation relation, int targetValue) info, Condition condition)
+            => info.relation switch {
+                Relation.Lesser => () => condition.IsTrue = int.Parse(mappedGameStates[info.name].Value) < info.targetValue,
+                Relation.Equal => () => condition.IsTrue = int.Parse(mappedGameStates[info.name].Value) == info.targetValue,
+                Relation.Greater => () => condition.IsTrue = int.Parse(mappedGameStates[info.name].Value) > info.targetValue,
+                _ => null
+            };
     }
 }
