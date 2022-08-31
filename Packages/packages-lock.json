@@ -273,6 +273,15 @@
       },
       "hash": "6bca26cd70de25333e7b123b5766ac4d615698ba"
     },
+    "de.jmu.ge.gamificationutils": {
+      "version": "0.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "de.jmu.ge.viavr.unitybridge": "0.1.1"
+      },
+      "url": "https://packages.informatik.uni-wuerzburg.de"
+    },
     "de.jmu.ge.questsystem": {
       "version": "0.1.2",
       "depth": 1,
@@ -308,7 +317,8 @@
       "dependencies": {
         "de.jmu.ge.viavr.unitybridge": "0.1.0",
         "de.jmu.ge.questsystem": "0.1.2",
-        "com.unity.renderstreaming": "3.1.0-exp.3"
+        "com.unity.renderstreaming": "3.1.0-exp.3",
+        "de.jmu.ge.gamificationutils": "0.1.0"
       }
     },
     "com.unity.modules.ai": {

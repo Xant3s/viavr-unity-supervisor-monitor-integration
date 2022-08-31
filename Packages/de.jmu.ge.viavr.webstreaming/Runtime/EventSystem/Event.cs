@@ -1,4 +1,5 @@
 ﻿using System;
+using de.jmu.ge.Gamification.General;
 using Package.Runtime.Communication;
 
 namespace EventSystem {
