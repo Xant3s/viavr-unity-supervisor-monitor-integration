@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using de.jmu.ge.Gamification.General;
 using Package.Runtime.Communication;
 using GamesEngineering.QuestSystem;
@@ -27,18 +28,17 @@ namespace EventSystem {
         private readonly Func<string> onActivateMessage;
         private readonly bool repeated;
 
-        private string mappedGameStates;
+        private Dictionary<string, GameState> mappedGameStates;
         private Task currentTask;
 
         public Event(List<(string name, Relation relation, int targetValue)> gameStateInfo, string onActionMessage, bool repeated) {
             this.gameStateInfo = gameStateInfo;
-            var messageParts = onActionMessage.Split('{','}');
-            onActivateMessage += () => string.Concat(messageParts);
+            onActivateMessage += () => InferMessage(onActionMessage);
             this.repeated = repeated;
         }
 
         public void InitialiseTask(Dictionary<string, GameState> mappedGameStates) {
-            this.mappedGameStates = this.mappedGameStates;
+            this.mappedGameStates = mappedGameStates;
             currentTask = new Task();
             
             foreach(var info in gameStateInfo) {
@@ -61,5 +61,19 @@ namespace EventSystem {
                 Identifier,
                 _ => {},
                 string.Join(" ", "[" + DateTime.Now.ToShortTimeString() + "]", onActivateMessage()));
+
+        private string InferMessage(string messageBlueprint) {
+            var messageParts = messageBlueprint.Split('{','}');
+            StringBuilder newMessage = new ();
+            for(int partIndex = 0; partIndex < messageParts.Length; partIndex++) {
+                if((partIndex + 1) % 2 == 0) {
+                    newMessage.Append(mappedGameStates[messageParts[partIndex]]);
+                }
+                else {
+                    newMessage.Append(messageParts[partIndex]);
+                }
+            }
+            return newMessage.ToString();
+        }
     }
 }
