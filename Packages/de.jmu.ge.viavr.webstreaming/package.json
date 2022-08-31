@@ -28,6 +28,61 @@
       "uuid": "bdbe7c6b-2e5f-4381-a8dd-e1abe4b785bb",
       "kind": "boolean",
       "label": "Active"
+    },
+    "events": {
+      "value": [
+        {
+          "trackedGameStates": {
+            "value": [
+              {
+                "gameStateName": {
+                  "value": "Playtime",
+                  "uuid": "1e727dc0-b64d-4cca-923b-39ed3409e489",
+                  "kind": "string",
+                  "label": "Name"
+                },
+                "relation": {
+                  "value": "lesser",
+                  "uuid": "8f5bdcc2-3450-4d2a-8d9c-571e1d5602ff",
+                  "kind": "dropdown",
+                  "label": "Relation to target value",
+                  "options": [
+                    "lesser",
+                    "equal",
+                    "greater"
+                  ]
+                },
+                "targetValue": {
+                  "value": "3",
+                  "uuid": "5c873dd9-56b8-4fb5-9c7e-4394f8d6cdf4",
+                  "kind": "int",
+                  "label": "Target value"
+                }
+              }
+            ],
+            "uuid": "1be4383e-f570-479f-9c57-c066aef22b6f",
+            "kind": "list",
+            "listType": "composite",
+            "label": "Tracked gamestates"
+          },
+          "onActiveMessage": {
+            "value": "Hi. This is a sample test message",
+            "uuid": "0e796d3d-4dfb-4856-bb62-2ac5efe61c41",
+            "kind": "string",
+            "label": "Event message"
+          },
+          "repeated": {
+            "value": "true",
+            "uuid": "32a8c3bd-e46f-4f00-be17-7f62664c6bf8",
+            "kind": "boolean",
+            "label": "Event repeated?"
+          }
+        }
+      ],
+      "uuid": "ac2bf670-a95c-48c5-b699-cc0a02281de3",
+      "kind": "list",
+      "listType": "composite",
+      "label": "Events"
     }
   }
 }
