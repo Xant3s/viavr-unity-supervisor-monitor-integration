@@ -1,0 +1,19 @@
+﻿{
+  "name": "EventSystem",
+  "rootNamespace": "",
+  "references": [
+    "GUID:5b11c226142e5d240b7ca59f0c2dd0e0",
+    "GUID:b163de82840f24649abe65f0803988ce",
+    "ServerCommunication",
+    "GUID:f053e21cdf82c8b40aed339502f7d9b3"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
