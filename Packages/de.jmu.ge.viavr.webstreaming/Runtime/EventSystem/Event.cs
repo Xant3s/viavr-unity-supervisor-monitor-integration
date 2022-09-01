@@ -7,20 +7,6 @@ using GamesEngineering.QuestSystem;
 using UnityEngine.Events;
 
 namespace EventSystem {
-    public class GameStateRelation {
-        private string name;
-        private GameState gameState;
-        private bool relation;
-        private int targetValue;
-
-        public GameStateRelation(string gameStateName, bool relation, int targetValue) {
-            name = gameStateName;
-            this.relation = relation;
-            this.targetValue = targetValue;
-        }
-
-        public void SetCorrespondingGameState(GameState correspondingState) => gameState = correspondingState;
-    }
     
     public class Event {
         private const string Identifier = "LogEvent";
