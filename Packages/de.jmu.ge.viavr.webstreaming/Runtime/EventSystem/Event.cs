@@ -7,7 +7,20 @@ using GamesEngineering.QuestSystem;
 using UnityEngine.Events;
 
 namespace EventSystem {
+    [Serializable]
+    public class GameStateInfo {
+        public string name;
+        public Relation relation;
+        public int targetValue;
+
+        public GameStateInfo(string name, Relation relation, int targetValue) {
+            this.name = name;
+            this.relation = relation;
+            this.targetValue = targetValue;
+        }
+    }
     
+    [Serializable]
     public class Event {
         private const string Identifier = "LogEvent";
         
