@@ -54,8 +54,7 @@
       "url": "https://packages.informatik.uni-wuerzburg.de",
       "scopes": [
         "de.jmu",
-        "unity-com",
-        "unity-de"
+        "unity-com"
       ]
     }
   ]
