@@ -15,16 +15,11 @@ namespace EventSystem {
     public class EventConfigurator : MonoBehaviour {
         //Copied from GamificationConfigurator. Sadly cannot reference it directly because it is Editor only
         private const string path = "Assets/Settings/de.jmu.ge.gamificationutils/States/";
+        [SerializeField]
         private List<Event> events = new();
         private List<(string name, Relation relation, int targetValue)> gameStateInfo;
 
-        public void SetUpEvents(List<EventSettings> eventInfo) {
-            foreach(var trackedEvent in eventInfo) {
-                events.Add(new Event(ConvertGameStateInfo(trackedEvent.trackedGameStates),
-                    trackedEvent.onActivateMessage,
-                    bool.Parse(trackedEvent.repeated)));
-            }
-        }
+        public void AddEvent(Event @event) => events.Add(@event);
 
         private void Start() {
             var gameStates = FindAllExistingGameStates();

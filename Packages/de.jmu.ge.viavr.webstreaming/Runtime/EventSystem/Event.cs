@@ -4,6 +4,7 @@ using System.Text;
 using de.jmu.ge.Gamification.General;
 using Package.Runtime.Communication;
 using GamesEngineering.QuestSystem;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace EventSystem {
@@ -24,14 +25,17 @@ namespace EventSystem {
     public class Event {
         private const string Identifier = "LogEvent";
         
-        private readonly List<(string name, Relation relation, int targetValue)> gameStateInfo;
-        private readonly string onActivateMessage;
-        private readonly bool repeated;
+        [SerializeField]
+        private List<GameStateInfo> gameStateInfo;
+        [SerializeField]
+        private string onActivateMessage;
+        [SerializeField]
+        private bool repeated;
 
         private Dictionary<string, GameState> mappedGameStates;
         private Task currentTask;
 
-        public Event(List<(string name, Relation relation, int targetValue)> gameStateInfo, string onActivateMessage, bool repeated) {
+        public Event(List<GameStateInfo> gameStateInfo, string onActivateMessage, bool repeated) {
             this.gameStateInfo = gameStateInfo;
             this.onActivateMessage = onActivateMessage; 
             this.repeated = repeated;
@@ -46,7 +50,8 @@ namespace EventSystem {
                 GameState.onValueChange += CreateValueAssertion(info, currentCondition);
                 currentTask.Conditions.Add(currentCondition);
             }
-            
+
+            currentTask.OnTaskFinished = new UnityEvent();
             currentTask.OnTaskFinished.AddListener(() => {
                 SendToSupervisor();
                 currentTask.IsActive = repeated;
@@ -77,7 +82,7 @@ namespace EventSystem {
             return newMessage.ToString();
         }
 
-        private UnityAction CreateValueAssertion((string name, Relation relation, int targetValue) info, Condition condition)
+        private UnityAction CreateValueAssertion(GameStateInfo info, Condition condition)
             => info.relation switch {
                 Relation.Lesser => () => condition.IsTrue = int.Parse(mappedGameStates[info.name].Value) < info.targetValue,
                 Relation.Equal => () => condition.IsTrue = int.Parse(mappedGameStates[info.name].Value) == info.targetValue,
