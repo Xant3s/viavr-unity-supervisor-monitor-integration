@@ -13,6 +13,8 @@
     "com.unity.ugui": "1.0.0",
     "com.unity.visualscripting": "1.7.2",
     "com.unity.xr.picoxr": "https://gitlab2.informatik.uni-wuerzburg.de/GE/Dev/ViaVR/components/picoxr.git",
+    "de.jmu.ge.gamificationutils": "0.1.0",
+    "de.jmu.ge.questsystem": "https://gitlab2.informatik.uni-wuerzburg.de/hci/development/reuse/unity/de.jmu.ge.tasksystem.git?path=/Packages/de.jmu.ge.questsystem",
     "de.jmu.ge.viavr.locomotion": "https://gitlab2.informatik.uni-wuerzburg.de/GE/Dev/ViaVR/components/vr-locomotion.git?path=/Assets/de.jmu.ge.viavr.locomotion#main",
     "de.jmu.ge.viavr.unitybridge": "0.1.1",
     "com.unity.modules.ai": "1.0.0",
@@ -53,8 +55,7 @@
       "url": "https://packages.informatik.uni-wuerzburg.de",
       "scopes": [
         "de.jmu",
-        "unity-com",
-        "unity-de"
+        "unity-com"
       ]
     }
   ]
