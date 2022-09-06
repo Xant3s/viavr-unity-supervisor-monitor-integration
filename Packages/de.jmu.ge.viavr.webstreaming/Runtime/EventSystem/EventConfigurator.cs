@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using de.jmu.ge.Gamification.General;
 using UnityEditor;
 using UnityEngine;
-using WebStreaming;
 
 namespace EventSystem {
     public enum Relation {
@@ -17,7 +15,6 @@ namespace EventSystem {
         private const string path = "Assets/Settings/de.jmu.ge.gamificationutils/States/";
         [SerializeField]
         private List<Event> events = new();
-        private List<(string name, Relation relation, int targetValue)> gameStateInfo;
 
         public void AddEvent(Event @event) => events.Add(@event);
 
@@ -40,9 +37,5 @@ namespace EventSystem {
             return findAssets.Select(AssetDatabase.GUIDToAssetPath)
                 .Select(AssetDatabase.LoadAssetAtPath<GameState>).ToList();
         }
-
-        private List<(string name, Relation relation, int targetValue)> ConvertGameStateInfo(List<GameStateSettings> gameStateInfos) =>
-            gameStateInfos.Select(info => (info.gameStateName, Enum.Parse<Relation>(info.relation), int.Parse(info.targetValue)))
-                .ToList();
     }
 }
