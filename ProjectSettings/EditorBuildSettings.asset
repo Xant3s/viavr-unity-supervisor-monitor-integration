@@ -14,5 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/NewSample/Scenes/ResultScene.unity
     guid: dd2d493a6f2178a488e010066639a2d1
+  - enabled: 1
+    path: Assets/de.jmu.ge.viavr.webstreaming/Samples/SampleScene/Scenes/ResultScene.unity
+    guid: dd2d493a6f2178a488e010066639a2d1
   m_configObjects:
     Unity.XR.PXR.Settings: {fileID: 11400000, guid: 01791d44ed83d5f41a83a25b10d377cb, type: 2}
