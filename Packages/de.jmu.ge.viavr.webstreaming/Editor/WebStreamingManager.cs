@@ -38,12 +38,13 @@ public class WebStreamingManager : PackageConfigurator {
     private void SetUpEvents(List<EventSettings> eventInfo) {
         var eventHandlerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.webstreaming/Runtime/EventHandler.prefab");
         var eventHandler = Object.Instantiate(eventHandlerPrefab).GetComponent<EventConfigurator>();
-        
+
         foreach(var trackedEvent in eventInfo) {
             eventHandler.AddEvent(new Event(ConvertGameStateInfo(trackedEvent.trackedGameStates),
                 trackedEvent.onActivateMessage,
                 bool.Parse(trackedEvent.repeated)));
         }
+        eventHandler.SetupEvents();
     }
 
     private List<GameStateInfo> ConvertGameStateInfo(List<GameStateSettings> gameStateInfos) =>
