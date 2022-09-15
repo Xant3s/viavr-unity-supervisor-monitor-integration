@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using de.jmu.ge.Gamification.General;
+using GamesEngineering.QuestSystem.Core;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,15 +16,17 @@ namespace EventSystem {
         private const string path = "Assets/Settings/de.jmu.ge.gamificationutils/States/";
         [SerializeField]
         private List<Event> events = new();
+        private TaskManager taskManager;
 
         public void AddEvent(Event @event) => events.Add(@event);
 
-        private void Start() {
+        public void SetupEvents() {
             var gameStates = FindAllExistingGameStates();
             var mappedGameStates = MapGameStates(gameStates);
+            taskManager = GetComponent<TaskManager>();
 
             foreach(var @event in events) {
-                @event.InitialiseTask(mappedGameStates);
+                @event.InitialiseTask(mappedGameStates, taskManager);
             }
         }
 
