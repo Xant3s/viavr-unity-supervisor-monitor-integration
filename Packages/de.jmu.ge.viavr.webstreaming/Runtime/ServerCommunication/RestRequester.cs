@@ -15,7 +15,7 @@ namespace Package.Runtime.Communication {
 
         private readonly List<(string identifier, Action<string> onReception)> getMessageBacklog = new();
         private readonly List<(string identifier, Action<string> onReception, WWWForm postForm)> postMessageBacklog = new();
-        private readonly List<(string identifier, Action<string> onReception, string putMessage)> putMessageBacklog = new();
+        private readonly List<(string identifier, Action<string> onReception, string putMessage, string format)> putMessageBacklog = new();
 
         private bool IsNotSetUp => ipAddress == null;
 
@@ -72,7 +72,7 @@ namespace Package.Runtime.Communication {
             foreach(var postRequest in postMessageBacklog) 
                 MakePostRequest(postRequest.identifier, postRequest.onReception, postRequest.postForm);
             foreach(var putRequest in putMessageBacklog) 
-                MakePutRequest(putRequest.identifier, putRequest.onReception, putRequest.putMessage);
+                MakePutRequest(putRequest.identifier, putRequest.onReception, putRequest.putMessage, putRequest.format);
         }
 
         public void MakeGetRequest(string identifier, Action<string> onReception) {
@@ -95,13 +95,14 @@ namespace Package.Runtime.Communication {
             HandleWebRequest(webRequest, onReception);
         }
 
-        public void MakePutRequest(string identifier, Action<string> onReception, string putMessage) {
+        public void MakePutRequest(string identifier, Action<string> onReception, string putMessage, string format) {
             if(IsNotSetUp) {
-                putMessageBacklog.Add((identifier,onReception,putMessage));
+                putMessageBacklog.Add((identifier,onReception,putMessage, format));
                 return;
             }
             byte[] dataMessage = Encoding.UTF8.GetBytes(putMessage);
             UnityWebRequest webRequest = UnityWebRequest.Put("https://" + ipAddress + "/" + identifier, dataMessage);
+            webRequest.SetRequestHeader("Content-Type",format);
             webRequest.certificateHandler = new AcceptCertificateWithCertainThumbprint();
             HandleWebRequest(webRequest, onReception);
         }
