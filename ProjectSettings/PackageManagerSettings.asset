@@ -31,7 +31,6 @@ MonoBehaviour:
     m_Scopes:
     - de.jmu
     - unity-com
-    - unity-de
     m_IsDefault: 0
     m_Capabilities: 0
   m_UserSelectedRegistryName: Info9 JMU

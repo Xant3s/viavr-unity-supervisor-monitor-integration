@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "events": [
+    {
+      "trackedGameStates": [
+        {
+          "gameStateName": "Health",
+          "relation": "Equal",
+          "targetValue": "100"
+        }
+      ],
+      "onActivateMessage": "Test event successful",
+      "repeated": "false"
+    }
+  ]
+}
