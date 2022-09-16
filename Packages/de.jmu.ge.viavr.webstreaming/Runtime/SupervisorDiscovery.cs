@@ -2,7 +2,6 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using Package.Runtime.Communication;
 using UnityEngine;
 
 namespace de.jmu.ge.viavr.webstreaming {
@@ -32,8 +31,8 @@ namespace de.jmu.ge.viavr.webstreaming {
                 messageData = Encoding.ASCII.GetString(data, 0, receivedDate);
                 Debug.Log($"received: {messageData} from {endPoint}");
             } while (!messageData.Contains(connectionMessage));
-            var supervisorAddress = FormattedIpAddress.ParseToAddress(endPoint.ToString());
-            Debug.Log($"Supervisor found at {supervisorAddress}");
+            var supervisorEndPoint = (IPEndPoint) endPoint;
+            Debug.Log($"Supervisor found at {supervisorEndPoint.Address}:{supervisorEndPoint.Port}");
         }
 
         public void Stop() {
