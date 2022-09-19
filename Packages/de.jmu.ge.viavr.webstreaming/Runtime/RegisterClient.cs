@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 
 namespace de.jmu.ge.viavr.webstreaming {
-    public class RegisterClient: MonoBehaviour {
+    public class RegisterClient {
         public async void Register(IPEndPoint supervisorEndPoint) {
             Debug.Log("Registering client at " + supervisorEndPoint);
             var content = "{\"platform\": \"Android\", \"ID\": \"1\"}";
