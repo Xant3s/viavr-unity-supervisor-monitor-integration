@@ -1,13 +1,16 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace de.jmu.ge.viavr.webstreaming {
     /// <summary>
     /// Establishes a connection to a supervisor monitor.
     /// </summary>
     public class SupervisorManager: MonoBehaviour {
-        private readonly SupervisorDiscovery discovery = new();
-        private WaitForConnectionRequest connection;
+        [SerializeField] private GameObject connectionPrompt;
         private const int restPort = 3001;
         private string deviceName;
         private string operatingSystem;
@@ -20,33 +23,61 @@ namespace de.jmu.ge.viavr.webstreaming {
         }
 
         private void Start() {
-            discovery.OnSupervisorFound += RegisterClient;
-            discovery.OnSupervisorFound += WaitForConnectionRequest;
-            discovery.OnSupervisorFound += StopDiscovery;
-            discovery.Start();
+            ConnectToSupervisor();
+        }
+        
+        private async void ConnectToSupervisor() {
+            var discovery = new SupervisorDiscovery();
+            await discovery.SupervisorFound();
+            var address = discovery.Address;
+            baseAddress = $"http://{address}:{restPort}";
+            RegisterClient(address);
+            var requestedClient = new WaitForRequest<int>(FetchRequestedClient, data => data >= 0);
+            await requestedClient.WaitUntil();
+            var anotherClientWasRequested = requestedClient.Result == 0;
+            if(anotherClientWasRequested) return;
+            ShowPrompt(baseAddress, connectionPrompt);
         }
 
-        private void RegisterClient(object sender, IPEndPoint endPoint) {
-            Debug.Log($"Supervisor found at {endPoint.Address}:{endPoint.Port}");
-            var supervisor = new IPEndPoint(endPoint.Address, restPort);
+        private async Task<int> FetchRequestedClient() {
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(baseAddress);
+            var content = await client.GetStringAsync($"{baseAddress}/clients/connected");
+            if(content.Equals(string.Empty)) return -1;
+            return content.Equals(deviceName) ? 1 : 0;
+        }
+
+        private void RegisterClient(IPAddress address) {
+            Debug.Log($"Supervisor found at {address}");
+            var supervisor = new IPEndPoint(address, restPort);
             new RegisterClient().Register(supervisor, deviceName, operatingSystem);
         }
 
-        private void WaitForConnectionRequest(object sender, IPEndPoint endPoint) {
-            Debug.Log("Start waiting for supervisor connection request.");
-            connection = new WaitForConnectionRequest($"http://{endPoint.Address}:{restPort}", deviceName);
-            connection.OnConnectionDiscarded += (_, _) => Debug.Log("discarded");
-            connection.OnConnectionRequested += (_, _) => Debug.Log("requested");     
-            connection.Start();
+        private void ShowPrompt(string address, GameObject prompt) {
+            try {
+                prompt.transform.GetChild(0).Find("Body").GetComponent<Text>().text = $"Do you want to allow {address} to supervise your session?";
+                prompt.SetActive(true);
+            }
+            catch(Exception e) {
+                Debug.Log(e);
+                throw;
+            }
         }
 
-        private void StopDiscovery(object _, IPEndPoint __) {
-            discovery.Stop();
+        public async void AcceptSupervisor() {
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri(baseAddress);
+            var response = await client.PostAsync("/clients/accept", null);
+            var result = response.Content.ReadAsStringAsync().Result;
+            Debug.Log(result);
         }
-        
-        private void OnDestroy() {
-            discovery.Stop();
-            connection?.Stop();
+
+        public async void RejectSupervisor() {
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri(baseAddress);
+            var response = await client.PostAsync("/clients/reject", null);
+            var result = response.Content.ReadAsStringAsync().Result;
+            Debug.Log(result);
         }
     }
 }
