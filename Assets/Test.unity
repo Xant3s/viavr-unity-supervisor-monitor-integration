@@ -459,38 +459,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5254207417286878138, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5254207417286878138, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5254207417286878138, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
-      value: 
-      objectReference: {fileID: 8460213306444367831}
-    - target: {fileID: 5254207417286878138, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5254207417286878138, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: StartStream
-      objectReference: {fileID: 0}
-    - target: {fileID: 5254207417286878138, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: de.jmu.ge.viavr.webstreaming.SupervisorManager, WebStreamingRuntime
-      objectReference: {fileID: 0}
-    - target: {fileID: 5254207417286878138, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 7623267166617631323, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8460213306170990957, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
       propertyPath: m_Name
       value: Supervisor Manager
@@ -541,14 +509,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
---- !u!114 &8460213306444367831 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8460213306170990958, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-  m_PrefabInstance: {fileID: 8460213306444367829}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46c7aad0246046179d65734ff3328df6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

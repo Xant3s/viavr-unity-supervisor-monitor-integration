@@ -71,7 +71,6 @@ namespace de.jmu.ge.viavr.webstreaming {
             client.BaseAddress = new Uri(restServerBaseAddress);
             var response = await client.PostAsync("/clients/accept", null);
             var result = response.Content.ReadAsStringAsync().Result;
-            Debug.Log(result);
         }
 
         public void StartStream() {
@@ -79,12 +78,21 @@ namespace de.jmu.ge.viavr.webstreaming {
             stream.StartTransmission(supervisorIPAddress, transform);
         }
 
+        public void StartKeepAlive() => InvokeRepeating(nameof(PostKeepAlive), 1, 5);
+
+        private async void PostKeepAlive() {
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri(restServerBaseAddress);
+            var response = await client.PostAsync("/clients/keep-alive", null);
+            var result = response.StatusCode;
+            if(result != HttpStatusCode.OK) Debug.Log(result);
+        }
+
         public async void RejectSupervisor() {
             using var client = new HttpClient();
             client.BaseAddress = new Uri(restServerBaseAddress);
             var response = await client.PostAsync("/clients/reject", null);
             var result = response.Content.ReadAsStringAsync().Result;
-            Debug.Log(result);
         }
     }
 }
