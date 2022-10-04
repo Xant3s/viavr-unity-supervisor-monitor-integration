@@ -22,6 +22,7 @@ namespace de.jmu.ge.viavr.webstreaming {
         private void Awake() {
             deviceName = SystemInfo.deviceName;
             operatingSystem = SystemInfo.operatingSystem;
+            DontDestroyOnLoad(gameObject);
         }
 
         private void Start() {
