@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Net;
+using System.Threading;
 using Unity.RenderStreaming;
 using Unity.RenderStreaming.Signaling;
 using UnityEngine;
@@ -7,10 +8,10 @@ namespace Package.Runtime.Communication {
     public class WebStreamingTransmission : ServerTransmission {
         private RenderStreaming renderStreamer;
 
-        public void StartTransmission(FormattedIpAddress ipAddress, Transform gameObjectTransform) {
-            ISignaling signaling = new WebSocketSignaling($"ws://{ipAddress.IpAddressToString()}", 5.0f, SynchronizationContext.Current);
-            SignalingHandlerBase handlerBase = gameObjectTransform.GetComponent<Broadcast>();
-            renderStreamer = gameObjectTransform.GetComponent<RenderStreaming>();
+        public void StartTransmission(IPAddress ipAddress, Transform gameObjectTransform) {
+            ISignaling signaling = new WebSocketSignaling($"ws://{ipAddress}", 5.0f, SynchronizationContext.Current);
+            SignalingHandlerBase handlerBase = gameObjectTransform.GetComponentInChildren<Broadcast>();
+            renderStreamer = gameObjectTransform.GetComponentInChildren<RenderStreaming>();
             renderStreamer.Run(true, signaling, new []{handlerBase});
         }
         

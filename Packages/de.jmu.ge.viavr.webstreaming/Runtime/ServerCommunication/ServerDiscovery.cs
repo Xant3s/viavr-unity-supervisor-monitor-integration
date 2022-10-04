@@ -64,7 +64,7 @@ namespace Package.Runtime.Communication {
                         case Transmission.WebStreaming:
                             var webStreamer = new WebStreamingTransmission();
                             transmissions.Add(webStreamer);
-                            webStreamer.StartTransmission(serverTransmission.FormattedIp, transform);
+                            // webStreamer.StartTransmission(serverTransmission.FormattedIp, transform);
                             break;
                     }
                 }
