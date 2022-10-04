@@ -6,7 +6,7 @@ using Package.Runtime.Communication;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace de.jmu.ge.viavr.webstreaming {
+namespace de.jmu.ge.viavr.supervisorintegration {
     /// <summary>
     /// Establishes a connection to a supervisor monitor.
     /// </summary>

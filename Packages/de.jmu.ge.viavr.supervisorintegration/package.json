@@ -3,8 +3,8 @@
     "name": "Games Engineering Wuerzburg"
   },
   "description": "This package provides an automatic Web Streamer importer, that can switch the streamer on and off",
-  "displayName": "UnityWebStream",
-  "name": "de.jmu.ge.viavr.webstreaming",
+  "displayName": "VIA-VR Supervisor Monitor Integration",
+  "name": "de.jmu.ge.viavr.supervisorintegration",
   "unity": "2021.2",
   "unityRelease": "0f1",
   "version": "0.1.0",

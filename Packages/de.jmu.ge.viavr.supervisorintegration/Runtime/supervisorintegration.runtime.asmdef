@@ -1,5 +1,5 @@
 {
-    "name": "WebStreamingRuntime",
+    "name": "supervisorintegration.runtime",
     "rootNamespace": "",
     "references": [
         "GUID:9ad5a03cab1a4d4fa8bf79ae4b9c8bd0"

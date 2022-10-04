@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace de.jmu.ge.viavr.webstreaming {
+namespace de.jmu.ge.viavr.supervisorintegration {
     public class WaitForRequest<T> {
         private readonly Func<Task<T>> request;
         private readonly Func<T, bool> predicate;

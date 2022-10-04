@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace de.jmu.ge.viavr.webstreaming {
+namespace de.jmu.ge.viavr.supervisorintegration {
     public class SupervisorDiscovery {
         private const string connectionMessage = "Supervisor monitor looking for client";
         private const int port = 41234;

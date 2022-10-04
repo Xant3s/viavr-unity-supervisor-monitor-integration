@@ -303,15 +303,8 @@
       },
       "hash": "3f50d191c4ab38d4c4a6e9de3e6ffec6d221b413"
     },
-    "de.jmu.ge.viavr.unitybridge": {
-      "version": "0.1.1",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.informatik.uni-wuerzburg.de"
-    },
-    "de.jmu.ge.viavr.webstreaming": {
-      "version": "file:de.jmu.ge.viavr.webstreaming",
+    "de.jmu.ge.viavr.supervisorintegration": {
+      "version": "file:de.jmu.ge.viavr.supervisorintegration",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
@@ -320,6 +313,13 @@
         "com.unity.renderstreaming": "3.1.0-exp.3",
         "de.jmu.ge.gamificationutils": "0.1.0"
       }
+    },
+    "de.jmu.ge.viavr.unitybridge": {
+      "version": "0.1.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.informatik.uni-wuerzburg.de"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

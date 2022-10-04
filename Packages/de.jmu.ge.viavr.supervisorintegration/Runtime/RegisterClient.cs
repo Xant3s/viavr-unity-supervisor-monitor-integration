@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 
-namespace de.jmu.ge.viavr.webstreaming {
+namespace de.jmu.ge.viavr.supervisorintegration {
     public class RegisterClient {
         public async void Register(IPEndPoint supervisorEndPoint, string deviceName, string operatingSystem) {
             Debug.Log("Registering client at " + supervisorEndPoint);
