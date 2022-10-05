@@ -22,11 +22,17 @@
       "displayName": "Event Polling Example",
       "description": "Showcases how to poll events from the supervisor monitor.",
       "path": "Samples~/Event Polling Example"
+    },
+    {
+      "displayName": "Protocol Example",
+      "description": "Showcases how to protocol entries to the supervisor monitor.",
+      "path": "Samples~/Protocol Example"
     }
   ],
   "mandatory": true,
   "dependencies": {
     "de.jmu.ge.viavr.unitybridge": "0.1.0",
+    "de.jmu.ge.questsystem": "0.1.2",
     "com.unity.renderstreaming": "3.1.0-exp.3"
   },
   "publishConfig": {
