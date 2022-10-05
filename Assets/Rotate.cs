@@ -1,9 +1,7 @@
 using UnityEngine;
 
-public class Rotate : MonoBehaviour
-{
-    void Update()
-    {
-        transform.Rotate(new Vector3(0,0,1), 20 * Time.deltaTime);    
-    }
+public class Rotate : MonoBehaviour {
+    [SerializeField] private float speed = 50;
+
+    private void Update() => transform.Rotate(Vector3.up, speed * Time.deltaTime);
 }

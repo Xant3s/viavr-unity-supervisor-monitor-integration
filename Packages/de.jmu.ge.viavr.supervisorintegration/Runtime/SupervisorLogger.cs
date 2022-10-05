@@ -14,12 +14,12 @@ public class SupervisorLogger : MonoBehaviour {
             new KeyValuePair<string, string>("time", "[" + DateTime.Now.ToShortTimeString() + "]"),
             new KeyValuePair<string, string>("logMessage", InferMessage(messageFormat)));
             
-        RestRequester.GetInstance().MakePutRequest(
-            Identifier,
-            _ => {},
-            messageJson,
-            "application/json"
-        );
+        // RestRequester.GetInstance().MakePutRequest(
+        //     Identifier,
+        //     _ => {},
+        //     messageJson,
+        //     "application/json"
+        // );
     } 
 
     // This works because C# always has one string before the split char and one afterwards.

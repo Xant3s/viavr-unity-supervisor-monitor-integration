@@ -309,9 +309,7 @@
       "source": "embedded",
       "dependencies": {
         "de.jmu.ge.viavr.unitybridge": "0.1.0",
-        "de.jmu.ge.questsystem": "0.1.2",
-        "com.unity.renderstreaming": "3.1.0-exp.3",
-        "de.jmu.ge.gamificationutils": "0.1.0"
+        "com.unity.renderstreaming": "3.1.0-exp.3"
       }
     },
     "de.jmu.ge.viavr.unitybridge": {
