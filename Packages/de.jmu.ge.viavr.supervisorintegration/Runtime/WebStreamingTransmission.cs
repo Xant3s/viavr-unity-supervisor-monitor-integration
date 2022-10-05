@@ -4,8 +4,8 @@ using Unity.RenderStreaming;
 using Unity.RenderStreaming.Signaling;
 using UnityEngine;
 
-namespace Package.Runtime.Communication {
-    public class WebStreamingTransmission : ServerTransmission {
+namespace de.jmu.ge.viavr.supervisorintegration {
+    public class WebStreamingTransmission {
         private RenderStreaming renderStreamer;
 
         public void StartTransmission(IPAddress ipAddress, Transform gameObjectTransform) {

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Package.Runtime.Communication;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,16 +10,14 @@ namespace de.jmu.ge.viavr.supervisorintegration {
     /// </summary>
     public class SupervisorManager: MonoBehaviour {
         [SerializeField] private GameObject connectionPrompt;
+        private RestRequester restRequester;
         private const int restPort = 3001;
         private IPAddress supervisorIPAddress;
         private string deviceName;
-        private string operatingSystem;
-        private string restServerBaseAddress;
 
 
         private void Awake() {
             deviceName = SystemInfo.deviceName;
-            operatingSystem = SystemInfo.operatingSystem;
             DontDestroyOnLoad(gameObject);
         }
 
@@ -33,28 +29,22 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             var discovery = new SupervisorDiscovery();
             await discovery.SupervisorFound();
             supervisorIPAddress = discovery.Address;
-            restServerBaseAddress = $"http://{supervisorIPAddress}:{restPort}";
-            RegisterClient(supervisorIPAddress);
+            restRequester = new RestRequester($"http://{supervisorIPAddress}:{restPort}");
+            RegisterClient();
             var requestedClient = new WaitForRequest<int>(FetchRequestedClient, data => data >= 0);
             await requestedClient.WaitUntil();
             var anotherClientWasRequested = requestedClient.Result == 0;
             if(anotherClientWasRequested) return;
-            ShowPrompt(restServerBaseAddress, connectionPrompt);
+            ShowPrompt(supervisorIPAddress.ToString(), connectionPrompt);
         }
 
         private async Task<int> FetchRequestedClient() {
-            var client = new HttpClient();
-            client.BaseAddress = new Uri(restServerBaseAddress);
-            var content = await client.GetStringAsync($"{restServerBaseAddress}/clients/connected");
+            var content = await restRequester.Get("/clients/connected");
             if(content.Equals(string.Empty)) return -1;
             return content.Equals(deviceName) ? 1 : 0;
         }
 
-        private void RegisterClient(IPAddress address) {
-            Debug.Log($"Supervisor found at {address}");
-            var supervisor = new IPEndPoint(address, restPort);
-            new RegisterClient().Register(supervisor, deviceName, operatingSystem);
-        }
+        private async void RegisterClient() => await supervisorintegration.RegisterClient.Register(restRequester);
 
         private void ShowPrompt(string address, GameObject prompt) {
             try {
@@ -67,12 +57,9 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             }
         }
 
-        public async void AcceptSupervisor() {
-            using var client = new HttpClient();
-            client.BaseAddress = new Uri(restServerBaseAddress);
-            var response = await client.PostAsync("/clients/accept", null);
-            var result = response.Content.ReadAsStringAsync().Result;
-        }
+        public async void AcceptSupervisor() => await restRequester.Post("/clients/accept");
+
+        public async void RejectSupervisor() => await restRequester.Post("/clients/reject");
 
         public void StartStream() {
             var stream = new WebStreamingTransmission();
@@ -82,18 +69,8 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         public void StartKeepAlive() => InvokeRepeating(nameof(PostKeepAlive), 1, 5);
 
         private async void PostKeepAlive() {
-            using var client = new HttpClient();
-            client.BaseAddress = new Uri(restServerBaseAddress);
-            var response = await client.PostAsync("/clients/keep-alive", null);
-            var result = response.StatusCode;
-            if(result != HttpStatusCode.OK) Debug.Log(result);
-        }
-
-        public async void RejectSupervisor() {
-            using var client = new HttpClient();
-            client.BaseAddress = new Uri(restServerBaseAddress);
-            var response = await client.PostAsync("/clients/reject", null);
-            var result = response.Content.ReadAsStringAsync().Result;
+            var response = await restRequester.Post("/clients/keep-alive");
+            if(response.StatusCode != HttpStatusCode.OK) Debug.Log(response);
         }
     }
 }
