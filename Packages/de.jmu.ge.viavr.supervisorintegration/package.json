@@ -15,8 +15,13 @@
   "samples": [
     {
       "displayName": "Stream Example",
-      "description": "Showcasing how to stream main camera to the supervisor monitor.",
+      "description": "Showcases how to stream main camera to the supervisor monitor.",
       "path": "Samples~/Stream Example"
+    },
+    {
+      "displayName": "Event Polling Example",
+      "description": "Showcases how to poll events from the supervisor monitor.",
+      "path": "Samples~/Event Polling Example"
     }
   ],
   "mandatory": true,
