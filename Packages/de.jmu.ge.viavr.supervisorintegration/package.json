@@ -12,6 +12,13 @@
   "keywords": [
     "viavr-hidden"
   ],
+  "samples": [
+    {
+      "displayName": "Stream Example",
+      "description": "Showcasing how to stream main camera to the supervisor monitor.",
+      "path": "Samples~/Stream Example"
+    }
+  ],
   "mandatory": true,
   "dependencies": {
     "de.jmu.ge.viavr.unitybridge": "0.1.0",
