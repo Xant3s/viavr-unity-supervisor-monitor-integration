@@ -11,12 +11,12 @@ namespace de.jmu.ge.viavr.supervisorintegration {
     public class SupervisorManager: MonoBehaviour {
         [SerializeField] private GameObject connectionPrompt;
         private EventPoller eventPoller = new ();
-        private RestRequester restRequester;
         private const int restPort = 3001;
         private IPAddress supervisorIPAddress;
         private string deviceName;
 
         public EventPoller EventPoller => eventPoller;
+        public RestRequester RestRequester { get; private set; }
 
 
         private void Awake() {
@@ -32,8 +32,8 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             var discovery = new SupervisorDiscovery();
             await discovery.SupervisorFound();
             supervisorIPAddress = discovery.Address;
-            restRequester = new RestRequester($"http://{supervisorIPAddress}:{restPort}");
-            eventPoller.SetRestRequester(restRequester);
+            RestRequester = new RestRequester($"http://{supervisorIPAddress}:{restPort}");
+            eventPoller.SetRestRequester(RestRequester);
             RegisterClient();
             var requestedClient = new WaitForRequest<int>(FetchRequestedClient, data => data >= 0);
             await requestedClient.WaitUntil();
@@ -43,12 +43,12 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         }
 
         private async Task<int> FetchRequestedClient() {
-            var content = await restRequester.Get("/clients/connected");
+            var content = await RestRequester.Get("/clients/connected");
             if(content.Equals(string.Empty)) return -1;
             return content.Equals(deviceName) ? 1 : 0;
         }
 
-        private async void RegisterClient() => await supervisorintegration.RegisterClient.Register(restRequester);
+        private async void RegisterClient() => await supervisorintegration.RegisterClient.Register(RestRequester);
 
         private void ShowPrompt(string address, GameObject prompt) {
             try {
@@ -61,9 +61,9 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             }
         }
 
-        public async void AcceptSupervisor() => await restRequester.Post("/clients/accept");
+        public async void AcceptSupervisor() => await RestRequester.Post("/clients/accept");
 
-        public async void RejectSupervisor() => await restRequester.Post("/clients/reject");
+        public async void RejectSupervisor() => await RestRequester.Post("/clients/reject");
 
         public void StartStream() {
             var stream = new WebStreamingTransmission();
@@ -77,7 +77,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         private void PollEvents() => eventPoller.PollEvents();
 
         private async void PostKeepAlive() {
-            var response = await restRequester.Post("/clients/keep-alive");
+            var response = await RestRequester.Post("/clients/keep-alive");
             if(response.StatusCode != HttpStatusCode.OK) Debug.Log(response);
         }
     }
