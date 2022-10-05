@@ -2,7 +2,7 @@
   "author": {
     "name": "Games Engineering Wuerzburg"
   },
-  "description": "This package provides an automatic Web Streamer importer, that can switch the streamer on and off",
+  "description": "VIA-VR web-based supervisor monitor Unity integration",
   "displayName": "VIA-VR Supervisor Monitor Integration",
   "name": "de.jmu.ge.viavr.supervisorintegration",
   "unity": "2021.2",
