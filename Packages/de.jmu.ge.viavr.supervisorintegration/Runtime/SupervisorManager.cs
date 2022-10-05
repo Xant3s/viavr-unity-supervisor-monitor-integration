@@ -10,10 +10,13 @@ namespace de.jmu.ge.viavr.supervisorintegration {
     /// </summary>
     public class SupervisorManager: MonoBehaviour {
         [SerializeField] private GameObject connectionPrompt;
+        private EventPoller eventPoller = new ();
         private RestRequester restRequester;
         private const int restPort = 3001;
         private IPAddress supervisorIPAddress;
         private string deviceName;
+
+        public EventPoller EventPoller => eventPoller;
 
 
         private void Awake() {
@@ -30,6 +33,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             await discovery.SupervisorFound();
             supervisorIPAddress = discovery.Address;
             restRequester = new RestRequester($"http://{supervisorIPAddress}:{restPort}");
+            eventPoller.SetRestRequester(restRequester);
             RegisterClient();
             var requestedClient = new WaitForRequest<int>(FetchRequestedClient, data => data >= 0);
             await requestedClient.WaitUntil();
@@ -67,6 +71,10 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         }
 
         public void StartKeepAlive() => InvokeRepeating(nameof(PostKeepAlive), 1, 5);
+
+        public void StartPollEvents() => InvokeRepeating(nameof(PollEvents), 0, 1);
+        
+        private void PollEvents() => eventPoller.PollEvents();
 
         private async void PostKeepAlive() {
             var response = await restRequester.Post("/clients/keep-alive");
