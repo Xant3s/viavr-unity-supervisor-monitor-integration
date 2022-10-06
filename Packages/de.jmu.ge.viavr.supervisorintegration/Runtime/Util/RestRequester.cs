@@ -8,6 +8,15 @@ namespace de.jmu.ge.viavr.supervisorintegration {
     public class RestRequester {
         private readonly string restServerBaseAddress;
         private readonly HttpClient client;
+        private string token;
+
+        public string Token {
+            get => token;
+            set {
+                client.DefaultRequestHeaders.Add("x-auth-token", value);
+                token = value;
+            }
+        }
 
         public RestRequester(string baseAddress) {
             restServerBaseAddress = baseAddress;

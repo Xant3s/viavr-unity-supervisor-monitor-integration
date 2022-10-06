@@ -38,6 +38,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             await requestedClient.WaitUntil();
             var anotherClientWasRequested = requestedClient.Result == 0;
             if(anotherClientWasRequested) return;
+            await Authenticate();
             ShowPrompt(supervisorIPAddress.ToString(), connectionPrompt);
         }
 
@@ -49,6 +50,12 @@ namespace de.jmu.ge.viavr.supervisorintegration {
 
         private async void RegisterClient() => await supervisorintegration.RegisterClient.Register(RestRequester, uuid.ToString());
 
+        private async Task Authenticate() {
+            var response = await supervisorintegration.RegisterClient.Authenticate(RestRequester, uuid.ToString());
+            var token = await response.Content.ReadAsStringAsync();
+            RestRequester.Token = token;
+        }
+        
         private void ShowPrompt(string address, GameObject prompt) {
             try {
                 prompt.transform.GetChild(0).Find("Body").GetComponent<Text>().text = $"Do you want to allow {address} to supervise your session?";
