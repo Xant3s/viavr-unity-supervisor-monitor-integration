@@ -13,14 +13,13 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         private EventPoller eventPoller = new ();
         private const int restPort = 3001;
         private IPAddress supervisorIPAddress;
-        private string deviceName;
+        private Guid uuid = Guid.NewGuid();
 
         public EventPoller EventPoller => eventPoller;
         public RestRequester RestRequester { get; private set; }
 
 
         private void Awake() {
-            deviceName = SystemInfo.deviceName;
             DontDestroyOnLoad(gameObject);
         }
 
@@ -45,10 +44,10 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         private async Task<int> FetchRequestedClient() {
             var content = await RestRequester.Get("/clients/connected");
             if(content.Equals(string.Empty)) return -1;
-            return content.Equals(deviceName) ? 1 : 0;
+            return content.Equals(uuid.ToString()) ? 1 : 0;
         }
 
-        private async void RegisterClient() => await supervisorintegration.RegisterClient.Register(RestRequester);
+        private async void RegisterClient() => await supervisorintegration.RegisterClient.Register(RestRequester, uuid.ToString());
 
         private void ShowPrompt(string address, GameObject prompt) {
             try {
