@@ -24,7 +24,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
 
         public async void PollEvents() {
             var content = await restRequester.Get("/events", $"newerThan={lastKnownEventId}");
-            var events = JsonConvert.DeserializeObject<List<Event>>(content); // TODO: handle more complex objects, e.g. with multiple parameters
+            var events = JsonConvert.DeserializeObject<List<Event>>(content);
             if(events.Count == 0) return;
             lastKnownEventId = events.Last().id;
             foreach(var e in events) {
