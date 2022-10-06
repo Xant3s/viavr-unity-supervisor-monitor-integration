@@ -1,4 +1,4 @@
-﻿using GamesEngineering.QuestSystem;
+﻿using GamesEngineering.QuestSystem.Core;
 using UnityEngine;
 
 namespace de.jmu.ge.viavr.supervisorintegration {
