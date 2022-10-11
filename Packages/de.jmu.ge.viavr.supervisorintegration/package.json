@@ -1,0 +1,41 @@
+{
+  "author": {
+    "name": "Games Engineering JMU Würzburg"
+  },
+  "description": "VIA-VR web-based supervisor monitor Unity integration",
+  "displayName": "VIA-VR Supervisor Monitor Integration",
+  "name": "de.jmu.ge.viavr.supervisorintegration",
+  "unity": "2021.2",
+  "unityRelease": "0f1",
+  "version": "0.1.0-preview1",
+  "hideInEditor": false,
+  "keywords": [
+    "viavr-hidden"
+  ],
+  "samples": [
+    {
+      "displayName": "Stream Example",
+      "description": "Showcases how to stream main camera to the supervisor monitor.",
+      "path": "Samples~/Stream Example"
+    },
+    {
+      "displayName": "Event Polling Example",
+      "description": "Showcases how to poll events from the supervisor monitor.",
+      "path": "Samples~/Event Polling Example"
+    },
+    {
+      "displayName": "Protocol Example",
+      "description": "Showcases how to protocol entries to the supervisor monitor.",
+      "path": "Samples~/Protocol Example"
+    }
+  ],
+  "mandatory": true,
+  "dependencies": {
+    "de.jmu.ge.viavr.unitybridge": "0.1.0",
+    "de.jmu.ge.questsystem": "0.1.3",
+    "com.unity.renderstreaming": "3.1.0-exp.3"
+  },
+  "publishConfig": {
+    "registry": "https://packages.informatik.uni-wuerzburg.de/"
+  }
+}
