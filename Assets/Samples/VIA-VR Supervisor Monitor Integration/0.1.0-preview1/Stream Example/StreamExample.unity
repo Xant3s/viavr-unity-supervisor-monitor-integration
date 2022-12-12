@@ -587,7 +587,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4980290500055635414, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980290501260619169, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
+      propertyPath: runOnAwake
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4980290501260619169, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
       propertyPath: handlers.Array.size
