@@ -119,6 +119,7 @@ GameObject:
   - component: {fileID: 8285848754770016165}
   - component: {fileID: 8285848754770016162}
   - component: {fileID: 8756078794189098334}
+  - component: {fileID: 4351293648131390932}
   m_Layer: 0
   m_Name: Render Streaming Camera
   m_TagString: Untagged
@@ -191,7 +192,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8285848754770016187}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!114 &8285848754770016165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,4 +253,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b205814fc5591a8438e1e97d255da0ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <MainCamera>k__BackingField: {fileID: 0}
+--- !u!114 &4351293648131390932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8285848754770016187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28e4557ba7cb056499034647b21b6361, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
