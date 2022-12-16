@@ -20,3 +20,7 @@ monitor. When the monitor receives this first initial keep alive message he in t
 to the Unity Application. When from either point the keep alive message is missing for more than 15 seconds
 the connection is broken and the Application is searching for a new Server and vice versa. 
 Connection also can be broke up manually by sending a disconnect message to the other device.
+
+## Debug Info
+
+Should this plug in be used inside the editor make sure to toggle the option "RunInBackground" in the "Player/Resolution and Presentation" menu in the "Project settings"
