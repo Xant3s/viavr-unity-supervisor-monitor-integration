@@ -10,6 +10,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             public string uuid;
             public string friendlyName;
             public string platform;
+            public string outdated;
         }
         
         public static async Task<HttpResponseMessage> Register(RestRequester requester, string uuid) {
@@ -28,7 +29,8 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             var clientInfo = new Content {
                 uuid = uuid,
                 friendlyName = deviceName,
-                platform = operatingSystem
+                platform = operatingSystem,
+                outdated = false.ToString()
             };
             return clientInfo;
         }
