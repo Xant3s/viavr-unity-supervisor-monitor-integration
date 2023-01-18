@@ -12,6 +12,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         [SerializeField] private GameObject connectionPrompt;
         private EventPoller eventPoller = new ();
         private const int restPort = 3001;
+        private const float registerTimer = 5f;
         private IPAddress supervisorIPAddress;
         private Guid uuid = Guid.NewGuid();
 
@@ -33,7 +34,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             supervisorIPAddress = discovery.Address;
             RestRequester = new RestRequester($"http://{supervisorIPAddress}:{restPort}");
             eventPoller.SetRestRequester(RestRequester);
-            InvokeRepeating(nameof(RegisterClient), 0f,5f);
+            InvokeRepeating(nameof(RegisterClient), 0f,registerTimer);
             var requestedClient = new WaitForRequest<int>(FetchRequestedClient, data => data >= 0);
             await requestedClient.WaitUntil();
             CancelInvoke(nameof(RegisterClient));
