@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             public string uuid;
             public string friendlyName;
             public string platform;
-            public string outdated;
+            public string timestamp;
         }
         
         public static async Task<HttpResponseMessage> Register(RestRequester requester, string uuid) {
@@ -30,7 +31,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
                 uuid = uuid,
                 friendlyName = deviceName,
                 platform = operatingSystem,
-                outdated = false.ToString()
+                timestamp = DateTime.Now.ToString("M/d/yyyy HH:mm:ss")
             };
             return clientInfo;
         }
