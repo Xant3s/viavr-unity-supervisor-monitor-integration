@@ -16,8 +16,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         
         public static async Task<HttpResponseMessage> Register(RestRequester requester, string uuid) {
             var clientInfo = CreateClientInfo(uuid);
-            await requester.Post("/clients/register", JsonConvert.SerializeObject(clientInfo));
-            return await requester.Post("/clients/layout-model", SupervisorInfo.GetLayout());
+            return await requester.Post("/clients/register", JsonConvert.SerializeObject(clientInfo));
         }
 
         public static async Task<HttpResponseMessage> Authenticate(RestRequester requester, string uuid) {

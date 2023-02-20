@@ -69,7 +69,11 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             }
         }
 
-        public async void AcceptSupervisor() => await RestRequester.Post("/clients/accept");
+        public async void AcceptSupervisor()
+        {
+            await RestRequester.Post("/clients/accept");
+            await RestRequester.Post("/clients/layout-model", SupervisorInfo.GetLayout());
+        }
 
         public async void RejectSupervisor() => await RestRequester.Post("/clients/reject");
 
