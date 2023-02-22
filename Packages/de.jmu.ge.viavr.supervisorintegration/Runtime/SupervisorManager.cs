@@ -8,7 +8,10 @@ namespace de.jmu.ge.viavr.supervisorintegration {
     /// <summary>
     /// Establishes a connection to a supervisor monitor.
     /// </summary>
-    public class SupervisorManager: MonoBehaviour {
+    public class SupervisorManager: MonoBehaviour
+    {
+        [SerializeField] private int eventPollRate = 1;
+        [SerializeField] private int layoutPollRate = 5;
         [SerializeField] private GameObject connectionPrompt;
         private EventPoller eventPoller = new ();
         private const int restPort = 3001;
@@ -84,9 +87,9 @@ namespace de.jmu.ge.viavr.supervisorintegration {
 
         public void StartKeepAlive() => InvokeRepeating(nameof(PostKeepAlive), 1, 5);
 
-        public void StartPollEvents() => InvokeRepeating(nameof(PollEvents), 0, 1);
+        public void StartPollEvents() => InvokeRepeating(nameof(PollEvents), 0, eventPollRate);
 
-        public void StartLayoutSynchronization() => InvokeRepeating(nameof(GetLayoutConfig), 10, 10);
+        public void StartLayoutSynchronization() => InvokeRepeating(nameof(GetLayoutConfig), layoutPollRate, layoutPollRate);
         
         private void PollEvents() => eventPoller.PollEvents();
 
