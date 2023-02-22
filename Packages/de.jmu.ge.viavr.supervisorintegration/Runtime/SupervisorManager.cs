@@ -72,7 +72,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         public async void AcceptSupervisor()
         {
             await RestRequester.Post("/clients/accept");
-            await RestRequester.Post("/clients/layout-model", SupervisorInfo.GetLayout());
+            await RestRequester.Post("/clients/layout-model", SupervisorLayoutHandler.GetLayout());
         }
 
         public async void RejectSupervisor() => await RestRequester.Post("/clients/reject");
@@ -85,12 +85,20 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         public void StartKeepAlive() => InvokeRepeating(nameof(PostKeepAlive), 1, 5);
 
         public void StartPollEvents() => InvokeRepeating(nameof(PollEvents), 0, 1);
+
+        public void StartLayoutSynchronization() => InvokeRepeating(nameof(GetLayoutConfig), 10, 10);
         
         private void PollEvents() => eventPoller.PollEvents();
 
         private async void PostKeepAlive() {
             var response = await RestRequester.Post("/clients/keep-alive");
             if(response.StatusCode != HttpStatusCode.OK) Debug.Log(response);
+        }
+
+        private async void GetLayoutConfig()
+        {
+            var layout = await RestRequester.Get("/clients/layout-Config");
+            SupervisorLayoutHandler.SaveLayout(layout);
         }
     }
 }
