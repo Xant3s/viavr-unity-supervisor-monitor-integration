@@ -8,12 +8,11 @@ namespace de.jmu.ge.viavr.supervisorintegration {
     /// <summary>
     /// Establishes a connection to a supervisor monitor.
     /// </summary>
-    public class SupervisorManager: MonoBehaviour
-    {
+    public class SupervisorManager : MonoBehaviour {
         [SerializeField] private int eventPollRate = 1;
         [SerializeField] private int layoutPollRate = 5;
         [SerializeField] private GameObject connectionPrompt;
-        private EventPoller eventPoller = new ();
+        private EventPoller eventPoller = new();
         private const int restPort = 3001;
         private const float registerTimer = 5f;
         private IPAddress supervisorIPAddress;
@@ -30,14 +29,14 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         private void Start() {
             ConnectToSupervisor();
         }
-        
+
         private async void ConnectToSupervisor() {
             var discovery = new SupervisorDiscovery();
             await discovery.SupervisorFound();
             supervisorIPAddress = discovery.Address;
             RestRequester = new RestRequester($"http://{supervisorIPAddress}:{restPort}");
             eventPoller.SetRestRequester(RestRequester);
-            InvokeRepeating(nameof(RegisterClient), 0f,registerTimer);
+            InvokeRepeating(nameof(RegisterClient), 0f, registerTimer);
             var requestedClient = new WaitForRequest<int>(FetchRequestedClient, data => data >= 0);
             await requestedClient.WaitUntil();
             CancelInvoke(nameof(RegisterClient));
@@ -60,7 +59,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             var token = await response.Content.ReadAsStringAsync();
             RestRequester.Token = token;
         }
-        
+
         private void ShowPrompt(string address, GameObject prompt) {
             try {
                 prompt.transform.GetChild(0).Find("Body").GetComponent<Text>().text = $"Do you want to allow {address} to supervise your session?";
@@ -72,8 +71,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             }
         }
 
-        public async void AcceptSupervisor()
-        {
+        public async void AcceptSupervisor() {
             await RestRequester.Post("/clients/accept");
             await RestRequester.Post("/clients/layout-model", SupervisorLayoutHandler.GetLayout());
         }
@@ -90,7 +88,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         public void StartPollEvents() => InvokeRepeating(nameof(PollEvents), 0, eventPollRate);
 
         public void StartLayoutSynchronization() => InvokeRepeating(nameof(GetLayoutConfig), layoutPollRate, layoutPollRate);
-        
+
         private void PollEvents() => eventPoller.PollEvents();
 
         private async void PostKeepAlive() {
@@ -98,8 +96,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             if(response.StatusCode != HttpStatusCode.OK) Debug.Log(response);
         }
 
-        private async void GetLayoutConfig()
-        {
+        private async void GetLayoutConfig() {
             var layout = await RestRequester.Get("/clients/layout-Config");
             SupervisorLayoutHandler.SaveLayout(layout);
         }
