@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Text;
 using UnityEngine;
 
 namespace de.jmu.ge.viavr.supervisorintegration {
@@ -7,34 +6,30 @@ namespace de.jmu.ge.viavr.supervisorintegration {
     /// Provides access to all info files regarding the supervisor
     /// </summary>
     public static class SupervisorLayoutHandler {
-        private static readonly string LayoutPath =
+        private static readonly string layoutPath =
             Path.Combine(Application.persistentDataPath, "SupervisorLayout.json");
 
-        private static string layout = null;
+        private static string layout = string.Empty;
 
         public static string GetLayout() {
-            if(layout == null) LoadLayout();
+            Debug.Log(layoutPath);
+            if(layout.Equals(string.Empty)) LoadLayout();
             return layout;
         }
 
         public static async void SaveLayout(string newLayout) {
-            await using FileStream clearStream = File.OpenWrite(LayoutPath);
-            clearStream.SetLength(0);
-            clearStream.Close();
-
-            await using FileStream fileStream = File.OpenWrite(LayoutPath);
-            byte[] layoutAsByte = Encoding.UTF8.GetBytes(newLayout);
-            fileStream.Write(layoutAsByte, 0, layoutAsByte.Length);
-            fileStream.Close();
+            var streamWriter = new StreamWriter(layoutPath, false);
+            await streamWriter.WriteAsync(newLayout);
+            streamWriter.Close();
         }
 
         private static void LoadLayout() {
-            if(!File.Exists(LayoutPath)) {
-                layout = "";
+            if(!File.Exists(layoutPath)) {
+                layout = string.Empty;
                 return;
             }
 
-            using StreamReader sr = File.OpenText(LayoutPath);
+            using var sr = File.OpenText(layoutPath);
             layout = sr.ReadToEnd();
         }
     }
