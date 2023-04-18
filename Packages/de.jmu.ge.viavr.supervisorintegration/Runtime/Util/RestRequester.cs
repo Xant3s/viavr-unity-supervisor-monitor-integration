@@ -13,6 +13,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         public string Token {
             get => token;
             set {
+                client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add("x-auth-token", value);
                 token = value;
             }
