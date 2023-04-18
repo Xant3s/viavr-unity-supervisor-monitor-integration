@@ -37,14 +37,21 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             RestRequester = new RestRequester($"http://{supervisorIPAddress}:{restPort}");
             eventPoller.SetRestRequester(RestRequester);
             InvokeRepeating(nameof(RegisterClient), 0f, registerTimer);
+            TryToConnectToSupervisor();
+        }
+        
+        public async void TryToConnectToSupervisor() {
+            // TODO: if supervisor cancels, hide prompt and start over
+            await Task.Delay(2000); // Wait for supervisor to clear connected client.
             var requestedClient = new WaitForRequest<int>(FetchRequestedClient, data => data >= 0);
             await requestedClient.WaitUntil();
-            CancelInvoke(nameof(RegisterClient));
             var anotherClientWasRequested = requestedClient.Result == 0;
             if(anotherClientWasRequested) return;
             await Authenticate();
             ShowPrompt(supervisorIPAddress.ToString(), connectionPrompt);
         }
+
+        public void StopLookingForSupervisor() => CancelInvoke(nameof(RegisterClient));
 
         private async Task<int> FetchRequestedClient() {
             var content = await RestRequester.Get("/clients/connected");
