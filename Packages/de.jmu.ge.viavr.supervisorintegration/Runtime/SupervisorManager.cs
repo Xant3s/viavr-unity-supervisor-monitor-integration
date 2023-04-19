@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace de.jmu.ge.viavr.supervisorintegration {
@@ -12,6 +13,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         [SerializeField] private int eventPollRate = 1;
         [SerializeField] private int layoutPollRate = 5;
         [SerializeField] private GameObject connectionPrompt;
+        [SerializeField] private UnityEvent supervisorCancelledConnectionRequest = new UnityEvent();
         private EventPoller eventPoller = new();
         private const int restPort = 3001;
         private const float registerTimer = 5f;
@@ -41,14 +43,25 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         }
         
         public async void TryToConnectToSupervisor() {
-            // TODO: if supervisor cancels, hide prompt and start over
             await Task.Delay(2000); // Wait for supervisor to clear connected client.
-            var requestedClient = new WaitForRequest<int>(FetchRequestedClient, data => data >= 0);
-            await requestedClient.WaitUntil();
-            var anotherClientWasRequested = requestedClient.Result == 0;
-            if(anotherClientWasRequested) return;
+            var supervisorWantToConnectToThisClient = await SupervisorWantsToConnectToThisClient();
+            if(!supervisorWantToConnectToThisClient) return;
             await Authenticate();
             ShowPrompt(supervisorIPAddress.ToString(), connectionPrompt);
+            InvokeRepeating(nameof(CheckSupervisorStillWantsConnection), 1, 1);
+        }
+
+        private async void CheckSupervisorStillWantsConnection() {
+            var result = await FetchRequestedClient();
+            if(result == 1) return;
+            supervisorCancelledConnectionRequest?.Invoke();
+            CancelInvoke(nameof(CheckSupervisorStillWantsConnection));
+        }
+
+        private async Task<bool> SupervisorWantsToConnectToThisClient() {
+            var requestedClient = new WaitForRequest<int>(FetchRequestedClient, data => data >= 0);
+            await requestedClient.WaitUntil();
+            return requestedClient.Result == 1;
         }
 
         public void StopLookingForSupervisor() => CancelInvoke(nameof(RegisterClient));
