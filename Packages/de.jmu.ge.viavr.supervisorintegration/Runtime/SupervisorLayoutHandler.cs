@@ -6,8 +6,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
     /// Provides access to all info files regarding the supervisor
     /// </summary>
     public static class SupervisorLayoutHandler {
-        private static readonly string layoutPath =
-            Path.Combine(Application.persistentDataPath, "SupervisorLayout.json");
+        private static readonly string layoutPath = Path.Combine(Application.persistentDataPath, "SupervisorLayout.json");
 
         private static string layout = string.Empty;
 
