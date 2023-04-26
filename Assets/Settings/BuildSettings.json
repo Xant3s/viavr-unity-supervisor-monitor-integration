@@ -1,0 +1,80 @@
+{
+  "supervisorEnabled": true,
+  "selectedPackages": [
+    "de.jmu.ge.buildutils",
+    "de.jmu.ge.firetriggers",
+    "de.jmu.ge.spokesceneimporter",
+    "de.jmu.ge.viavr.locomotion",
+    "de.jmu.ge.viavr.unitybridge"
+  ],
+  "useFloorMap": true,
+  "floorMapConfig": {
+    "nodes": [
+      {
+        "id": "1",
+        "type": "background",
+        "data": {
+          "label": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSI3NDFweCIgaGVpZ2h0PSI0MzFweCIgdmlld0JveD0iLTAuNSAtMC41IDc0MSA0MzEiIGNvbnRlbnQ9IiZsdDtteGZpbGUgaG9zdD0mcXVvdDtlbWJlZC5kaWFncmFtcy5uZXQmcXVvdDsgbW9kaWZpZWQ9JnF1b3Q7MjAyMy0wNC0xOVQxNTozMTowMS42MDRaJnF1b3Q7IGFnZW50PSZxdW90O01vemlsbGEvNS4wIChXaW5kb3dzIE5UIDEwLjA7IFdpbjY0OyB4NjQpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIHZpYXZyLWVkaXRvci8wLjEuMCBDaHJvbWUvMTAwLjAuNDg5Ni4xNDMgRWxlY3Ryb24vMTguMi4zIFNhZmFyaS81MzcuMzYmcXVvdDsgZXRhZz0mcXVvdDt1OFd5U1I4OHMtcGZwbGFBb0xLbyZxdW90OyB2ZXJzaW9uPSZxdW90OzIxLjEuNyZxdW90OyB0eXBlPSZxdW90O2VtYmVkJnF1b3Q7Jmd0OyZsdDtkaWFncmFtIGlkPSZxdW90O1JNZ3FXZFJ4ZzVTdWw1c2RiX0t2JnF1b3Q7IG5hbWU9JnF1b3Q7U2VpdGUtMSZxdW90OyZndDt6WlpOYzVzd0VJWi9EY2RtREFJVUh4TTNUUS90VEdaODZERWpJeGswSTFoR1hodWNYMThwTE1FRVBHMm5ISHhDZXZlVlZ2dXdmQVJzVTdiUFZ0VEZUNURLQk5GS3RnSDdHa1JSR0xQWVhieHk3cFI3dnVxRTNHcEpwa0hZNmpkRlltODdhcWtPSXlNQ0dOVDFXTXlncWxTR0kwMVlDODNZdGdjenpscUxYRTJFYlNiTVZQMmxKUlpVUmNRSC9idlNlZEZuRHROMUZ5bEZiNlpLRG9XUTBGeEk3Q2xnR3d1QTNhaHNOOHA0ZUQyWGJ0MjNLOUdQZzFsVjRkOHNZTjJDa3pCSHFvM09oZWUrV0F2SFNpcnZYd1hzc1NrMHFtMHRNaDl0M08xMVdvR2xjYlBRRGFmNTZVZ25aVkcxRnhLZDUxbEJxZENlbllXaVVVcHNxRGxZUXZObVFNMWowb29MekRFalVkRHR6VC8ySGdpNEFVR1lCeEwvR1lndlJidG0rQ0YyeXJ6QVFhT0d5b1YyZ0FqbG1FZnZmVEE2OXg0RUQwelFMSE9VbEhXQ2E0UGE3MTYydVg5aTd2WUd3TlpHVkhjN0pWOGxISGMrK2VNVmxEUEFyOUpOa2s5MCtaUnV0SnFoRzk0dlFEZTVNYm9JMmloY2hteTAva1IyUFNXYnpJQk4rZjl6VFcrTTY5NElmTVdUODFoQVFabSsrQlphQkhVYUppUFVmS2FKK1Z3UEw5REMvTVpRMTFhVFp3R3c2Mmpjd3p5Y2dwMTk5ZjU3RDd2cDhKbDdqMTM4TExDbjN3PT0mbHQ7L2RpYWdyYW0mZ3Q7Jmx0Oy9teGZpbGUmZ3Q7Ij48ZGVmcy8+PGc+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9Ijc0MCIgaGVpZ2h0PSI0MzAiIGZpbGw9InJnYigyNTUsIDI1NSwgMjU1KSIgc3Ryb2tlPSJyZ2IoMCwgMCwgMCkiIHBvaW50ZXItZXZlbnRzPSJhbGwiLz48cmVjdCB4PSIyOTAiIHk9IjIwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0icmdiKDI1NSwgMjU1LCAyNTUpIiBzdHJva2U9InJnYigwLCAwLCAwKSIgcG9pbnRlci1ldmVudHM9ImFsbCIvPjxyZWN0IHg9IjMwMCIgeT0iMjUiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgcng9IjUiIHJ5PSI1IiBmaWxsPSJub25lIiBzdHJva2U9InJnYigwLCAwLCAwKSIgcG9pbnRlci1ldmVudHM9ImFsbCIvPjxyZWN0IHg9IjQwMCIgeT0iMjUiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgcng9IjUiIHJ5PSI1IiBmaWxsPSJub25lIiBzdHJva2U9InJnYigwLCAwLCAwKSIgcG9pbnRlci1ldmVudHM9ImFsbCIvPjxyZWN0IHg9IjI5MCIgeT0iNTAiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjUiIGZpbGw9InJnYigyNTUsIDI1NSwgMjU1KSIgc3Ryb2tlPSJyZ2IoMCwgMCwgMCkiIHBvaW50ZXItZXZlbnRzPSJhbGwiLz48cmVjdCB4PSIzMCIgeT0iNDAiIHdpZHRoPSI1MCIgaGVpZ2h0PSIxNSIgcng9IjIiIHJ5PSIyIiBmaWxsPSJyZ2IoMjU1LCAyNTUsIDI1NSkiIHN0cm9rZT0icmdiKDAsIDAsIDApIiBwb2ludGVyLWV2ZW50cz0iYWxsIi8+PHJlY3QgeD0iMzkiIHk9IjU1IiB3aWR0aD0iMzIiIGhlaWdodD0iMTciIGZpbGw9InJnYigyNTUsIDI1NSwgMjU1KSIgc3Ryb2tlPSJyZ2IoMCwgMCwgMCkiIHBvaW50ZXItZXZlbnRzPSJhbGwiLz48ZWxsaXBzZSBjeD0iNTUiIGN5PSI4MiIgcng9IjIwIiByeT0iMjUiIGZpbGw9InJnYigyNTUsIDI1NSwgMjU1KSIgc3Ryb2tlPSJyZ2IoMCwgMCwgMCkiIHBvaW50ZXItZXZlbnRzPSJhbGwiLz48ZWxsaXBzZSBjeD0iNTUiIGN5PSI4NCIgcng9IjEyIiByeT0iMTUiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiKDAsIDAsIDApIiBwb2ludGVyLWV2ZW50cz0iYWxsIi8+PGVsbGlwc2UgY3g9IjU1IiBjeT0iNzYiIHJ4PSI1IiByeT0iNyIgZmlsbD0iIzAwMDAwMCIgc3Ryb2tlPSJub25lIiBwb2ludGVyLWV2ZW50cz0iYWxsIi8+PHJlY3QgeD0iMzU1IiB5PSI0MjUiIHdpZHRoPSI3MCIgaGVpZ2h0PSI1IiBmaWxsPSJyZ2IoMjU1LCAyNTUsIDI1NSkiIHN0cm9rZT0icmdiKDAsIDAsIDApIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTgwLDM5MCw0MjUpIiBwb2ludGVyLWV2ZW50cz0iYWxsIi8+PHBhdGggZD0iTSAzNjUgNDI1IEwgMzcyIDQyMSBDIDM3Mi45MSA0MjAuNDQgMzczLjk0IDQyMC4xIDM3NSA0MjAgTCA0MDUgNDIwIEMgNDA2LjA2IDQyMC4xIDQwNy4wOSA0MjAuNDQgNDA4IDQyMSBMIDQxNSA0MjUgWiIgZmlsbD0icmdiKDI1NSwgMjU1LCAyNTUpIiBzdHJva2U9InJnYigwLCAwLCAwKSIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTgwLDM5MCw0MjUpIiBwb2ludGVyLWV2ZW50cz0iYWxsIi8+PHBhdGggZD0iTSAzODQgNDIxIEwgMzg0IDQyNSBNIDM4NyA0MjEgTCAzODcgNDI1IE0gMzkwIDQyMSBMIDM5MCA0MjUgTSAzOTYgNDIxIEwgMzk2IDQyNSBNIDM5MyA0MjEgTCAzOTMgNDI1IiBmaWxsPSJub25lIiBzdHJva2U9InJnYigwLCAwLCAwKSIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTgwLDM5MCw0MjUpIiBwb2ludGVyLWV2ZW50cz0iYWxsIi8+PHJlY3QgeD0iNjYwIiB5PSIzNzAiIHdpZHRoPSI0MCIgaGVpZ2h0PSIyMCIgcng9IjIiIHJ5PSIyIiBmaWxsPSJyZ2IoMjU1LCAyNTUsIDI1NSkiIHN0cm9rZT0icmdiKDAsIDAsIDApIiBwb2ludGVyLWV2ZW50cz0iYWxsIi8+PHJlY3QgeD0iNjY1IiB5PSIzNjAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI0NyIgZmlsbD0icmdiKDI1NSwgMjU1LCAyNTUpIiBzdHJva2U9InJnYigwLCAwLCAwKSIgcG9pbnRlci1ldmVudHM9ImFsbCIvPjxwYXRoIGQ9Ik0gNjcxIDM2MCBMIDY3MSAzNzYgTSA2NzcgMzYwIEwgNjc3IDM3NiBNIDY4MyAzNjAgTCA2ODMgMzc2IE0gNjg5IDM2MCBMIDY4OSAzNzYgTSA2NjUgMzc2IEwgNjk1IDM3NiBNIDY2NSAzODMgTCA2OTUgMzgzIE0gNjk1IDM5NyBMIDY4NSAzOTcgTCA2ODMgMzk1IEwgNjc3IDM5NSBMIDY3NSAzOTcgTCA2NjUgMzk3IiBmaWxsPSJub25lIiBzdHJva2U9InJnYigwLCAwLCAwKSIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBwb2ludGVyLWV2ZW50cz0iYWxsIi8+PHJlY3QgeD0iNjc4IiB5PSI0MDYiIHdpZHRoPSI0IiBoZWlnaHQ9IjEiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiKDAsIDAsIDApIiBwb2ludGVyLWV2ZW50cz0iYWxsIi8+PGVsbGlwc2UgY3g9IjY5Ny41IiBjeT0iMzg3IiByeD0iMSIgcnk9IjEiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiKDAsIDAsIDApIiBwb2ludGVyLWV2ZW50cz0iYWxsIi8+PC9nPjwvc3ZnPg=="
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "selectable": false,
+        "deletable": false,
+        "positionAbsolute": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "width": 77,
+        "height": 66,
+        "id": "dndnode_0",
+        "type": "image",
+        "position": {
+          "x": 290.328338912318,
+          "y": 84.88555389948861
+        },
+        "data": {
+          "label": "/static/media/trigger.db9ffc9ba271fb5535ce.png",
+          "id": "dndnode_0",
+          "type": "trigger",
+          "sceneObject": "633CD01A-BC2A-4584-99E2-2A3CFE2C8AD9",
+          "triggerType": "trigger1",
+          "triggerValue": "alt2"
+        },
+        "selected": true,
+        "dragging": false,
+        "positionAbsolute": {
+          "x": 290.328338912318,
+          "y": 84.88555389948861
+        }
+      }
+    ],
+    "edges": [],
+    "viewport": {
+      "x": 492.5003146823987,
+      "y": 226.4921038726453,
+      "zoom": 1.1486983549970349
+    }
+  },
+  "floorMapTriggers": [
+    {
+      "id": "dndnode_0",
+      "type": "image",
+      "position": {
+        "x": 290.328338912318,
+        "y": 84.88555389948861
+      },
+      "data": {
+        "label": "/static/media/trigger.db9ffc9ba271fb5535ce.png",
+        "id": "dndnode_0",
+        "type": "trigger",
+        "sceneObject": "633CD01A-BC2A-4584-99E2-2A3CFE2C8AD9",
+        "triggerType": "trigger1",
+        "triggerValue": "alt2"
+      }
+    }
+  ]
+}

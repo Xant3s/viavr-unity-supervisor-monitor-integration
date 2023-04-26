@@ -1,0 +1,16 @@
+{
+    "name": "supervisorintegration.editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:53aad864d9d5c8647935c5f382f2af43"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
