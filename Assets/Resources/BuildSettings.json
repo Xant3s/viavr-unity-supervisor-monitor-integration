@@ -76,5 +76,14 @@
         "triggerValue": "alt2"
       }
     }
+  ],
+  "triggers": [
+    {
+      "name": "trigger1",
+      "values": [
+        "alt1",
+        "alt2"
+      ]
+    }
   ]
 }
