@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -14,6 +16,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         [SerializeField] private int layoutPollRate = 5;
         [SerializeField] private GameObject connectionPrompt;
         [SerializeField] private UnityEvent supervisorCancelledConnectionRequest = new UnityEvent();
+        public UnityEvent<List<TriggerData>> onTriggerUpdate = new UnityEvent<List<TriggerData>>();
         private EventPoller eventPoller = new();
         private const int restPort = 3001;
         private const float registerTimer = 5f;
@@ -102,6 +105,16 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         public void StartStream() {
             var stream = new WebStreamingTransmission();
             stream.StartTransmission(supervisorIPAddress, transform);
+        }
+
+        public void StartPollingTriggerUpdates() {
+            InvokeRepeating(nameof(PollTriggerUpdates), 0, 0.5f);
+        }
+
+        private async void PollTriggerUpdates() {
+            var triggerData = await RestRequester.Get("/trigger");
+            var triggerDataList = JsonConvert.DeserializeObject<List<TriggerData>>(triggerData);
+            onTriggerUpdate?.Invoke(triggerDataList);
         }
 
         public void StartKeepAlive() => InvokeRepeating(nameof(PostKeepAlive), 1, 5);
