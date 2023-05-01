@@ -76,5 +76,13 @@
         "triggerValue": "alt2"
       }
     }
-  ]
+  ],
+  "objectTags": {
+    "C8D5D9CA-5BF1-4AE6-AA8A-45392266E1CE": [
+      "Level Boundary: Lower Left"
+    ],
+    "3B7675FB-704B-42FE-AD87-2A93CA691388": [
+      "Level Boundary: Upper Right"
+    ]
+  }
 }
