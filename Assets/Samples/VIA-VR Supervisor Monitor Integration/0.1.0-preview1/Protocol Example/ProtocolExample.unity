@@ -536,7 +536,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70c4c78420574c5ebd9b7f9c9eb645ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  questlines: []
+  questlines:
+  - Identifier: First Questline
+    ActiveTask: 0
+    tasks:
+    - Identifier: First Task
+      Description: 
+      OnTaskStarted:
+        m_PersistentCalls:
+          m_Calls: []
+      HintTime: 0
+      OnShowHints:
+        m_PersistentCalls:
+          m_Calls: []
+      Conditions:
+      - Identifier: First Condition
+        Description: 
+        OnValueChanged:
+          m_PersistentCalls:
+            m_Calls: []
+      OnTaskFinished:
+        m_PersistentCalls:
+          m_Calls: []
   globalConditions: []
   audioSource: {fileID: 0}
   ui: {fileID: 0}
