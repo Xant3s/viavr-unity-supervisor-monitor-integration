@@ -557,7 +557,20 @@ MonoBehaviour:
             m_Calls: []
       OnTaskFinished:
         m_PersistentCalls:
-          m_Calls: []
+          m_Calls:
+          - m_Target: {fileID: 8460213306444367830}
+            m_TargetAssemblyTypeName: de.jmu.ge.viavr.supervisorintegration.ProtocolEntrySender,
+              supervisorintegration.runtime
+            m_MethodName: AddEntry
+            m_Mode: 5
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
   globalConditions: []
   audioSource: {fileID: 0}
   ui: {fileID: 0}
@@ -769,3 +782,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
+--- !u!114 &8460213306444367830 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1367035558741166576, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
+  m_PrefabInstance: {fileID: 8460213306444367829}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d71ba9f40cc44e69831b5034529a3481, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
