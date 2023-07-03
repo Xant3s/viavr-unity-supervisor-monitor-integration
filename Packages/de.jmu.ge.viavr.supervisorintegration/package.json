@@ -31,8 +31,8 @@
   ],
   "mandatory": true,
   "dependencies": {
-    "de.jmu.ge.viavr.unitybridge": "0.1.0",
-    "de.jmu.ge.logicengine": "1.0.0",
+    "de.jmu.ge.viavr.unitybridge": "0.4.0",
+    "de.jmu.ge.logicengine": "1.0.5",
     "com.unity.renderstreaming": "3.1.0-exp.3"
   },
   "publishConfig": {
