@@ -15,6 +15,7 @@ namespace de.jmu.ge.viavr.supervisorintegration.editor {
         }
 
         public override void SetupScene() {
+            if(Object.FindObjectOfType<SupervisorManager>()) return;
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.supervisorintegration/Prefabs/Supervisor Manager.prefab");
             Assert.IsNotNull(prefab, "Supervisor Manager prefab not found");
             if(prefab == null) return;
