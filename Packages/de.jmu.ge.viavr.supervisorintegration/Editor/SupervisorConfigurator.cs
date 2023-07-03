@@ -2,7 +2,7 @@
 using de.jmu.ge.viavr.UnityBridge.Core;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Assertions;
 
 
 namespace de.jmu.ge.viavr.supervisorintegration.editor {
@@ -12,22 +12,17 @@ namespace de.jmu.ge.viavr.supervisorintegration.editor {
             EnsureDirectory("Assets/Resources");
             if(!File.Exists("Assets/Settings/BuildSettings.json")) return;
             File.Copy("Assets/Settings/BuildSettings.json", "Assets/Resources/BuildSettings.json", true);
-            InstantiateSupervisorManagerPrefab();
+        }
+
+        public override void SetupScene() {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.supervisorintegration/Prefabs/Supervisor Manager.prefab");
+            Assert.IsNotNull(prefab, "Supervisor Manager prefab not found");
+            if(prefab == null) return;
+            PrefabUtility.InstantiatePrefab(prefab);
         }
 
         private void EnsureDirectory(string path) {
             if(!Directory.Exists(path)) Directory.CreateDirectory(path);
-        }
-
-        private void InstantiateSupervisorManagerPrefab()
-        {
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Packages/de.jmu.ge.viavr.supervisorintegration/Prefabs/Supervisor Manager.prefab");
-            if (prefab == null) return;
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                var scene = SceneManager.GetSceneAt(i);
-                PrefabUtility.InstantiatePrefab(prefab, scene);
-            }
         }
     }
 }
