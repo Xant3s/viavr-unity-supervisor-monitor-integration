@@ -274,12 +274,12 @@
       "hash": "6bca26cd70de25333e7b123b5766ac4d615698ba"
     },
     "de.jmu.ge.logicengine": {
-      "version": "1.0.4",
-      "depth": 0,
+      "version": "1.0.5",
+      "depth": 1,
       "source": "registry",
       "dependencies": {
-        "de.jmu.ge.spokesceneimporter": "0.3.1",
-        "de.jmu.ge.viavr.unitybridge": "0.1.2",
+        "de.jmu.ge.spokesceneimporter": "0.3.3",
+        "de.jmu.ge.viavr.unitybridge": "0.4.0",
         "com.unity.nuget.newtonsoft-json": "3.0.2",
         "com.unity.xr.core-utils": "2.0.0",
         "com.unity.xr.interaction.toolkit": "2.2.0",
@@ -288,11 +288,11 @@
       "url": "https://packages.informatik.uni-wuerzburg.de"
     },
     "de.jmu.ge.spokesceneimporter": {
-      "version": "0.3.1",
-      "depth": 1,
+      "version": "0.3.3",
+      "depth": 2,
       "source": "registry",
       "dependencies": {
-        "de.jmu.ge.viavr.unitybridge": "0.1.0",
+        "de.jmu.ge.viavr.unitybridge": "0.4.0",
         "unity-com.siccity.gltfutility": "0.7.2"
       },
       "url": "https://packages.informatik.uni-wuerzburg.de"
@@ -302,14 +302,14 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "de.jmu.ge.viavr.unitybridge": "0.1.0",
-        "de.jmu.ge.logicengine": "1.0.0",
+        "de.jmu.ge.viavr.unitybridge": "0.4.0",
+        "de.jmu.ge.logicengine": "1.0.5",
         "com.unity.renderstreaming": "3.1.0-exp.3"
       }
     },
     "de.jmu.ge.viavr.unitybridge": {
-      "version": "0.2.0",
-      "depth": 0,
+      "version": "0.4.0",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.informatik.uni-wuerzburg.de"
