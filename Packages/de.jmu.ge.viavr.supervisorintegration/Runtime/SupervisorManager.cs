@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using de.jmu.ge.SpokeSceneImporter;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Object = System.Object;
 
 namespace de.jmu.ge.viavr.supervisorintegration {
     /// <summary>
@@ -98,6 +101,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             await RestRequester.Post("/clients/accept");
             await RestRequester.Post("/clients/layout-model", SupervisorLayoutHandler.GetLayout());
             await RestRequester.Post("/clients/config", BuildSettingsLoader.Load());
+            await RestRequester.Post("/trigger/level-bounds", CalculateLevelBounds());
         }
 
         public async void RejectSupervisor() => await RestRequester.Post("/clients/reject");
@@ -105,6 +109,28 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         public void StartStream() {
             var stream = new WebStreamingTransmission();
             stream.StartTransmission(supervisorIPAddress, transform);
+        }
+
+        public class LevelBounds {
+            public float minX;
+            public float maxX;
+            public float minY;
+            public float maxY;
+        }
+        
+        private string CalculateLevelBounds() {
+            var tags = GameObject.FindObjectsOfType<Tags>();
+            var bottomLeft = tags.FirstOrDefault(tagsComponent => tagsComponent.tags.Any(tag => tag is "Level Boundary: Lower Left"))?.transform.position;
+            var topRight = tags.FirstOrDefault(tagsComponent => tagsComponent.tags.Any(tag => tag is "Level Boundary: Upper Right"))?.transform.position;
+            if(!bottomLeft.HasValue || !topRight.HasValue) return JsonConvert.SerializeObject(new LevelBounds());
+            var levelBounds = new LevelBounds {
+                minX = bottomLeft.Value.x,
+                maxX = topRight.Value.x,
+                minY = bottomLeft.Value.z,
+                maxY = topRight.Value.z
+            };
+            var json = JsonConvert.SerializeObject(levelBounds);
+            return json;
         }
 
         public void StartPollingTriggerUpdates() {
