@@ -5,16 +5,16 @@ using System.Net;
 using System.Threading.Tasks;
 using de.jmu.ge.SpokeSceneImporter;
 using Newtonsoft.Json;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Object = System.Object;
 
 namespace de.jmu.ge.viavr.supervisorintegration {
     /// <summary>
     /// Establishes a connection to a supervisor monitor.
     /// </summary>
-    public class SupervisorManager : MonoBehaviour {
+    public partial class SupervisorManager : MonoBehaviour {
         [SerializeField] private int eventPollRate = 1;
         [SerializeField] private int layoutPollRate = 5;
         [SerializeField] private GameObject connectionPrompt;
@@ -111,13 +111,6 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             stream.StartTransmission(supervisorIPAddress, transform);
         }
 
-        public class LevelBounds {
-            public float minX;
-            public float maxX;
-            public float minY;
-            public float maxY;
-        }
-        
         private string CalculateLevelBounds() {
             var tags = GameObject.FindObjectsOfType<Tags>();
             var bottomLeft = tags.FirstOrDefault(tagsComponent => tagsComponent.tags.Any(tag => tag is "Level Boundary: Lower Left"))?.transform.position;
@@ -146,6 +139,8 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         public void StartKeepAlive() => InvokeRepeating(nameof(PostKeepAlive), 1, 5);
 
         public void StartPollEvents() => InvokeRepeating(nameof(PollEvents), 0, eventPollRate);
+        
+        public void StartPlayerSync() => InvokeRepeating(nameof(PostPlayerTranform), 0, 0.1f);
 
         public void StartLayoutSynchronization() => InvokeRepeating(nameof(GetLayoutConfig), layoutPollRate, layoutPollRate);
 
@@ -159,6 +154,17 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         private async void GetLayoutConfig() {
             var layout = await RestRequester.Get("/clients/layout-Config");
             SupervisorLayoutHandler.SaveLayout(layout);
+        }
+
+        private async void PostPlayerTranform() {
+            var player = GameObject.FindWithTag("Player").transform;
+            var playerTranform = new PlayerTranform {
+                x = player.position.x,
+                y = player.position.z,
+                rotation = player.rotation.eulerAngles.y
+            };
+            var json = JsonConvert.SerializeObject(playerTranform);
+            await RestRequester.Post("/trigger/player-transform", json);
         }
     }
 }
