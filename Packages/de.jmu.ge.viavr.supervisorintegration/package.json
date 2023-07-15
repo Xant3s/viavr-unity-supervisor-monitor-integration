@@ -7,7 +7,7 @@
   "name": "de.jmu.ge.viavr.supervisorintegration",
   "unity": "2021.2",
   "unityRelease": "0f1",
-  "version": "0.1.0-preview1",
+  "version": "0.2.0",
   "hideInEditor": false,
   "keywords": [
     "viavr-hidden"
