@@ -274,8 +274,8 @@
       "hash": "6bca26cd70de25333e7b123b5766ac4d615698ba"
     },
     "de.jmu.ge.logicengine": {
-      "version": "1.0.5",
-      "depth": 1,
+      "version": "1.0.7",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "de.jmu.ge.spokesceneimporter": "0.3.3",
@@ -289,7 +289,7 @@
     },
     "de.jmu.ge.spokesceneimporter": {
       "version": "0.3.3",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "de.jmu.ge.viavr.unitybridge": "0.4.0",
@@ -303,7 +303,7 @@
       "source": "embedded",
       "dependencies": {
         "de.jmu.ge.viavr.unitybridge": "0.4.0",
-        "de.jmu.ge.logicengine": "1.0.5",
+        "de.jmu.ge.logicengine": "1.0.7",
         "com.unity.renderstreaming": "3.1.0-exp.3"
       }
     },
