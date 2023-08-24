@@ -19,7 +19,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         [SerializeField] private int layoutPollRate = 5;
         [SerializeField] private GameObject connectionPrompt;
         [SerializeField] private UnityEvent supervisorCancelledConnectionRequest = new UnityEvent();
-        public UnityEvent<List<TriggerData>> onTriggerUpdate = new UnityEvent<List<TriggerData>>();
+        [HideInInspector] public UnityEvent<List<TriggerData>> onTriggerUpdate = new UnityEvent<List<TriggerData>>();
         private EventPoller eventPoller = new();
         private const int restPort = 3001;
         private const float registerTimer = 5f;
