@@ -50,7 +50,7 @@
           "label": "/static/media/trigger.db9ffc9ba271fb5535ce.png",
           "id": "dndnode_0",
           "type": "trigger",
-          "sceneObject": "2266BED7-6CC4-48A6-95DD-9BCD3CF9EAFC",
+          "sceneObject": "2266BED7-6CC4-4866-95DD-9BCD3CF9EAFC",
           "triggerType": "trigger1",
           "triggerValue": "alt1"
         },
@@ -177,7 +177,7 @@
         "label": "/static/media/trigger.db9ffc9ba271fb5535ce.png",
         "id": "dndnode_0",
         "type": "trigger",
-        "sceneObject": "2266BED7-6CC4-48A6-95DD-9BCD3CF9EAFC",
+        "sceneObject": "2266BED7-6CC4-4866-95DD-9BCD3CF9EAFC",
         "triggerType": "trigger1",
         "triggerValue": "alt1"
       }
