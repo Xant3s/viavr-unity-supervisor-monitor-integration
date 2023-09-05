@@ -113,6 +113,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8460213306170990959}
     m_Modifications:
+    - target: {fileID: 8285848753539665856, guid: 4cdb36f1cc708314f837116cca3248df, type: 3}
+      propertyPath: streams.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8285848753539665856, guid: 4cdb36f1cc708314f837116cca3248df, type: 3}
+      propertyPath: streams.Array.data[1]
+      value: 
+      objectReference: {fileID: 829316389171142587}
+    - target: {fileID: 8285848753539665870, guid: 4cdb36f1cc708314f837116cca3248df, type: 3}
+      propertyPath: runOnAwake
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8285848753668104594, guid: 4cdb36f1cc708314f837116cca3248df, type: 3}
       propertyPath: m_Name
       value: Stream
@@ -168,6 +180,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8285848753668104595, guid: 4cdb36f1cc708314f837116cca3248df, type: 3}
   m_PrefabInstance: {fileID: 4026416359012065903}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &829316389171142587 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4351293648131390932, guid: 4cdb36f1cc708314f837116cca3248df, type: 3}
+  m_PrefabInstance: {fileID: 4026416359012065903}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28e4557ba7cb056499034647b21b6361, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7842448927743471481
 PrefabInstance:
   m_ObjectHideFlags: 0

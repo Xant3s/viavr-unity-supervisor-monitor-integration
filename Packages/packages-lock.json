@@ -273,6 +273,13 @@
       },
       "hash": "6bca26cd70de25333e7b123b5766ac4d615698ba"
     },
+    "de.jmu.ge.firetriggers": {
+      "version": "0.3.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.informatik.uni-wuerzburg.de"
+    },
     "de.jmu.ge.logicengine": {
       "version": "1.0.7",
       "depth": 0,
