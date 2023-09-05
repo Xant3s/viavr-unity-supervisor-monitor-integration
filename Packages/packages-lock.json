@@ -274,7 +274,7 @@
       "hash": "6bca26cd70de25333e7b123b5766ac4d615698ba"
     },
     "de.jmu.ge.firetriggers": {
-      "version": "0.3.0",
+      "version": "0.5.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {},

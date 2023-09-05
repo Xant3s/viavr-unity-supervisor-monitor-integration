@@ -11,23 +11,42 @@
   "useFloorMap": true,
   "triggers": [
     {
-      "name": "trigger1",
-      "values": [
-        "alt1",
-        "alt2"
-      ]
-    },
-    {
       "name": "Candle",
-      "values": ["candle is off", "candle is on"]
+      "values": [
+        "candle is off",
+        "candle is on"
+      ],
+      "path": "Prefabs/Candle"
     },
     {
       "name": "Fireplace",
-      "values": ["fire is out", "fire is small", "fire is normal", "fire is big", "fire is out of control"]
+      "values": [
+        "fire is out",
+        "fire is small",
+        "fire is normal",
+        "fire is big",
+        "fire is out of control"
+      ],
+      "path": "Prefabs/Fireplace"
     },
     {
-      "name": "Cube",
-      "values": ["cube is stationary", "cube is moving"]
+      "name": "Fireplace Fire",
+      "values": [
+        "out",
+        "small",
+        "normal",
+        "big",
+        "out of control"
+      ],
+      "path": "Prefabs/Fireplace Fire"
+    },
+    {
+      "name": "Candle Flame",
+      "values": [
+        "out",
+        "on"
+      ],
+      "path": "Prefabs/Candle Flame"
     }
   ],
   "floorMapConfig": {
@@ -96,30 +115,6 @@
           "y": 98.75
         },
         "dragging": false
-      },
-      {
-        "width": 40,
-        "height": 66,
-        "id": "dndnode_2",
-        "type": "image",
-        "position": {
-          "x": 398,
-          "y": 103.25
-        },
-        "data": {
-          "label": "/static/media/trigger.db9ffc9ba271fb5535ce.png",
-          "id": "dndnode_2",
-          "type": "trigger",
-          "sceneObject": "2266BED7-6CC4-4876-95DD-9BCD3CF9EAFC",
-          "triggerType": "Cube",
-          "triggerValue": "cube is stationary"
-        },
-        "selected": false,
-        "dragging": false,
-        "positionAbsolute": {
-          "x": 398,
-          "y": 103.25
-        }
       }
     ],
     "edges": [],
@@ -160,22 +155,6 @@
         "sceneObject": "2266BED7-6CC4-42A6-95DD-9BCD3CF9EAFC",
         "triggerType": "Candle",
         "triggerValue": "candle is off"
-      }
-    },
-    {
-      "id": "dndnode_2",
-      "type": "image",
-      "position": {
-        "x": 398,
-        "y": 103.25
-      },
-      "data": {
-        "label": "/static/media/trigger.db9ffc9ba271fb5535ce.png",
-        "id": "dndnode_2",
-        "type": "trigger",
-        "sceneObject": "2266BED7-6CC4-4876-95DD-9BCD3CF9EAFC",
-        "triggerType": "Cube",
-        "triggerValue": "cube is stationary"
       }
     }
   ]
