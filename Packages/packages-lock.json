@@ -315,7 +315,7 @@
       "url": "https://packages.informatik.uni-wuerzburg.de"
     },
     "de.jmu.ge.viavr.locomotion": {
-      "version": "0.5.0",
+      "version": "0.5.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -336,7 +336,8 @@
         "de.jmu.ge.viavr.unitybridge": "0.4.0",
         "de.jmu.ge.logicengine": "1.0.7",
         "com.unity.renderstreaming": "3.1.0-exp.3",
-        "com.unity.textmeshpro": "3.0.6"
+        "com.unity.textmeshpro": "3.0.6",
+        "de.jmu.ge.viavr.locomotion": "0.5.1"
       }
     },
     "de.jmu.ge.viavr.unitybridge": {

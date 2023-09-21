@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using de.jmu.ge.SpokeSceneImporter;
 using Newtonsoft.Json;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
@@ -88,7 +89,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
 
         private void ShowPrompt(string address, GameObject prompt) {
             try {
-                prompt.transform.GetChild(0).Find("Body").GetComponent<Text>().text = $"Do you want to allow {address} to supervise your session?";
+                prompt.transform.GetChild(0).Find("Message").GetComponent<TMP_Text>().text = $"Do you want to allow {address} to supervise your session?";
                 prompt.SetActive(true);
             }
             catch(Exception e) {
