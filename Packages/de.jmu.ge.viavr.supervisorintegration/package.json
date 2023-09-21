@@ -33,7 +33,8 @@
   "dependencies": {
     "de.jmu.ge.viavr.unitybridge": "0.4.0",
     "de.jmu.ge.logicengine": "1.0.7",
-    "com.unity.renderstreaming": "3.1.0-exp.3"
+    "com.unity.renderstreaming": "3.1.0-exp.3",
+    "com.unity.textmeshpro": "3.0.6"
   },
   "publishConfig": {
     "registry": "https://packages.informatik.uni-wuerzburg.de/"
