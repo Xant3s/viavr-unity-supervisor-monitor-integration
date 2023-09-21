@@ -27,7 +27,9 @@ namespace de.jmu.ge.viavr.supervisorintegration.editor {
             var buildSettingsText = BuildSettingsLoader.Load();
             dynamic buildSettings = JsonConvert.DeserializeObject(buildSettingsText);
             List<dynamic> availableTriggersList = buildSettings?["triggers"]?.ToObject<List<dynamic>>();
-            List<dynamic> floorMapTriggers = buildSettings["floorMapTriggers"].ToObject<List<dynamic>>();
+            if(availableTriggersList == null || availableTriggersList.Count == 0) return;
+            List<dynamic> floorMapTriggers = buildSettings["floorMapTriggers"]?.ToObject<List<dynamic>>();
+            if(floorMapTriggers == null || floorMapTriggers.Count == 0) return;
             List<TriggerData> triggerDataList = floorMapTriggers.Select(trigger =>
                 new TriggerData {
                     sceneObject = trigger["data"]?["sceneObject"]?.ToObject<string>(),
