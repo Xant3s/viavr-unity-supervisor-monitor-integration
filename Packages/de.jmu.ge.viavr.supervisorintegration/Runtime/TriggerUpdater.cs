@@ -13,8 +13,8 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         }
         
         private void Start() {
+            triggerManager.FindTriggerSceneObjects();
             supervisorManager.onTriggerUpdate.AddListener(triggers => {
-                triggerManager.FindTriggerSceneObjects();
                 triggerManager.ForEachTriggerSceneObject(triggers, (obj, triggerData) => {
                     var desiredValue = triggerData.triggerValue;
                     obj.transform
