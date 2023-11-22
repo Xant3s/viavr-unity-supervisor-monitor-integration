@@ -23,7 +23,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             var buildSettingsText = BuildSettingsLoader.Load();
             dynamic buildSettings = JsonConvert.DeserializeObject(buildSettingsText);
             List<dynamic> floorMapNodes = buildSettings["floorMapConfig"]?["nodes"]?.ToObject<List<dynamic>>();
-            if(floorMapNodes?.Count == 0) return;
+            if(floorMapNodes == null || floorMapNodes.Count == 0) return;
             floorMapNodes.RemoveAt(0);  // Floor map image node
             foreach(var node in floorMapNodes) {
                 string uuidString = node["data"]?["sceneObject"]?.ToObject<string>();
