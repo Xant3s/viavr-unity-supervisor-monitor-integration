@@ -1,6 +1,5 @@
 using System;
 using de.jmu.ge.SpokeSceneImporter;
-using de.jmu.ge.viavr.supervisorintegration.editor;
 using UnityEngine;
 
 // For testing purposes only
