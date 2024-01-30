@@ -158,7 +158,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         }
 
         private async void PostPlayerTranform() {
-            var player = GameObject.FindWithTag("Player").transform;
+            var player = GameObject.FindWithTag("MainCamera").transform;
             var playerTranform = new PlayerTranform {
                 x = player.position.x,
                 y = player.position.z,
