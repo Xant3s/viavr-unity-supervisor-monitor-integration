@@ -141,7 +141,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
 
         public void StartPollEvents() => InvokeRepeating(nameof(PollEvents), 0, eventPollRate);
         
-        public void StartPlayerSync() => InvokeRepeating(nameof(PostPlayerTranform), 0, 0.1f);
+        public void StartPlayerSync() => InvokeRepeating(nameof(PostPlayerTransform), 0, 0.1f);
 
         public void StartLayoutSynchronization() => InvokeRepeating(nameof(GetLayoutConfig), layoutPollRate, layoutPollRate);
 
@@ -157,14 +157,14 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             SupervisorLayoutHandler.SaveLayout(layout);
         }
 
-        private async void PostPlayerTranform() {
+        private async void PostPlayerTransform() {
             var player = GameObject.FindWithTag("MainCamera").transform;
-            var playerTranform = new PlayerTranform {
+            var playerTransform = new PlayerTranform {
                 x = player.position.x,
                 y = player.position.z,
                 rotation = player.rotation.eulerAngles.y
             };
-            var json = JsonConvert.SerializeObject(playerTranform);
+            var json = JsonConvert.SerializeObject(playerTransform);
             await RestRequester.Post("/trigger/player-transform", json);
         }
     }
