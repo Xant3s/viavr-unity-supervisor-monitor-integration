@@ -33,7 +33,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
                     string uuidString = node["data"]?["sceneObject"]?.ToObject<string>();
                     if(uuidString == null) continue;
                     var uuid = new Guid(uuidString);
-                    var sceneObject = allUuids.FirstOrDefault(id => id.uuid == uuid)?.gameObject;
+                    var sceneObject = allUuids.FirstOrDefault(id => string.Compare(id.serializedUuid, uuidString, StringComparison.InvariantCultureIgnoreCase) == 0)?.gameObject;
                     if(sceneObject == null) continue;
                     triggerSceneObjects.Add(uuid, sceneObject);
                 }
