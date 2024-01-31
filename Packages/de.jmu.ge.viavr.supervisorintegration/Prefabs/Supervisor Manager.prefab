@@ -111,7 +111,7 @@ PrefabInstance:
       objectReference: {fileID: 829316389171142587}
     - target: {fileID: 8285848753539665870, guid: 4cdb36f1cc708314f837116cca3248df, type: 3}
       propertyPath: runOnAwake
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8285848753668104594, guid: 4cdb36f1cc708314f837116cca3248df, type: 3}
       propertyPath: m_Name
