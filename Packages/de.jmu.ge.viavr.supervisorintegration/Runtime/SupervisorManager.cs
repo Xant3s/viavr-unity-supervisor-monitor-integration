@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using de.jmu.ge.SpokeSceneImporter;
 using Newtonsoft.Json;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace de.jmu.ge.viavr.supervisorintegration {
     /// <summary>
@@ -20,6 +19,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         [SerializeField] private int layoutPollRate = 5;
         [SerializeField] private GameObject connectionPrompt;
         [SerializeField] private UnityEvent supervisorCancelledConnectionRequest = new UnityEvent();
+        [SerializeField] private TMP_Text supervisorAddress;
         [HideInInspector] public UnityEvent<List<TriggerData>> onTriggerUpdate = new UnityEvent<List<TriggerData>>();
         private EventPoller eventPoller = new();
         private const int restPort = 3001;
@@ -35,67 +35,28 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             DontDestroyOnLoad(gameObject);
         }
 
-        private void Start() {
-            ConnectToSupervisor();
-        }
-
-        private async void ConnectToSupervisor() {
-            var discovery = new SupervisorDiscovery();
-            await discovery.SupervisorFound();
-            supervisorIPAddress = discovery.Address;
+        public async void ConnectToSupervisor() {
+            var ipAddressString = Regex.Replace(supervisorAddress.text, @"\p{C}+", "");
+            supervisorIPAddress = IPAddress.Parse(ipAddressString);
             RestRequester = new RestRequester($"http://{supervisorIPAddress}:{restPort}");
             eventPoller.SetRestRequester(RestRequester);
-            InvokeRepeating(nameof(RegisterClient), 0f, registerTimer);
-            TryToConnectToSupervisor();
-        }
-        
-        public async void TryToConnectToSupervisor() {
-            await Task.Delay(2000); // Wait for supervisor to clear connected client.
-            var supervisorWantToConnectToThisClient = await SupervisorWantsToConnectToThisClient();
-            if(!supervisorWantToConnectToThisClient) return;
+            await RegisterClient();
             await Authenticate();
-            ShowPrompt(supervisorIPAddress.ToString(), connectionPrompt);
-            InvokeRepeating(nameof(CheckSupervisorStillWantsConnection), 1, 1);
+            AcceptSupervisor();
+            StartKeepAlive();
+            StartLayoutSynchronization();
+            StartPollEvents();
+            StartPollingTriggerUpdates();
+            StartPlayerSync();
+            StartStream();
         }
 
-        private async void CheckSupervisorStillWantsConnection() {
-            var result = await FetchRequestedClient();
-            if(result == 1) return;
-            supervisorCancelledConnectionRequest?.Invoke();
-            CancelInvoke(nameof(CheckSupervisorStillWantsConnection));
-        }
-
-        private async Task<bool> SupervisorWantsToConnectToThisClient() {
-            var requestedClient = new WaitForRequest<int>(FetchRequestedClient, data => data >= 0);
-            await requestedClient.WaitUntil();
-            return requestedClient.Result == 1;
-        }
-
-        public void StopLookingForSupervisor() => CancelInvoke(nameof(RegisterClient));
-
-        private async Task<int> FetchRequestedClient() {
-            var content = await RestRequester.Get("/clients/connected");
-            if(content.Equals(string.Empty)) return -1;
-            return content.Equals(uuid.ToString()) ? 1 : 0;
-        }
-
-        private async void RegisterClient() => await supervisorintegration.RegisterClient.Register(RestRequester, uuid.ToString());
+        private async Task RegisterClient() => await supervisorintegration.RegisterClient.Register(RestRequester, uuid.ToString());
 
         private async Task Authenticate() {
             var response = await supervisorintegration.RegisterClient.Authenticate(RestRequester, uuid.ToString());
             var token = await response.Content.ReadAsStringAsync();
             RestRequester.Token = token;
-        }
-
-        private void ShowPrompt(string address, GameObject prompt) {
-            try {
-                prompt.transform.GetChild(0).Find("Message").GetComponent<TMP_Text>().text = $"Do you want to allow {address} to supervise your session?";
-                prompt.SetActive(true);
-            }
-            catch(Exception e) {
-                Debug.Log(e);
-                throw;
-            }
         }
 
         public async void AcceptSupervisor() {
@@ -104,8 +65,6 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             await RestRequester.Post("/clients/config", BuildSettingsLoader.Load());
             await RestRequester.Post("/trigger/level-bounds", CalculateLevelBounds());
         }
-
-        public async void RejectSupervisor() => await RestRequester.Post("/clients/reject");
 
         public void StartStream() {
             var stream = new WebStreamingTransmission();

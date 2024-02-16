@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class VRCanvas : MonoBehaviour {
-    [SerializeField] private int distance = 300;
+    [SerializeField] private float distance = 300;
     [SerializeField] private float speed = 1f;
     private Transform cameraTransform;
 
