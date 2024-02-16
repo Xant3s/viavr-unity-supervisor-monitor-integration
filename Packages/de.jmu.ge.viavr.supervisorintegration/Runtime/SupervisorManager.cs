@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using de.jmu.ge.SpokeSceneImporter;
 using Newtonsoft.Json;
@@ -20,6 +21,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         [SerializeField] private int layoutPollRate = 5;
         [SerializeField] private GameObject connectionPrompt;
         [SerializeField] private UnityEvent supervisorCancelledConnectionRequest = new UnityEvent();
+        [SerializeField] private TMP_Text supervisorAddress;
         [HideInInspector] public UnityEvent<List<TriggerData>> onTriggerUpdate = new UnityEvent<List<TriggerData>>();
         private EventPoller eventPoller = new();
         private const int restPort = 3001;
@@ -36,17 +38,29 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         }
 
         private void Start() {
-            ConnectToSupervisor();
+            // ConnectToSupervisor();
         }
 
-        private async void ConnectToSupervisor() {
-            var discovery = new SupervisorDiscovery();
-            await discovery.SupervisorFound();
-            supervisorIPAddress = discovery.Address;
+        public async void ConnectToSupervisor() {
+            // var discovery = new SupervisorDiscovery();
+            // await discovery.SupervisorFound();
+
+            var ipAddressString = Regex.Replace(supervisorAddress.text, @"\p{C}+", "");
+            supervisorIPAddress = IPAddress.Parse(ipAddressString);
             RestRequester = new RestRequester($"http://{supervisorIPAddress}:{restPort}");
             eventPoller.SetRestRequester(RestRequester);
-            InvokeRepeating(nameof(RegisterClient), 0f, registerTimer);
-            TryToConnectToSupervisor();
+            // InvokeRepeating(nameof(RegisterClient), 0f, registerTimer);
+            // TryToConnectToSupervisor();
+            await RegisterClient();
+            await Authenticate();
+            // await Task.Delay(2000);
+            AcceptSupervisor();
+            StartKeepAlive();
+            StartLayoutSynchronization();
+            StartPollEvents();
+            StartPollingTriggerUpdates();
+            StartPlayerSync();
+            StartStream();
         }
         
         public async void TryToConnectToSupervisor() {
@@ -79,7 +93,7 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             return content.Equals(uuid.ToString()) ? 1 : 0;
         }
 
-        private async void RegisterClient() => await supervisorintegration.RegisterClient.Register(RestRequester, uuid.ToString());
+        private async Task RegisterClient() => await supervisorintegration.RegisterClient.Register(RestRequester, uuid.ToString());
 
         private async Task Authenticate() {
             var response = await supervisorintegration.RegisterClient.Authenticate(RestRequester, uuid.ToString());
