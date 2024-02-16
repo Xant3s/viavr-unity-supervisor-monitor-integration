@@ -27617,46 +27617,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8762976169939028918, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8762976169939028918, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 911924609}
-    - target: {fileID: 8762976169939028918, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: ConnectToSupervisor
-      objectReference: {fileID: 0}
-    - target: {fileID: 8762976169939028918, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: StartPlayerSync
-      objectReference: {fileID: 0}
-    - target: {fileID: 8762976169939028918, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
-      value: StartStream
-      objectReference: {fileID: 0}
-    - target: {fileID: 8762976169939028918, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_MethodName
-      value: StartStream
-      objectReference: {fileID: 0}
-    - target: {fileID: 8762976169939028918, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[5].m_MethodName
-      value: StartStream
-      objectReference: {fileID: 0}
-    - target: {fileID: 8762976169939028918, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[6].m_MethodName
-      value: StartStream
-      objectReference: {fileID: 0}
-    - target: {fileID: 8762976169939028918, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: de.jmu.ge.viavr.supervisorintegration.SupervisorManager, supervisorintegration.runtime
-      objectReference: {fileID: 0}
-    - target: {fileID: 8762976169939028918, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
 --- !u!114 &911924607 stripped
@@ -27668,17 +27628,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d71ba9f40cc44e69831b5034529a3481, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &911924609 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8460213306170990958, guid: 50ca7d53bfa9d4f499919a721c0e5b9c, type: 3}
-  m_PrefabInstance: {fileID: 911924606}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46c7aad0246046179d65734ff3328df6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &919921372
