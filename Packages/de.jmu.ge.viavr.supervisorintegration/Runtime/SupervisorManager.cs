@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 using de.jmu.ge.SpokeSceneImporter;
 using Newtonsoft.Json;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace de.jmu.ge.viavr.supervisorintegration {
     /// <summary>
@@ -37,23 +35,13 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             DontDestroyOnLoad(gameObject);
         }
 
-        private void Start() {
-            // ConnectToSupervisor();
-        }
-
         public async void ConnectToSupervisor() {
-            // var discovery = new SupervisorDiscovery();
-            // await discovery.SupervisorFound();
-
             var ipAddressString = Regex.Replace(supervisorAddress.text, @"\p{C}+", "");
             supervisorIPAddress = IPAddress.Parse(ipAddressString);
             RestRequester = new RestRequester($"http://{supervisorIPAddress}:{restPort}");
             eventPoller.SetRestRequester(RestRequester);
-            // InvokeRepeating(nameof(RegisterClient), 0f, registerTimer);
-            // TryToConnectToSupervisor();
             await RegisterClient();
             await Authenticate();
-            // await Task.Delay(2000);
             AcceptSupervisor();
             StartKeepAlive();
             StartLayoutSynchronization();
@@ -61,36 +49,6 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             StartPollingTriggerUpdates();
             StartPlayerSync();
             StartStream();
-        }
-        
-        public async void TryToConnectToSupervisor() {
-            await Task.Delay(2000); // Wait for supervisor to clear connected client.
-            var supervisorWantToConnectToThisClient = await SupervisorWantsToConnectToThisClient();
-            if(!supervisorWantToConnectToThisClient) return;
-            await Authenticate();
-            ShowPrompt(supervisorIPAddress.ToString(), connectionPrompt);
-            InvokeRepeating(nameof(CheckSupervisorStillWantsConnection), 1, 1);
-        }
-
-        private async void CheckSupervisorStillWantsConnection() {
-            var result = await FetchRequestedClient();
-            if(result == 1) return;
-            supervisorCancelledConnectionRequest?.Invoke();
-            CancelInvoke(nameof(CheckSupervisorStillWantsConnection));
-        }
-
-        private async Task<bool> SupervisorWantsToConnectToThisClient() {
-            var requestedClient = new WaitForRequest<int>(FetchRequestedClient, data => data >= 0);
-            await requestedClient.WaitUntil();
-            return requestedClient.Result == 1;
-        }
-
-        public void StopLookingForSupervisor() => CancelInvoke(nameof(RegisterClient));
-
-        private async Task<int> FetchRequestedClient() {
-            var content = await RestRequester.Get("/clients/connected");
-            if(content.Equals(string.Empty)) return -1;
-            return content.Equals(uuid.ToString()) ? 1 : 0;
         }
 
         private async Task RegisterClient() => await supervisorintegration.RegisterClient.Register(RestRequester, uuid.ToString());
@@ -101,25 +59,12 @@ namespace de.jmu.ge.viavr.supervisorintegration {
             RestRequester.Token = token;
         }
 
-        private void ShowPrompt(string address, GameObject prompt) {
-            try {
-                prompt.transform.GetChild(0).Find("Message").GetComponent<TMP_Text>().text = $"Do you want to allow {address} to supervise your session?";
-                prompt.SetActive(true);
-            }
-            catch(Exception e) {
-                Debug.Log(e);
-                throw;
-            }
-        }
-
         public async void AcceptSupervisor() {
             await RestRequester.Post("/clients/accept");
             await RestRequester.Post("/clients/layout-model", SupervisorLayoutHandler.GetLayout());
             await RestRequester.Post("/clients/config", BuildSettingsLoader.Load());
             await RestRequester.Post("/trigger/level-bounds", CalculateLevelBounds());
         }
-
-        public async void RejectSupervisor() => await RestRequester.Post("/clients/reject");
 
         public void StartStream() {
             var stream = new WebStreamingTransmission();
