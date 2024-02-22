@@ -8,6 +8,8 @@ public class SetUuid : MonoBehaviour {
     
     
     private void Awake() {
-        GetComponent<Uuid>().uuid = new Guid(uuid);
+        var uuidComponent = GetComponent<Uuid>();
+        uuidComponent.uuid = new Guid(uuid);
+        uuidComponent.serializedUuid = uuid;
     }
 }
