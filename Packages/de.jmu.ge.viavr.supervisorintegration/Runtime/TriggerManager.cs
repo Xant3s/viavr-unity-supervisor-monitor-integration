@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using de.jmu.ge.SpokeSceneImporter;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace de.jmu.ge.viavr.supervisorintegration {
     public class TriggerManager {
@@ -20,17 +22,17 @@ namespace de.jmu.ge.viavr.supervisorintegration {
         }
         
         public void FindTriggerSceneObjects() {
-            var allUuids = GameObject.FindObjectsOfType<Uuid>();
+            var allUuids = Object.FindObjectsOfType<Uuid>();
             if(allUuids == null || allUuids.Length == 0) return;
             var buildSettingsText = BuildSettingsLoader.Load();
             if(string.IsNullOrWhiteSpace(buildSettingsText)) return;
             try {
-                dynamic buildSettings = JsonConvert.DeserializeObject(buildSettingsText);
-                List<dynamic> floorMapNodes = buildSettings?["floorMapConfig"]?["nodes"]?.ToObject<List<dynamic>>();
+                var buildSettings = JObject.Parse(buildSettingsText);
+                var floorMapNodes = buildSettings["floorMapConfig"]?["nodes"]?.ToObject<List<JToken>>();
                 if(floorMapNodes == null || floorMapNodes.Count < 2) return; // first node is floor map image
                 floorMapNodes.RemoveAt(0);  // Floor map image node
                 foreach(var node in floorMapNodes) {
-                    string uuidString = node["data"]?["sceneObject"]?.ToObject<string>();
+                    var uuidString = node["data"]?["sceneObject"]?.ToObject<string>();
                     if(uuidString == null) continue;
                     var uuid = new Guid(uuidString);
                     var sceneObject = allUuids.FirstOrDefault(id => string.Compare(id.serializedUuid, uuidString, StringComparison.InvariantCultureIgnoreCase) == 0)?.gameObject;

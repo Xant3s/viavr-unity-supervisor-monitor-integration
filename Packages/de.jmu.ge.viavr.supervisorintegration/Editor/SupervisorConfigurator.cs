@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using de.jmu.ge.viavr.UnityBridge.Core;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -25,12 +26,13 @@ namespace de.jmu.ge.viavr.supervisorintegration.editor {
         
         public static void SpawnTriggers() {
             var buildSettingsText = BuildSettingsLoader.Load();
-            dynamic buildSettings = JsonConvert.DeserializeObject(buildSettingsText);
-            List<dynamic> availableTriggersList = buildSettings?["triggers"]?.ToObject<List<dynamic>>();
+            var buildSettings = JObject.Parse(buildSettingsText);
+            if(buildSettings["triggers"] == null || buildSettings["triggers"]?.Count() == 0) return;
+            var availableTriggersList = buildSettings["triggers"]?.ToObject<List<JToken>>();
             if(availableTriggersList == null || availableTriggersList.Count == 0) return;
-            List<dynamic> floorMapTriggers = buildSettings["floorMapTriggers"]?.ToObject<List<dynamic>>();
+            var floorMapTriggers = buildSettings["floorMapTriggers"]?.ToObject<List<JToken>>();
             if(floorMapTriggers == null || floorMapTriggers.Count == 0) return;
-            List<TriggerData> triggerDataList = floorMapTriggers.Select(trigger =>
+            var triggerDataList = floorMapTriggers.Select(trigger =>
                 new TriggerData {
                     sceneObject = trigger["data"]?["sceneObject"]?.ToObject<string>(),
                     triggerType = trigger["data"]?["triggerType"]?.ToObject<string>(),
@@ -41,14 +43,18 @@ namespace de.jmu.ge.viavr.supervisorintegration.editor {
             // For each trigger scene object spawn trigger prefabs
             var triggerManager = new TriggerManager();
             triggerManager.FindTriggerSceneObjects();
-            triggerManager.ForEachTriggerSceneObject(triggerDataList,(obj, triggerData) => {
-                var triggerInfo = availableTriggersList?.FirstOrDefault(t => t["name"]?.ToObject<string>() == triggerData.triggerType);
+            triggerManager.ForEachTriggerSceneObject(triggerDataList, (obj, triggerData) => {
+                var triggerInfo = availableTriggersList.FirstOrDefault(t => t["name"]?.ToObject<string>() == triggerData.triggerType);
                 if(triggerInfo == null) return;
-                string basePath = triggerInfo["path"].ToObject<string>();
-                foreach(var value in triggerInfo["values"]) {
-                    GameObject triggerAlt = Object.Instantiate(Resources.Load(Path.Join(basePath, value.ToObject<string>())), obj.transform);
-                    triggerAlt.SetActive(value.ToObject<string>() == triggerData.triggerValue);
-                    triggerAlt.name = value.ToObject<string>();
+                var basePath = triggerInfo["path"]?.ToObject<string>();
+                var valuesArray = triggerInfo["values"] as JArray;
+                if(valuesArray != null) {
+                    foreach (var valueToken in valuesArray) {
+                        var value = valueToken.ToObject<string>();
+                        var triggerAlt = Object.Instantiate(Resources.Load<GameObject>(Path.Combine(basePath, value)), obj.transform);
+                        triggerAlt.SetActive(value == triggerData.triggerValue);
+                        triggerAlt.name = value;
+                    }
                 }
             });
         }
