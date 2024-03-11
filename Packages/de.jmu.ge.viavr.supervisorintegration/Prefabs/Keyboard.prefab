@@ -842,7 +842,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3484128598174819074, guid: 02be27ab17ab3b14f954f65dc06dd738, type: 3}
       propertyPath: m_text
-      value: Enter addess... (e.g. 168.192.0.1)
+      value: Enter addess... (e.g. 192.168.0.1)
       objectReference: {fileID: 0}
     - target: {fileID: 3484128598174819074, guid: 02be27ab17ab3b14f954f65dc06dd738, type: 3}
       propertyPath: m_Enabled
