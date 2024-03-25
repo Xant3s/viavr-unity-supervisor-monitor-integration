@@ -1,26 +1,41 @@
-## Privacy
+# Supervisor Monitor Unity Integration
 
-The issue of privacy, especially regarding future use cases of the monitor, like transmitting Health data, is from great
-concern. Therefore, it is aimed to at least provide some kind of encryption.
+Unity package that provides necessary functionality for the VIA-VR supervisor monitor.
+         
+## About VIA-VR
 
-- ### Encryption
-  Currently, no encryption is in place when transmitting data like the screen of the VR application. It is planned that
-the transmission will be encrypted via TLS.
+The VIA-VR project presents an innovative authoring platform designed to revolutionize Virtual Reality (VR) applications in the medical domain. At its core, this platform aims to empower medical professionals to create, modify, and implement VR experiences tailored for educational and therapeutic purposes. By significantly lowering the barriers to entry in terms of development effort and technical expertise required, VIA-VR stands at the forefront of making VR technology more accessible and applicable in healthcare settings.
 
-- ### Monitor Identification
-  The identification of the monitor is implemented via a simple 4-Digit ID that is generated on Start Up.
-It is also known when connecting to the monitor what kind of transmissions the monitor expects.
+VIA-VR is developed by a consortium consisting of:
+- Games Engineering Group, Julius-Maximilians-Universität Würzburg
+- Human-Computer-Interaction Group, Julius-Maximilians-Universität Würzburg
+- Graphics & Geometry Group, Technische Universität Dortmund
+- Health-Technology-Ethics Group, Evangelische Hochschule Ludwigsburg
+- Articy Software GmbH & Co. KG, Germany
 
-## General Architecture
+The VIA-VR project is funded by the German Federal Ministry of Education and Research (BMBF) as part of the research initiative for Human-Technology Interaction ”Digital Platforms: Interactive Assistance Systems for Humans“ (project number 16SV8444).
 
-- ### Connection
-  The connection is first initialised by the monitor sending a broadcast message in the current network. 
-This broadcast message is then accepted by the Unity Application that again then sends a Keep Alive message to the 
-monitor. When the monitor receives this first initial keep alive message he in turn also sends a keep Alive message 
-to the Unity Application. When from either point the keep alive message is missing for more than 15 seconds
-the connection is broken and the Application is searching for a new Server and vice versa. 
-Connection also can be broke up manually by sending a disconnect message to the other device.
+This repository contains a package that is part of the VIA-VR project, made by the Games Engineering Group at the Julius-Maximilians-Universität Würzburg.
 
-## Debug Info
+[Project website](https://www.hci.uni-wuerzburg.de/projects/via-vr/)
 
-Should this plug in be used inside the editor make sure to toggle the option "RunInBackground" in the "Player/Resolution and Presentation" menu in the "Project settings"
+
+
+## Project Status
+
+This repository contains the codebase and resources for a completed research project. The project has reached its intended goals and objectives, and no further active development or maintenance is planned.
+
+## Contributing
+
+As there is no active maintainer for this project, contributions are not being actively reviewed or merged. However, if you wish to extend or build upon this work, you are welcome to fork the repository and continue development on your own.
+
+
+## Contact
+
+Prof. Dr. Sebastian von Mammen  
+Games Engineering Group  
+Chair of Human-Computer Interaction  
+Julius-Maximilians-Universität Würzburg
+sebastian.von.mammen@uni-wuerzburg.de
+
+
