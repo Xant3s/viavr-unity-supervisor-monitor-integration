@@ -1,10 +1,17 @@
-﻿# Supervisor Monitor Integration Developer Quick Start
+﻿# Supervisor Monitor Integration – Developer Quick Start
 
-For Unity devs - if you want to use the Supervisor Monitor Integration package with the VIA-VR platform, please refer to the VIA-VR documentation.
+For Unity developers: if you are working with the VIA-VR platform, please refer to the VIA-VR documentation.
+
 
 ## Requirements
 
-See `package.json`. This package requires the following packages. "com.unity.*" packages will be automatically installed. To install the other packages, got to `Window > Package Manager` and add the packages either from disk, via Git URL, or set up a [scoped package registry](https://docs.unity3d.com/6000.2/Documentation/Manual/upm-scoped.html) (`Edit > Project Settings > Package Manager`) which hosts these packages so that they can be installed automatically. See [Unity Manual](https://docs.unity3d.com/6000.2/Documentation/Manual/upm-ui-actions.html) for further details.
+- The package dependencies are listed in `package.json`.
+- Packages with the prefix "com.unity.*" will be installed automatically.
+- For the other packages, install them manually via **Unity Package Manager**:
+  -  `Window > Package Manager`.
+  -  Add them from disk, via Git URL, or by setting up a [scoped package registry](https://docs.unity3d.com/6000.2/Documentation/Manual/upm-scoped.html) (`Edit > Project Settings > Package Manager`)
+
+**Required Packages:**
 
 - "de.jmu.ge.logicengine": "2.0.18",
 - "de.jmu.ge.viavr.locomotion": "0.5.1",
